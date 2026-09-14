@@ -1,0 +1,69 @@
+---
+/**
+ * Renders the slot's image when `src/assets/<slot.id>.(avif|webp|png|jpg)` exists; otherwise a
+ * labelled placeholder box that reserves the same aspect ratio (AC-10).
+ */
+import { Image } from 'astro:assets';
+import type { ImageSlot } from '../content/types';
+import { resolveImage } from '../lib/images';
+import Placeholder from './Placeholder.astro';
+
+interface Props {
+  slot: ImageSlot;
+  class?: string;
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const { slot, class: className, sizes, loading = 'lazy' } = Astro.props;
+const asset = resolveImage(slot.id);
+const aspectRatio = `${slot.aspectRatio.width} / ${slot.aspectRatio.height}`;
+---
+
+{
+  asset ? (
+    <Image
+      src={asset}
+      alt={slot.alt}
+      class:list={['image-slot', className]}
+      sizes={sizes}
+      loading={loading}
+      style={`aspect-ratio: ${aspectRatio}`}
+    />
+  ) : (
+    <div
+      class:list={['image-slot', 'image-slot--missing', className]}
+      role="img"
+      aria-label={slot.label}
+      data-image-slot={slot.id}
+      style={`aspect-ratio: ${aspectRatio}`}
+    >
+      <span class="image-slot__label" aria-hidden="true">
+        <Placeholder text={slot.label} />
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .image-slot {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    object-fit: cover;
+  }
+
+  .image-slot--missing {
+    display: grid;
+    place-items: center;
+    padding: var(--space-4);
+    border: 1px dashed var(--label-brown);
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    text-align: center;
+    min-block-size: 0;
+    overflow: hidden;
+  }
+</style>
