@@ -13,6 +13,7 @@ export default defineConfig({
         'src/content/validate.ts',
         'src/scripts/motion/env.ts',
         'src/scripts/motion/clamp.ts',
+        'src/scripts/motion/route.ts',
       ],
       exclude: ['src/**/*.test.ts'],
       thresholds: {

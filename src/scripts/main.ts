@@ -10,7 +10,9 @@
  * `animated`, or `disabled` (GSAP/Lenis failed to initialize).
  */
 import { shouldAnimate } from './motion/env';
-import type { MotionInit } from './motion/smooth-scroll';
+import type { MotionContext, MotionInit } from './motion/smooth-scroll';
+import { initStopFollower } from './recorrido-stops';
+import { initSkipLink } from './skip-link';
 
 export type { MotionContext, MotionInit } from './motion/smooth-scroll';
 
@@ -21,6 +23,9 @@ export type MotionLoader = () => MotionInit | Promise<MotionInit>;
 
 const enhancements: Enhancement[] = [];
 const motionLoaders: MotionLoader[] = [];
+
+/** Lenis while motion is active, so enhancements (skip link) can scroll through it. */
+let activeLenis: MotionContext['lenis'] | null = null;
 
 /** Registers behavior that must run with or without motion (e.g. skip link, pantry filter). */
 export function registerEnhancement(enhancement: Enhancement): void {
@@ -108,6 +113,7 @@ async function start(): Promise<void> {
       return;
     }
 
+    activeLenis = smoothScroll.lenis;
     root.classList.add('is-animated');
     const cleanups: Array<() => void> = [];
     for (const init of inits) {
@@ -127,6 +133,7 @@ async function start(): Promise<void> {
 
     return () => {
       for (const cleanup of cleanups) runSafely('motion cleanup', cleanup);
+      activeLenis = null;
       smoothScroll.destroy();
       root.classList.remove('is-animated');
       root.dataset.motion = 'static';
@@ -152,5 +159,12 @@ registerMotion(async () => {
     curtainReveal('#como-pedir', '.site-footer');
   };
 });
+
+registerMotion(async () => (await import('./motion/recorrido')).init);
+
+registerEnhancement(() => initSkipLink({ getScroller: () => activeLenis }));
+
+// Keeps the Recorrido indicator on the stop in view whenever the desktop pin is not driving it.
+registerEnhancement(() => initStopFollower());
 
 void start();

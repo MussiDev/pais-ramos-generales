@@ -506,7 +506,8 @@
 
 .recorrido {
   display: grid;
-  grid-template-columns: minmax(20rem, 35rem) minmax(0, 1fr);
+  /* The map column is capped so the stop panel keeps room for the featured card. */
+  grid-template-columns: minmax(20rem, min(35rem, 38%)) minmax(0, 1fr);
   background: var(--green);
 }
 
@@ -790,6 +791,26 @@
 .featured__also {
   color: var(--label-brown);
   font-size: 0.8125rem;
+}
+
+/* The featured card follows the width of its stop panel, not the viewport: on narrow panels
+   (e.g. 1024–1279 px next to the map) the product image stacks above the text. */
+.stop {
+  container-type: inline-size;
+}
+
+@container (width < 40rem) {
+  .featured {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .featured__media {
+    justify-items: center;
+  }
+
+  .featured__media .image-slot {
+    max-inline-size: 12rem;
+  }
 }
 
 /* ---------------------------------------------------------------- La despensa */

@@ -98,6 +98,8 @@ export const recorrido = {
   /** Accessible map title, followed by the origin and the stop names. */
   mapTitle: 'Mapa de Argentina con el recorrido desde',
   stopLabel: 'Parada',
+  /** Accessible progress text; {current} and {total} are filled in by the page and the scripts. */
+  indicatorLabel: 'Parada {current} de {total}',
   featuredLabel: 'Producto destacado',
   productCta: 'Consultar por WhatsApp',
   alsoFromLabel: 'También de',

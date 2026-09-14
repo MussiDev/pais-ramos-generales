@@ -1,0 +1,121 @@
+/*
+ * El recorrido: state driven by `data-stop` on #recorrido ("0" in the static markup, updated by
+ * src/scripts/motion/recorrido.ts on desktop). Palette tokens only. Never hides content: pins that
+ * are still ahead are dimmed (decoration), their labels keep full contrast.
+ *
+ * Contrast (spec "Contrast decisions"): the map pane stays green with cream/mustard text; the
+ * active panel color is only used as a decorative seam next to the panel of the same color.
+ * The <= 767 px sticky strip lives in sections.css (Mobile map strip) and uses svh.
+ */
+
+.recorrido {
+  --active-panel: var(--panel-salta);
+  --stop-number: 1;
+  position: relative;
+}
+
+.recorrido[data-stop='1'] {
+  --active-panel: var(--panel-jujuy);
+  --stop-number: 2;
+}
+
+.recorrido[data-stop='2'] {
+  --active-panel: var(--panel-litoral);
+  --stop-number: 3;
+}
+
+.recorrido[data-stop='3'] {
+  --active-panel: var(--panel-buenos-aires);
+  --stop-number: 4;
+}
+
+.recorrido[data-stop='4'] {
+  --active-panel: var(--panel-rio-negro);
+  --stop-number: 5;
+}
+
+/* ---------------------------------------------------------------- Progress */
+
+.recorrido .progress__fill {
+  inline-size: 100%;
+  transform: scaleX(calc(var(--stop-number) / var(--stops, 5)));
+  transform-origin: left center;
+  transition: transform 400ms ease;
+}
+
+/* ---------------------------------------------------------------- Map pins */
+
+.recorrido .map__pin-dot,
+.recorrido .map__pin-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    transform 400ms ease,
+    opacity 400ms ease;
+}
+
+/* Stops still ahead of the active one (only with JavaScript, which keeps data-stop current). */
+.js .recorrido[data-stop='0'] .map__pin:is([data-stop-index='1'], [data-stop-index='2'], [data-stop-index='3'], [data-stop-index='4']),
+.js .recorrido[data-stop='1'] .map__pin:is([data-stop-index='2'], [data-stop-index='3'], [data-stop-index='4']),
+.js .recorrido[data-stop='2'] .map__pin:is([data-stop-index='3'], [data-stop-index='4']),
+.js .recorrido[data-stop='3'] .map__pin[data-stop-index='4'] {
+  & .map__pin-dot {
+    opacity: 0.55;
+  }
+
+  & .map__pin-halo {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+/* The active stop's pin "opens". */
+.recorrido[data-stop='0'] .map__pin[data-stop-index='0'],
+.recorrido[data-stop='1'] .map__pin[data-stop-index='1'],
+.recorrido[data-stop='2'] .map__pin[data-stop-index='2'],
+.recorrido[data-stop='3'] .map__pin[data-stop-index='3'],
+.recorrido[data-stop='4'] .map__pin[data-stop-index='4'] {
+  & .map__pin-halo {
+    transform: scale(1.6);
+  }
+
+  & .map__pin-dot {
+    transform: scale(1.2);
+  }
+}
+
+/* ---------------------------------------------------------------- Desktop */
+
+@media (min-width: 768px) {
+  /* Decorative seam in the active panel color, next to the panel itself. */
+  .recorrido__map {
+    box-shadow: inset -6px 0 0 var(--active-panel);
+  }
+
+  .is-animated .recorrido__map.is-pinned {
+    will-change: transform;
+  }
+
+  /* The product flies in from the map pin: let it cross the panel edge while it does. */
+  .is-animated .stop.is-revealing {
+    overflow: visible;
+  }
+
+  .is-animated .stop.is-revealing [data-flip-target] > * {
+    will-change: transform;
+  }
+}
+
+/* ---------------------------------------------------------------- Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .recorrido .progress__fill,
+  .recorrido .map__pin-dot,
+  .recorrido .map__pin-halo {
+    transition: none;
+  }
+
+  .is-animated .recorrido [data-flip-target] > * {
+    transform: none !important;
+  }
+}

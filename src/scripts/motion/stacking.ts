@@ -49,6 +49,8 @@ export function stackOver(
     scrub: true,
     animation: timeline,
     invalidateOnRefresh: true,
+    // will-change only while the stacking runs, so the covered section is not kept promoted.
+    onToggle: (self) => underElement.classList.toggle('is-stacking', self.isActive),
   });
 }
 

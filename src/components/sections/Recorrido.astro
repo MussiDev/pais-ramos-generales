@@ -1,4 +1,5 @@
 ---
+import '../../styles/recorrido.css';
 import { recorrido } from '../../content/copy';
 import { productImageSlot } from '../../content/product-image';
 import { products } from '../../content/products';
@@ -13,6 +14,8 @@ import WhatsAppLink from '../WhatsAppLink.astro';
 const ROUTE_ID = 'recorrido-route';
 const total = provinces.length;
 const pad = (value: number) => String(value).padStart(2, '0');
+const indicatorLabel = (current: number) =>
+  recorrido.indicatorLabel.replace('{current}', String(current)).replace('{total}', String(total));
 
 const stops = provinces.map((province, index) => {
   const featured = products.find((product) => product.id === province.featuredProductId) ?? null;
@@ -54,11 +57,16 @@ const stops = provinces.map((province, index) => {
 
     <div class="recorrido__progress">
       <p class="progress" data-indicator>
-        <span class="progress__current" data-indicator-current>{pad(1)}</span>
+        <span
+          class="visually-hidden"
+          data-indicator-text
+          data-indicator-template={recorrido.indicatorLabel}>{indicatorLabel(1)}</span
+        >
+        <span class="progress__current" data-indicator-current aria-hidden="true">{pad(1)}</span>
         <span class="progress__bar" aria-hidden="true"
           ><span class="progress__fill" data-progress-fill></span></span
         >
-        <span class="progress__total">{pad(total)}</span>
+        <span class="progress__total" aria-hidden="true">{pad(total)}</span>
       </p>
       <a class="recorrido__skip" href="#despensa" data-skip-link>{recorrido.skipLink}</a>
     </div>

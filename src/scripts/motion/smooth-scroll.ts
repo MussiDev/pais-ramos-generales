@@ -12,7 +12,10 @@ export interface MotionContext {
   gsap: typeof gsap;
   ScrollTrigger: typeof ScrollTrigger;
   lenis: Lenis;
-  /** The shared `gsap.matchMedia()`; nested media conditions (e.g. ≥ 768 px) register here. */
+  /**
+   * The shared `gsap.matchMedia()` for the motion-allowed condition. Nested conditions (e.g.
+   * ≥ 768 px) create their own `gsap.matchMedia()` inside the init and kill it in its cleanup.
+   */
   matchMedia: gsap.MatchMedia;
   /** The active matchMedia context; wrap animations created later (events) in `context.add`. */
   context: gsap.Context;

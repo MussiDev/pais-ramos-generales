@@ -19,7 +19,7 @@
 
 /* ---------------------------------------------------------------- Stacking: covered section */
 
-.is-animated .stack-under {
+.is-animated .stack-under.is-stacking {
   will-change: transform;
 }
 
