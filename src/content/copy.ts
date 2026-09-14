@@ -126,6 +126,9 @@ export const despensa = {
   numberPrefix: 'N.º',
   productCta: 'Consultar por WhatsApp',
   emptyState: 'No hay productos en esta categoría todavía.',
+  /** Screen-reader announcement after filtering; {count} is filled in by the filter script. */
+  filterStatusOne: '{count} producto',
+  filterStatusOther: '{count} productos',
   /** Prefix of the placeholder label shown while a product photo is missing (source: canvas). */
   photoLabel: 'FOTO',
   /** Accessible name of the category chip group. */

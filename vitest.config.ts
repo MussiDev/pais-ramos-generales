@@ -14,6 +14,8 @@ export default defineConfig({
         'src/scripts/motion/env.ts',
         'src/scripts/motion/clamp.ts',
         'src/scripts/motion/route.ts',
+        'src/scripts/despensa-filter.ts',
+        'src/scripts/motion/refresh-on-filter.ts',
       ],
       exclude: ['src/**/*.test.ts'],
       thresholds: {

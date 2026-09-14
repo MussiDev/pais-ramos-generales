@@ -46,5 +46,13 @@ const labelFor = (categoryId: string) =>
     </div>
 
     <p class="despensa__empty" data-empty hidden>{despensa.emptyState}</p>
+    <p
+      class="visually-hidden"
+      aria-live="polite"
+      data-filter-status
+      data-template-one={despensa.filterStatusOne}
+      data-template-other={despensa.filterStatusOther}
+      data-empty-text={despensa.emptyState}
+    ></p>
   </div>
 </section>

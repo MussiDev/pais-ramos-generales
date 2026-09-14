@@ -9,6 +9,7 @@
  * `<html data-motion>` records the state: `static` (reduced motion or no matchMedia),
  * `animated`, or `disabled` (GSAP/Lenis failed to initialize).
  */
+import { initDespensaFilter } from './despensa-filter';
 import { shouldAnimate } from './motion/env';
 import type { MotionContext, MotionInit } from './motion/smooth-scroll';
 import { initStopFollower } from './recorrido-stops';
@@ -153,10 +154,15 @@ registerMotion(async () => {
 });
 
 registerMotion(async () => {
-  const { curtainReveal, stackOver } = await import('./motion/stacking');
-  return () => {
+  const [{ curtainReveal, stackOver }, { refreshOnDespensaFilter }] = await Promise.all([
+    import('./motion/stacking'),
+    import('./motion/refresh-on-filter'),
+  ]);
+  return ({ ScrollTrigger }) => {
     stackOver('#hero', '#manifiesto', { scale: 0.92 });
     curtainReveal('#como-pedir', '.site-footer');
+    // Filtering la despensa changes its height and moves the curtain start below it.
+    return refreshOnDespensaFilter(ScrollTrigger);
   };
 });
 
@@ -166,5 +172,8 @@ registerEnhancement(() => initSkipLink({ getScroller: () => activeLenis }));
 
 // Keeps the Recorrido indicator on the stop in view whenever the desktop pin is not driving it.
 registerEnhancement(() => initStopFollower());
+
+// La despensa category filter; runs with or without motion (including reduced motion).
+registerEnhancement(() => initDespensaFilter());
 
 void start();
