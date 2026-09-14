@@ -1,3 +1,19 @@
 .ddw-state.json
 .ddw-sessions/
 .ddw-paused/
+.ddw-journal.jsonl
+.ddw/**/__pycache__/
+
+# Dependencies and build output
+node_modules/
+dist/
+.astro/
+coverage/
+test-results/
+playwright-report/
+.lighthouseci/
+
+# Local environment
+.env
+.env.*
+!.env.example
