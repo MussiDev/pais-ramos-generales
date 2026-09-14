@@ -12,6 +12,7 @@ import { provinces } from '../content/provinces';
 import { assertContentIntegrity } from '../content/validate';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/sections.css';
+import '../styles/motion.css';
 
 // Fails the build on inconsistent content (unknown product id or category).
 assertContentIntegrity(provinces, products, categories);

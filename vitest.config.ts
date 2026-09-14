@@ -7,7 +7,13 @@ export default defineConfig({
     environment: 'happy-dom',
     coverage: {
       provider: 'v8',
-      include: ['src/config/**/*.ts', 'src/lib/**/*.ts', 'src/content/validate.ts'],
+      include: [
+        'src/config/**/*.ts',
+        'src/lib/**/*.ts',
+        'src/content/validate.ts',
+        'src/scripts/motion/env.ts',
+        'src/scripts/motion/clamp.ts',
+      ],
       exclude: ['src/**/*.test.ts'],
       thresholds: {
         lines: 80,

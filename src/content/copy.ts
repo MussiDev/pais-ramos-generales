@@ -12,6 +12,15 @@ import type { ImageSlot } from './types';
  * Never add prices or discounts (guarded by content.test.ts).
  */
 
+export const layout = {
+  siteName: 'País Ramos Generales', // source: instagram
+  defaultTitle: 'País Ramos Generales — Un viaje por el país, desde Funes', // source: canvas
+  // source: empretienda-2026-09-13 (regional food) + instagram (Funes, Santa Fe; bio; WhatsApp orders)
+  defaultDescription:
+    'Tienda de alimentos regionales en Funes, Santa Fe. Llevamos a tu hogar lo mejor de nuestro país. Pedí por WhatsApp.',
+  skipToContent: 'Saltar al contenido',
+} as const;
+
 export const nav = {
   wordmark: { primary: 'PAÍS', secondary: 'RAMOS GENERALES' },
   links: [

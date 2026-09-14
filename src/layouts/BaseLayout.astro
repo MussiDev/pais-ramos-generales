@@ -13,17 +13,15 @@ import displayFontUrl from '@fontsource/cormorant-garamond/files/cormorant-garam
 import '../styles/tokens.css';
 import '../styles/global.css';
 import { siteConfig } from '../config/site';
+import { layout } from '../content/copy';
 
 interface Props {
   title?: string;
   description?: string;
 }
 
-const SITE_NAME = 'País Ramos Generales';
-const {
-  title = `${SITE_NAME} — Un viaje por el país, desde Funes`,
-  description = 'Tienda de alimentos regionales en Funes, Santa Fe. Llevamos a tu hogar lo mejor de nuestro país. Pedí por WhatsApp.',
-} = Astro.props;
+const SITE_NAME = layout.siteName;
+const { title = layout.defaultTitle, description = layout.defaultDescription } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const instagramUrl = `https://www.instagram.com/${siteConfig.instagramHandle}/`;
@@ -78,7 +76,10 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <script type="application/ld+json" set:html={jsonLdScript} />
   </head>
   <body>
-    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <a class="skip-link" href="#main">{layout.skipToContent}</a>
     <slot />
+    <script>
+      import '../scripts/main.ts';
+    </script>
   </body>
 </html>

@@ -1,0 +1,84 @@
+/*
+ * Motion state (added by src/scripts/main.ts as `html.is-animated` only when motion is allowed).
+ * Rules here never hide content: no opacity: 0, no visibility: hidden. Only transform and the
+ * opacity of decorative shades are animated by the timelines.
+ */
+@import 'lenis/dist/lenis.css';
+
+/* Main slides over the footer (curtain), so it needs its own opaque layer above it. */
+.is-animated main {
+  position: relative;
+  z-index: 1;
+  background-color: var(--cream);
+}
+
+.is-animated .site-footer {
+  position: relative;
+  z-index: 0;
+}
+
+/* ---------------------------------------------------------------- Stacking: covered section */
+
+.is-animated .stack-under {
+  will-change: transform;
+}
+
+/* Decorative shade that darkens the covered section; its opacity follows --stack-dim. */
+.is-animated .stack-under::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: var(--ink);
+  opacity: var(--stack-dim, 0);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- Stacking: covering section */
+
+.is-animated .stack-over {
+  z-index: 2;
+  border-start-start-radius: 1.75rem;
+  border-start-end-radius: 1.75rem;
+  box-shadow: 0 -30px 60px color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+/* ---------------------------------------------------------------- Footer curtain */
+
+.is-animated .curtain {
+  z-index: 1;
+  box-shadow: 0 30px 60px color-mix(in srgb, var(--ink) 40%, transparent);
+}
+
+.is-animated .curtain-reveal,
+.is-animated .ticker__track {
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------- Reduced motion */
+
+/* Safety net if the preference changes after load: no stacking, no transforms, normal flow. */
+@media (prefers-reduced-motion: reduce) {
+  .is-animated main,
+  .is-animated .site-footer {
+    position: static;
+    z-index: auto;
+  }
+
+  .is-animated .stack-under,
+  .is-animated .stack-over,
+  .is-animated .curtain,
+  .is-animated .curtain-reveal,
+  .is-animated .ticker__track,
+  .is-animated [data-hero-jar],
+  .is-animated [data-stamp] * {
+    transform: none !important;
+    will-change: auto;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .is-animated .stack-under::after {
+    content: none;
+  }
+}

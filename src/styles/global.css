@@ -51,7 +51,7 @@ h6 {
 /* Paper: cream background with a subtle dot grain */
 body {
   background-color: var(--cream);
-  background-image: radial-gradient(rgb(27 42 32 / 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
   background-size: 4px 4px;
   color: var(--ink);
   font-family: var(--font-body);
