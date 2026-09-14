@@ -1,0 +1,54 @@
+---
+/** Decorative landscape silhouette for a province panel; colors derive from `--panel`. */
+import type { Terrain } from '../content/types';
+
+interface Props {
+  type: Terrain;
+  class?: string;
+}
+
+const { type, class: className } = Astro.props;
+
+const layers: Record<Terrain, Array<{ layer: 'back' | 'front' | 'snow'; d: string }>> = {
+  hills: [
+    {
+      layer: 'back',
+      d: 'M0 200 L120 120 L200 170 L320 60 L420 150 L540 70 L660 160 L760 110 L880 150 L880 360 L0 360 Z',
+    },
+    {
+      layer: 'front',
+      d: 'M0 280 L140 210 L260 260 L400 190 L520 250 L660 200 L880 260 L880 360 L0 360 Z',
+    },
+  ],
+  waves: [
+    { layer: 'back', d: 'M0 220 Q110 170 220 210 T440 200 T660 190 T880 210 L880 360 L0 360 Z' },
+    { layer: 'front', d: 'M0 290 Q140 250 280 280 T560 270 T880 280 L880 360 L0 360 Z' },
+  ],
+  flat: [
+    { layer: 'back', d: 'M0 250 L880 236 L880 360 L0 360 Z' },
+    { layer: 'front', d: 'M0 300 L880 292 L880 360 L0 360 Z' },
+  ],
+  peaks: [
+    {
+      layer: 'back',
+      d: 'M0 230 L110 110 L190 190 L300 60 L400 170 L520 90 L640 190 L760 100 L880 180 L880 360 L0 360 Z',
+    },
+    {
+      layer: 'snow',
+      d: 'M300 60 L330 96 L312 92 L300 104 L286 90 L272 94 Z M520 90 L546 118 L520 112 L506 120 Z M760 100 L784 128 L760 122 L746 128 Z',
+    },
+    { layer: 'front', d: 'M0 300 Q220 270 440 290 T880 285 L880 360 L0 360 Z' },
+  ],
+};
+---
+
+<svg
+  class:list={['terrain', `terrain--${type}`, className]}
+  viewBox="0 0 880 360"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+  focusable="false"
+  data-terrain={type}
+>
+  {layers[type].map(({ layer, d }) => <path class={`terrain__${layer}`} d={d} />)}
+</svg>

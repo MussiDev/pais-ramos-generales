@@ -115,6 +115,7 @@ a {
 /* Dark/green surfaces: switch the ring to cream so it stays visible */
 .surface-green {
   --focus-ring: var(--cream);
+  --placeholder-ink: var(--cream);
 }
 
 /* Skip link: off-screen until focused */

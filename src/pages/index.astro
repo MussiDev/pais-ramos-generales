@@ -1,16 +1,31 @@
 ---
-// Temporary placeholder so Block 1 can build; Block 3 replaces it with the assembled sections.
-import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import ComoPedir from '../components/sections/ComoPedir.astro';
+import Despensa from '../components/sections/Despensa.astro';
+import Ferias from '../components/sections/Ferias.astro';
+import Footer from '../components/sections/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import Manifiesto from '../components/sections/Manifiesto.astro';
+import Recorrido from '../components/sections/Recorrido.astro';
 import { categories, products } from '../content/products';
 import { provinces } from '../content/provinces';
 import { assertContentIntegrity } from '../content/validate';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/sections.css';
 
 // Fails the build on inconsistent content (unknown product id or category).
 assertContentIntegrity(provinces, products, categories);
 ---
 
 <BaseLayout>
+  <Nav />
   <main id="main">
-    <h1>País Ramos Generales</h1>
+    <Hero />
+    <Manifiesto />
+    <Recorrido />
+    <Despensa />
+    <Ferias />
+    <ComoPedir />
   </main>
+  <Footer />
 </BaseLayout>

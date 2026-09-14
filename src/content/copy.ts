@@ -21,6 +21,9 @@ export const nav = {
     { href: '#como-pedir', label: 'Cómo pedir' },
   ],
   cta: 'Pedir por WhatsApp',
+  /** Accessible names (screen readers). */
+  homeLabel: 'País Ramos Generales, inicio',
+  navLabel: 'Principal',
 } as const;
 
 export const hero = {
@@ -83,6 +86,8 @@ export const recorrido = {
   titleEmphasis: 'desde Funes.', // source: canvas (location: instagram)
   origin: 'Funes', // source: instagram
   skipLink: 'Saltar a la despensa',
+  /** Accessible map title, followed by the origin and the stop names. */
+  mapTitle: 'Mapa de Argentina con el recorrido desde',
   stopLabel: 'Parada',
   featuredLabel: 'Producto destacado',
   productCta: 'Consultar por WhatsApp',
@@ -110,6 +115,10 @@ export const despensa = {
   numberPrefix: 'N.º',
   productCta: 'Consultar por WhatsApp',
   emptyState: 'No hay productos en esta categoría todavía.',
+  /** Prefix of the placeholder label shown while a product photo is missing (source: canvas). */
+  photoLabel: 'FOTO',
+  /** Accessible name of the category chip group. */
+  filterLabel: 'Filtrar productos por categoría',
 } as const;
 
 export const ferias = {

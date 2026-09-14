@@ -1,0 +1,119 @@
+---
+import { hero } from '../../content/copy';
+import ImageSlot from '../ImageSlot.astro';
+import Placeholder from '../Placeholder.astro';
+import WhatsAppLink from '../WhatsAppLink.astro';
+
+const stampText = `${hero.stamp} · `;
+---
+
+<section id="hero" class="hero" aria-labelledby="hero-title">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow eyebrow--rule"><Placeholder text={hero.eyebrow} /></p>
+      <h1 id="hero-title" class="hero__title">
+        <Placeholder text={hero.titleLead} />
+        <em><Placeholder text={hero.titleEmphasis} /></em>
+      </h1>
+      <div class="hero__actions">
+        <p class="hero__subcopy"><Placeholder text={hero.subcopy} /></p>
+        <WhatsAppLink class="btn btn--primary btn--large hero__cta">
+          {hero.cta}
+          <svg
+            class="icon"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M5 12h14"></path>
+            <path d="M13 6l6 6-6 6"></path>
+          </svg>
+        </WhatsAppLink>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      <div class="arch hero__arch">
+        <svg
+          class="hero__landscape"
+          viewBox="0 0 500 640"
+          preserveAspectRatio="xMidYMax slice"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <circle class="hero__sun" cx="360" cy="150" r="46"></circle>
+          <path
+            class="hero__hill hero__hill--back"
+            d="M0 360 L70 300 L120 330 L190 250 L250 310 L320 230 L400 300 L460 270 L500 300 L500 640 L0 640 Z"
+          ></path>
+          <path
+            class="hero__hill hero__hill--middle"
+            d="M0 420 L90 360 L150 400 L230 330 L300 390 L380 340 L500 400 L500 640 L0 640 Z"
+          ></path>
+          <path
+            class="hero__hill hero__hill--front"
+            d="M0 500 Q120 460 250 490 T500 480 L500 640 L0 640 Z"></path>
+        </svg>
+
+        <figure class="hero__jar" data-hero-jar>
+          <ImageSlot slot={hero.jarImage} class="hero__jar-image" loading="eager" />
+          <figcaption class="store-label hero__jar-label">
+            <span class="hero__jar-kind"><Placeholder text={hero.jarLabel.kind} /></span>
+            <span class="hero__jar-variety"><Placeholder text={hero.jarLabel.variety} /></span>
+            <span class="hero__jar-origin"><Placeholder text={hero.jarLabel.origin} /></span>
+            <span class="hero__jar-detail"><Placeholder text={hero.jarLabel.detail} /></span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="stamp hero__stamp" data-stamp>
+        <svg class="stamp__ring" viewBox="0 0 150 150" role="img" aria-label={hero.stamp}>
+          <defs>
+            <path id="hero-stamp-circle" d="M75 75 m-54 0 a54 54 0 1 1 108 0 a54 54 0 1 1 -108 0"
+            ></path>
+          </defs>
+          <text class="stamp__text" aria-hidden="true">
+            <textPath href="#hero-stamp-circle" textLength="336" lengthAdjust="spacing"
+              >{stampText}</textPath
+            >
+          </text>
+        </svg>
+        <svg
+          class="stamp__icon"
+          viewBox="0 0 24 24"
+          width="34"
+          height="34"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M3 7l9-4 9 4-9 4z"></path>
+          <path d="M3 7v10l9 4 9-4V7"></path>
+          <path d="M12 11v10"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker surface-green" data-ticker>
+    <div class="ticker__track">
+      <ul class="ticker__list">
+        {hero.ticker.map((name) => <li class="ticker__item">{name}</li>)}
+      </ul>
+      <ul class="ticker__list" aria-hidden="true">
+        {hero.ticker.map((name) => <li class="ticker__item">{name}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

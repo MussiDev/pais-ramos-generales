@@ -1,0 +1,41 @@
+---
+/** Vintage store-label card for one pantry product, with its WhatsApp product link. */
+import { despensa } from '../content/copy';
+import { productImageSlot } from '../content/product-image';
+import type { Product } from '../content/types';
+import { productMessage } from '../lib/whatsapp';
+import ImageSlot from './ImageSlot.astro';
+import Placeholder from './Placeholder.astro';
+import WhatsAppLink from './WhatsAppLink.astro';
+
+interface Props {
+  product: Product;
+  /** 1-based position in the pantry. */
+  number: number;
+  categoryLabel: string;
+}
+
+const { product, number, categoryLabel } = Astro.props;
+const titleId = `product-${product.id}-title`;
+---
+
+<article
+  class="product-card"
+  data-product-id={product.id}
+  data-category={product.category}
+  aria-labelledby={titleId}
+>
+  <div class="product-card__frame">
+    <p class="product-card__eyebrow">
+      {despensa.numberPrefix}
+      {String(number).padStart(2, '0')} · <Placeholder text={categoryLabel} />
+    </p>
+    <ImageSlot slot={productImageSlot(product, { width: 4, height: 3 })} class="product-card__image" />
+    <h3 id={titleId} class="product-card__name"><Placeholder text={product.name} /></h3>
+    <p class="product-card__meta"><Placeholder text={product.meta} /></p>
+    <WhatsAppLink message={productMessage(product.name)} class="product-card__cta">
+      {despensa.productCta}
+      <span class="visually-hidden">: <Placeholder text={product.name} /></span>
+    </WhatsAppLink>
+  </div>
+</article>

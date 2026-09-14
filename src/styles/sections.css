@@ -1,0 +1,1624 @@
+/*
+ * Static section layout (desktop and <= 767px). Final without JavaScript: later blocks only add
+ * classes for motion. Never hide content here (no opacity: 0 / visibility: hidden).
+ *
+ * Contrast rules (spec "Contrast decisions"): terracotta only for text >= 24px and decoration;
+ * eyebrows and small text use green on cream (or a token pair that meets AA on its surface).
+ */
+
+/* ---------------------------------------------------------------- Shared pieces */
+
+/* Opaque paper on cream sections so later stacking can slide one over another. */
+.hero,
+.manifiesto,
+.despensa,
+.como-pedir {
+  position: relative;
+  background-color: var(--cream);
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.icon {
+  flex: none;
+  inline-size: 1.125rem;
+  block-size: 1.125rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-block-size: 3rem;
+  padding-inline: 1.375rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-body-semibold);
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn--large {
+  min-block-size: 3.75rem;
+  padding-inline: 1.875rem;
+  font-size: var(--text-base);
+}
+
+.btn--primary {
+  background: var(--green);
+  color: var(--cream);
+}
+
+.btn--primary:hover {
+  background: var(--ink);
+}
+
+.btn--outline {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.btn--outline:hover {
+  background: var(--green);
+  color: var(--cream);
+}
+
+.btn--mustard {
+  background: var(--mustard);
+  color: var(--ink);
+  font-weight: var(--weight-body-bold);
+}
+
+.btn--mustard:hover {
+  background: var(--cream);
+}
+
+.eyebrow--rule {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.eyebrow--rule::before {
+  content: '';
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 1.5px;
+  background: currentColor;
+}
+
+/* Arch-shaped frame: the oversized radius resolves to a semicircle for any width. */
+.arch {
+  position: relative;
+  overflow: hidden;
+  border-radius: 100vmax 100vmax 0 0;
+}
+
+/* Vintage store label: double border + hard offset shadow. */
+.store-label {
+  border: 1.5px solid var(--green);
+  outline: 1px solid var(--green);
+  outline-offset: -7px;
+  background: var(--cream);
+  box-shadow: 6px 6px 0 var(--green);
+}
+
+/* ---------------------------------------------------------------- Nav */
+
+.site-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  block-size: 6.5rem;
+  padding-inline: var(--gutter);
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inline-size: 5.375rem;
+  block-size: 3.625rem;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow:
+    inset 0 0 0 3px var(--green),
+    inset 0 0 0 4.5px var(--cream);
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.wordmark__primary {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: var(--weight-display-semibold);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.wordmark__secondary {
+  margin-block-start: 3px;
+  font-size: 0.3125rem;
+  letter-spacing: 0.6px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.site-nav__list {
+  display: flex;
+  gap: clamp(1.25rem, 2.8vw, 2.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav__link {
+  color: var(--green);
+  font-size: 0.9375rem;
+  font-weight: var(--weight-body-medium);
+  text-decoration: none;
+  text-underline-offset: 6px;
+}
+
+.site-nav__link:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- Hero */
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100svh;
+  padding-block-start: 6.5rem;
+  overflow: hidden;
+}
+
+.hero__inner {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 31.25rem);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  inline-size: 100%;
+  max-inline-size: 90rem;
+  margin-inline: auto;
+  padding: var(--space-5) var(--gutter) var(--space-8);
+}
+
+.hero__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+.hero__title {
+  color: var(--green);
+  font-size: clamp(3.5rem, 0.5rem + 7.2vw, 8.25rem);
+  line-height: 0.88;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.hero__title em {
+  color: var(--terracotta);
+  font-weight: var(--weight-display-regular);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-5) 3rem;
+}
+
+.hero__subcopy {
+  max-inline-size: 21.25rem;
+  color: var(--ink-muted);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.hero__visual {
+  position: relative;
+  justify-self: end;
+  inline-size: min(100%, calc((100svh - 12rem) * 500 / 640));
+  min-inline-size: 18rem;
+}
+
+.hero__arch {
+  aspect-ratio: 500 / 640;
+  background: var(--mustard);
+}
+
+.hero__landscape {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.hero__sun {
+  fill: var(--cream);
+}
+
+.hero__hill--back {
+  fill: var(--terracotta);
+}
+
+.hero__hill--middle {
+  fill: color-mix(in srgb, var(--terracotta) 78%, var(--ink));
+}
+
+.hero__hill--front {
+  fill: var(--green);
+}
+
+.hero__jar {
+  position: absolute;
+  inset-inline: 24%;
+  inset-block-end: 16%;
+  margin: 0;
+  filter: drop-shadow(0 30px 30px color-mix(in srgb, var(--ink) 35%, transparent));
+}
+
+.hero__jar .image-slot.image-slot--missing {
+  border-radius: 1.5rem 1.5rem 0.75rem 0.75rem;
+}
+
+.hero__jar-label {
+  position: absolute;
+  inset-inline: -8%;
+  inset-block-end: -10%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0.875rem 0.75rem;
+  text-align: center;
+  rotate: -3deg;
+}
+
+.hero__jar-kind {
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: 1.875rem;
+  font-weight: var(--weight-display-bold);
+  line-height: 1;
+}
+
+.hero__jar-variety {
+  color: var(--green);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-body-bold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero__jar-origin {
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.hero__jar-detail {
+  color: var(--ink-muted);
+  font-size: 0.625rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.stamp {
+  display: grid;
+  place-items: center;
+  inline-size: 9.375rem;
+  block-size: 9.375rem;
+  border: 1.5px solid var(--green);
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--terracotta);
+}
+
+.stamp__ring {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.stamp__text {
+  fill: var(--green);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: var(--weight-body-bold);
+  text-transform: uppercase;
+}
+
+.stamp__icon {
+  inline-size: 2.125rem;
+  block-size: 2.125rem;
+}
+
+.hero__stamp {
+  position: absolute;
+  inset-inline-start: -5.5rem;
+  inset-block-end: 3.5rem;
+  rotate: -12deg;
+}
+
+.ticker {
+  display: flex;
+  align-items: center;
+  block-size: 4.5rem;
+  overflow: hidden;
+  background: var(--green);
+  color: var(--cream);
+}
+
+.ticker__track {
+  display: flex;
+  inline-size: max-content;
+}
+
+.ticker__list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.ticker__item {
+  display: flex;
+  align-items: center;
+}
+
+.ticker__item::before {
+  content: '✦' / '';
+  margin-inline: 1.375rem;
+  color: var(--mustard);
+  font-size: 1rem;
+  font-style: normal;
+}
+
+/* ---------------------------------------------------------------- Manifiesto */
+
+.manifiesto {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+.manifiesto__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 28.75rem) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 7.5rem);
+  align-items: center;
+  max-inline-size: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.manifiesto__media {
+  position: relative;
+  margin: 0;
+}
+
+.manifiesto__arch .image-slot.image-slot--missing {
+  border: 0;
+  background: color-mix(in srgb, var(--label-brown) 12%, var(--cream));
+  font-weight: var(--weight-body-semibold);
+}
+
+.sticker {
+  background: var(--terracotta);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1.625rem; /* >= 24px: cream on terracotta is large-text only */
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.manifiesto__sticker {
+  position: absolute;
+  inset-inline-end: -1.5rem;
+  inset-block-end: 3rem;
+  padding: 0.875rem 1.375rem;
+  rotate: -4deg;
+}
+
+.manifiesto__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.manifiesto__title {
+  color: var(--green);
+  font-size: clamp(2.75rem, 1.5rem + 3.2vw, 4.25rem);
+  font-weight: var(--weight-display-regular);
+  line-height: 1;
+}
+
+.manifiesto__title em {
+  color: var(--terracotta);
+}
+
+.manifiesto__body {
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: clamp(1.625rem, 1.1rem + 1.6vw, 2.5rem);
+  line-height: 1.15;
+  text-wrap: pretty;
+}
+
+.manifiesto__about {
+  color: var(--ink-muted);
+  font-size: var(--text-lg);
+}
+
+.pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) 4rem;
+  margin: 0;
+  padding: 2rem 0 0;
+  border-block-start: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+  list-style: none;
+}
+
+.pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  max-inline-size: 16.25rem;
+}
+
+.pillar__title {
+  color: var(--green);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: var(--weight-body-bold);
+  letter-spacing: 2px;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.pillar__text {
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- El recorrido */
+
+.recorrido {
+  display: grid;
+  grid-template-columns: minmax(20rem, 35rem) minmax(0, 1fr);
+  background: var(--green);
+}
+
+.recorrido__map {
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+  block-size: 100svh;
+  padding: clamp(1.5rem, 6svh, 4.5rem) clamp(1.5rem, 4vw, 4rem);
+  background: var(--green);
+  color: var(--cream);
+}
+
+.recorrido__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.recorrido__eyebrow {
+  color: var(--mustard); /* mustard on green: 5.0:1 */
+}
+
+.recorrido__title {
+  color: var(--cream);
+  font-size: clamp(2.25rem, 1.4rem + 2.2vw, 3.5rem);
+  font-weight: var(--weight-display-regular);
+  line-height: 0.95;
+}
+
+.map {
+  flex: 1 1 0;
+  inline-size: 100%;
+  min-block-size: 0;
+}
+
+.map__outline {
+  fill: color-mix(in srgb, var(--cream) 6%, transparent);
+  stroke: color-mix(in srgb, var(--cream) 45%, transparent);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.map__route-guide {
+  fill: none;
+  stroke: color-mix(in srgb, var(--cream) 35%, transparent);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 6;
+}
+
+.map__route {
+  fill: none;
+  stroke: var(--mustard);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.map__origin-dot {
+  fill: var(--terracotta);
+  stroke: var(--cream);
+  stroke-width: 2;
+}
+
+.map__pin-halo {
+  fill: none;
+  stroke: var(--mustard);
+  stroke-width: 1.5;
+}
+
+.map__pin-dot {
+  fill: var(--mustard);
+}
+
+.map__label {
+  fill: var(--cream);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.map__label--origin {
+  font-size: 13px;
+  font-weight: var(--weight-body-bold);
+}
+
+.recorrido__progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+}
+
+.progress {
+  display: flex;
+  flex: 1 1 10rem;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 0.8125rem;
+  font-weight: var(--weight-body-semibold);
+  letter-spacing: 2px;
+}
+
+.progress__current {
+  color: var(--mustard);
+}
+
+.progress__bar {
+  position: relative;
+  flex: 1;
+  block-size: 2px;
+  background: color-mix(in srgb, var(--cream) 20%, transparent);
+}
+
+.progress__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  inline-size: calc(100% / var(--stops, 5));
+  background: var(--mustard);
+}
+
+.recorrido__skip {
+  color: var(--cream);
+  font-size: 0.75rem;
+  font-weight: var(--weight-body-semibold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-underline-offset: 4px;
+}
+
+.recorrido__stops {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stop {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-7);
+  min-block-size: 100svh;
+  padding: clamp(2rem, 7svh, 4.5rem) clamp(1.5rem, 5vw, 4.5rem);
+  overflow: hidden;
+  background: var(--panel);
+  color: var(--panel-text-light);
+}
+
+.stop--light {
+  --focus-ring: var(--cream);
+}
+
+.stop--dark {
+  color: var(--panel-text-dark);
+}
+
+.stop__terrain {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: -1;
+  inline-size: 100%;
+  block-size: 40%;
+}
+
+.terrain__back {
+  fill: color-mix(in srgb, var(--panel) 86%, var(--ink));
+}
+
+.terrain__front {
+  fill: color-mix(in srgb, var(--panel) 72%, var(--ink));
+}
+
+.terrain__snow {
+  fill: var(--cream);
+}
+
+.stop__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+  max-inline-size: 42rem;
+}
+
+.stop__eyebrow {
+  font-size: 0.8125rem;
+  font-weight: var(--weight-body-semibold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.stop__name {
+  color: inherit;
+  font-size: clamp(4rem, 0.5rem + 9vw, 12.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.stop__description {
+  max-inline-size: 28.75rem;
+  font-size: 1.125rem;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* Jujuy (terracotta panel): small text sits on a cream card; only the name stays on the panel. */
+.stop[data-province='jujuy'] :is(.stop__eyebrow, .stop__description) {
+  padding: 0.5rem 0.875rem;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.stop[data-province='jujuy'] .stop__eyebrow {
+  color: var(--green);
+}
+
+.featured {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  max-inline-size: 52rem;
+  background: var(--cream);
+  box-shadow: 0 30px 60px color-mix(in srgb, var(--ink) 30%, transparent);
+  color: var(--ink);
+  --focus-ring: var(--green);
+}
+
+.featured__media {
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: color-mix(in srgb, var(--label-brown) 12%, var(--cream));
+}
+
+.featured__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: 2rem 2.25rem;
+}
+
+.featured__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.featured__eyebrow {
+  color: var(--green);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-body-bold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.featured__name {
+  color: var(--green);
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem);
+  font-weight: var(--weight-display-semibold);
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.featured__meta {
+  color: var(--label-brown);
+  font-size: var(--text-sm);
+}
+
+.featured__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.875rem;
+}
+
+.featured__also {
+  color: var(--label-brown);
+  font-size: 0.8125rem;
+}
+
+/* ---------------------------------------------------------------- La despensa */
+
+.despensa {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+.despensa__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+  max-inline-size: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.despensa__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.despensa__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.despensa__title {
+  color: var(--green);
+  font-size: clamp(3rem, 1.2rem + 4.8vw, 5.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.despensa__title em {
+  font-weight: var(--weight-display-regular);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+}
+
+.no-js .chips {
+  display: none;
+}
+
+.chip {
+  min-block-size: 2.75rem;
+  padding: 0.625rem 1.25rem;
+  border: 1.5px solid color-mix(in srgb, var(--green) 30%, transparent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--green);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-body-semibold);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--green);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--green);
+  background: var(--green);
+  color: var(--cream);
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  padding: 10px;
+  border: 1.5px solid var(--green);
+  background: var(--cream);
+  box-shadow: 6px 6px 0 var(--green);
+  color: var(--ink);
+}
+
+.product-card[hidden] {
+  display: none;
+}
+
+.product-card__frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.125rem;
+  block-size: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--green);
+  text-align: center;
+}
+
+.product-card__eyebrow {
+  color: var(--green);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-body-bold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.product-card .image-slot.image-slot--missing {
+  border: 0;
+  background: color-mix(in srgb, var(--label-brown) 12%, var(--cream));
+}
+
+.product-card__name {
+  color: var(--green);
+  font-size: 1.875rem;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.product-card__meta {
+  color: var(--label-brown);
+  font-size: 0.8125rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.product-card__cta {
+  margin-block-start: auto;
+  color: var(--green);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-body-bold);
+  text-underline-offset: 4px;
+}
+
+/* Accent label (canvas): inverted green card for the ceramics category. */
+.product-card[data-category='ceramica'] {
+  --focus-ring: var(--cream);
+  background: var(--green);
+  box-shadow: 6px 6px 0 var(--terracotta);
+  color: var(--cream);
+}
+
+.product-card[data-category='ceramica'] .product-card__frame {
+  border-color: color-mix(in srgb, var(--cream) 60%, transparent);
+}
+
+.product-card[data-category='ceramica'] :is(.product-card__name, .product-card__meta, .product-card__cta) {
+  color: var(--cream);
+}
+
+.product-card[data-category='ceramica'] .product-card__eyebrow {
+  color: var(--mustard);
+}
+
+.product-card[data-category='ceramica'] .image-slot.image-slot--missing {
+  background: var(--cream);
+}
+
+.despensa__empty {
+  color: var(--ink-muted);
+  font-size: var(--text-lg);
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- Ferias */
+
+.ferias {
+  position: relative;
+  padding: 7.5rem var(--gutter) 5.5rem;
+  overflow: hidden;
+  background: var(--mustard);
+  color: var(--ink);
+}
+
+.bunting {
+  position: absolute;
+  inset: 0 0 auto;
+  inline-size: 100%;
+  block-size: 4.375rem;
+}
+
+.bunting__string {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.bunting__flag--0 {
+  fill: var(--terracotta);
+}
+
+.bunting__flag--1 {
+  fill: var(--green);
+}
+
+.bunting__flag--2 {
+  fill: var(--cream);
+}
+
+.bunting__flag--3 {
+  fill: var(--panel-rio-negro);
+}
+
+.ferias__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 32.5rem);
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: end;
+  max-inline-size: 90rem;
+  margin-inline: auto;
+}
+
+.ferias__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ferias__eyebrow {
+  color: var(--ink);
+}
+
+.ferias__title {
+  color: var(--green);
+  font-size: clamp(3rem, 1.2rem + 5.4vw, 6.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+}
+
+.ferias__title em {
+  color: var(--ink);
+  font-weight: var(--weight-display-regular);
+}
+
+.fair-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 2rem;
+  border: 1.5px solid var(--ink);
+  outline: 1px solid var(--ink);
+  outline-offset: -8px;
+  background: var(--cream);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.fair-card__date {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  color: var(--green);
+  font-size: 0.75rem;
+  font-weight: var(--weight-body-bold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.fair-card__name {
+  color: var(--green);
+  font-size: clamp(2rem, 1.5rem + 1.2vw, 2.5rem);
+  line-height: 1;
+}
+
+.fair-card__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) 2rem;
+  margin: 0;
+  padding: 0;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  list-style: none;
+}
+
+.fair-card__details li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.fair-card__details .icon {
+  color: var(--green);
+}
+
+/* ---------------------------------------------------------------- Cómo pedir */
+
+.como-pedir {
+  padding-block: clamp(4rem, 8vw, 7rem);
+}
+
+.como-pedir__inner {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  max-inline-size: 90rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.como-pedir__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.como-pedir__title {
+  color: var(--green);
+  font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.5rem);
+  line-height: 0.95;
+}
+
+.como-pedir__title em {
+  color: var(--terracotta);
+  font-weight: var(--weight-display-regular);
+}
+
+.como-pedir__delivery {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-block-start: 1.5px solid var(--green);
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: 2.25rem 2.5rem 0;
+  border-inline-start: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+}
+
+.step:first-child {
+  padding-inline-start: 0;
+  border-inline-start: 0;
+}
+
+.step:last-child {
+  padding-inline-end: 0;
+}
+
+.step__number {
+  color: var(--terracotta);
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-style: italic;
+  line-height: 1;
+}
+
+.step__title {
+  color: var(--green);
+  font-size: 2rem;
+}
+
+.step__text {
+  color: var(--ink-muted);
+  line-height: 1.55;
+}
+
+.store-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3) 0;
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--green);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1.625rem;
+  font-style: italic;
+  list-style: none;
+}
+
+.store-facts__item {
+  display: flex;
+  align-items: center;
+}
+
+.store-facts__item + .store-facts__item::before {
+  content: '✦' / '';
+  margin-inline: 1.5rem;
+  color: var(--mustard);
+  font-size: 1rem;
+  font-style: normal;
+}
+
+.como-pedir__cta {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------------------------------------------------------------- Footer */
+
+.site-footer {
+  background: var(--green);
+  color: var(--cream);
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-block-size: 100svh;
+  padding: 4.5rem var(--gutter) 2.5rem;
+  overflow: hidden;
+}
+
+.footer__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.footer__question {
+  color: var(--cream);
+  font-size: clamp(2rem, 1.6rem + 1.2vw, 2.5rem);
+  font-style: italic;
+  font-weight: var(--weight-display-regular);
+}
+
+.footer__wordmark {
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 22vw, 18.75rem);
+  font-weight: var(--weight-display-semibold);
+  line-height: 0.75;
+  letter-spacing: -0.015em;
+  text-align: center;
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-6);
+  padding-block-start: var(--space-5);
+  border-block-start: 1px solid color-mix(in srgb, var(--cream) 20%, transparent);
+  font-size: var(--text-sm);
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer__links a {
+  color: var(--cream);
+  text-underline-offset: 4px;
+}
+
+/* ---------------------------------------------------------------- Tablet */
+
+@media (max-width: 1023px) {
+  .site-nav {
+    display: none;
+  }
+
+  .hero__stamp {
+    inset-inline-start: -2rem;
+  }
+
+  .manifiesto__sticker {
+    inset-inline-end: 0;
+  }
+
+  .recorrido {
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+  }
+
+  .featured {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .featured__media {
+    justify-items: center;
+  }
+
+  .featured__media .image-slot {
+    max-inline-size: 12rem;
+  }
+
+  .ferias__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------------------------------------------------------------- Mobile (<= 767px) */
+
+@media (max-width: 767px) {
+  .site-header {
+    block-size: 4.5rem;
+  }
+
+  .wordmark {
+    inline-size: 4rem;
+    block-size: 2.75rem;
+  }
+
+  .wordmark__primary {
+    font-size: 1.0625rem;
+  }
+
+  .wordmark__secondary {
+    display: none;
+  }
+
+  .site-header__cta {
+    inline-size: 2.75rem;
+    min-block-size: 2.75rem;
+    padding: 0;
+  }
+
+  .site-header__cta-text {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  /* Hero */
+  .hero {
+    padding-block-start: 4.5rem;
+  }
+
+  .hero__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+    padding-block: var(--space-4) var(--space-7);
+  }
+
+  .hero__copy {
+    gap: var(--space-5);
+  }
+
+  .hero__title {
+    font-size: clamp(3rem, 1rem + 11vw, 4rem);
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero__cta {
+    inline-size: 100%;
+  }
+
+  .hero__visual {
+    justify-self: stretch;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .hero__arch {
+    aspect-ratio: 350 / 380;
+  }
+
+  .hero__jar {
+    inset-inline: 22%;
+    inset-block-end: 24%;
+  }
+
+  .hero__jar-label {
+    inset-inline: 4%;
+    inset-block-end: -18%;
+    padding-block: 0.625rem;
+  }
+
+  .hero__jar-kind {
+    font-size: 1.5rem;
+  }
+
+  .hero__stamp {
+    inset-inline: auto 0.5rem;
+    inset-block: -1.5rem auto;
+    inline-size: 6.5rem;
+    block-size: 6.5rem;
+  }
+
+  .stamp__icon {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  .ticker {
+    block-size: 3.5rem;
+  }
+
+  .ticker__list {
+    font-size: 1.375rem;
+  }
+
+  /* Manifiesto */
+  .manifiesto__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .manifiesto__media {
+    max-inline-size: 22rem;
+    margin-inline: auto;
+    inline-size: 100%;
+  }
+
+  .manifiesto__sticker {
+    inset-block-end: 1.5rem;
+  }
+
+  .pillars {
+    flex-direction: column;
+  }
+
+  /* El recorrido: sticky map strip on top, stops stacked vertically below. */
+  .recorrido {
+    display: block;
+  }
+
+  .recorrido__map {
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 7.5rem);
+    grid-template-rows: auto auto;
+    gap: var(--space-2) var(--space-4);
+    block-size: 38svh;
+    padding: var(--space-3) var(--space-4);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+
+  .recorrido__header {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    gap: var(--space-1);
+  }
+
+  .recorrido__eyebrow {
+    font-size: 0.6875rem;
+  }
+
+  .recorrido__title {
+    font-size: 1.625rem;
+  }
+
+  .recorrido__svg {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .recorrido__progress {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .progress {
+    flex: none;
+  }
+
+  .stop {
+    min-block-size: auto;
+    gap: var(--space-6);
+    padding: var(--space-7) var(--space-5) var(--space-8);
+  }
+
+  .stop__name {
+    font-size: clamp(3rem, 1rem + 12vw, 4.5rem);
+  }
+
+  .stop__description {
+    font-size: var(--text-base);
+  }
+
+  .featured__body {
+    padding: var(--space-5);
+  }
+
+  .featured .btn {
+    white-space: normal;
+  }
+
+  /* La despensa */
+  .despensa__inner {
+    gap: var(--space-6);
+  }
+
+  .product-grid {
+    gap: var(--space-5);
+  }
+
+  /* Ferias */
+  .ferias {
+    padding-block: 5.5rem var(--space-8);
+  }
+
+  .fair-card {
+    padding: var(--space-5);
+  }
+
+  /* Cómo pedir */
+  .steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .step,
+  .step:first-child,
+  .step:last-child {
+    padding: var(--space-5) 0;
+    border-inline-start: 0;
+  }
+
+  .step + .step {
+    border-block-start: 1px solid color-mix(in srgb, var(--green) 25%, transparent);
+  }
+
+  .step__number {
+    font-size: 3rem;
+  }
+
+  .store-facts {
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .store-facts__item + .store-facts__item::before {
+    content: none;
+  }
+
+  .como-pedir__cta .btn {
+    inline-size: 100%;
+    white-space: normal;
+  }
+
+  /* Footer */
+  .footer {
+    padding-block: var(--space-8) var(--space-6);
+  }
+
+  .footer__top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+  }
+}
+
+/* ---------------------------------------------------------------- Mobile map strip */
+
+/* Sticky strip only when motion is welcome; under reduced motion the map stays in normal flow.
+   Desktop pinning is added by JS (Block 5). */
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .recorrido__map {
+    position: sticky;
+    inset-block-start: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- No-JS ticker */
+
+/* Without the JS loop the province names wrap instead of being clipped. */
+@media (max-width: 767px) {
+  .no-js .ticker {
+    block-size: auto;
+    padding-block: var(--space-3);
+  }
+
+  .no-js .ticker__track {
+    inline-size: 100%;
+  }
+
+  .no-js .ticker__list {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: var(--space-4);
+    white-space: normal;
+  }
+
+  .no-js .ticker__list[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- Placeholder markers */
+
+/* Outline color per surface (>= 3:1 against the background the marker sits on). */
+.stop--light,
+.sticker,
+.chip[aria-pressed='true'],
+.product-card[data-category='ceramica'] {
+  --placeholder-ink: var(--cream);
+}
+
+.ferias,
+.stop--dark {
+  --placeholder-ink: var(--ink);
+}
+
+.fair-card,
+.featured,
+.stop[data-province='jujuy'] :is(.stop__eyebrow, .stop__description),
+.product-card[data-category='ceramica'] .image-slot {
+  --placeholder-ink: var(--green);
+}

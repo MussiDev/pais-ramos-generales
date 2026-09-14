@@ -23,7 +23,8 @@ const segments = splitPlaceholders(text);
   .placeholder {
     background: transparent;
     color: inherit;
-    outline: 1px dashed var(--mustard);
+    /* Surface-aware color: --placeholder-ink is set per surface in tokens/global/sections CSS. */
+    outline: 1px dashed var(--placeholder-ink, var(--green));
     outline-offset: 1px;
     border-radius: 2px;
     padding-inline: 0.125em;

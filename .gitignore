@@ -12,6 +12,8 @@ coverage/
 test-results/
 playwright-report/
 .lighthouseci/
+# Temporary build fixtures created by e2e tests
+.tmp/
 
 # Local environment
 .env
