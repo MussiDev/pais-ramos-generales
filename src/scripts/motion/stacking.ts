@@ -51,6 +51,8 @@ export function stackOver(
     invalidateOnRefresh: true,
     // will-change only while the stacking runs, so the covered section is not kept promoted.
     onToggle: (self) => underElement.classList.toggle('is-stacking', self.isActive),
+    // A revert (e.g. switching to reduced motion) mid-stacking kills the trigger without a toggle.
+    onKill: () => underElement.classList.remove('is-stacking'),
   });
 }
 
@@ -86,5 +88,8 @@ export function curtainReveal(section: MotionTarget, footer: MotionTarget): Scro
     scrub: true,
     animation: timeline,
     invalidateOnRefresh: true,
+    // will-change only while the curtain runs, so the footer is not kept promoted.
+    onToggle: (self) => footerElement.classList.toggle('is-curtain-active', self.isActive),
+    onKill: () => footerElement.classList.remove('is-curtain-active'),
   });
 }

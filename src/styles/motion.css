@@ -50,7 +50,8 @@
   box-shadow: 0 30px 60px color-mix(in srgb, var(--ink) 40%, transparent);
 }
 
-.is-animated .curtain-reveal,
+/* The footer is promoted only while the curtain trigger is active (toggled in stacking.ts). */
+.is-animated .curtain-reveal.is-curtain-active,
 .is-animated .ticker__track {
   will-change: transform;
 }

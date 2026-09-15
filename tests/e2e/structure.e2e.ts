@@ -319,7 +319,8 @@ test.describe('structure', () => {
     try {
       // Isolated copy of the site: committed content is never touched.
       cpSync(path.join(REPO_ROOT, 'src'), path.join(fixtureRoot, 'src'), { recursive: true });
-      for (const file of ['astro.config.mjs', 'tsconfig.json']) {
+      // astro.config.mjs loads the build-time font subsetting integration from scripts/.
+      for (const file of ['astro.config.mjs', 'tsconfig.json', 'scripts/subset-fonts.mjs']) {
         cpSync(path.join(REPO_ROOT, file), path.join(fixtureRoot, file));
       }
       const envSource = existsSync(path.join(REPO_ROOT, '.env')) ? '.env' : '.env.example';

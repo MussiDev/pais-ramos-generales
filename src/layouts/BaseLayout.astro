@@ -1,15 +1,17 @@
 ---
-import '@fontsource/cormorant-garamond/500.css';
-import '@fontsource/cormorant-garamond/600.css';
-import '@fontsource/cormorant-garamond/700.css';
-import '@fontsource/cormorant-garamond/500-italic.css';
-import '@fontsource/cormorant-garamond/600-italic.css';
-import '@fontsource/cormorant-garamond/700-italic.css';
-import '@fontsource/hanken-grotesk/400.css';
-import '@fontsource/hanken-grotesk/500.css';
-import '@fontsource/hanken-grotesk/600.css';
-import '@fontsource/hanken-grotesk/700.css';
+// Only the faces the page renders, latin subset only (es-AR copy: á é í ó ú ü ñ ¿ ¡ are all in it).
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-500-italic.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-700.css';
+import '@fontsource/hanken-grotesk/latin-400.css';
+import '@fontsource/hanken-grotesk/latin-500.css';
+import '@fontsource/hanken-grotesk/latin-600.css';
+import '@fontsource/hanken-grotesk/latin-700.css';
+// Preloaded: the faces of the first viewport's hero text (title, its italic emphasis, subcopy).
 import displayFontUrl from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2?url';
+import displayItalicFontUrl from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2?url';
+import bodyFontUrl from '@fontsource/hanken-grotesk/files/hanken-grotesk-latin-400-normal.woff2?url';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import { siteConfig } from '../config/site';
@@ -63,7 +65,11 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="theme-color" content="#1F4D2E" />
+    <!-- Without an icon link the browser requests /favicon.ico, which 404s (console error). -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayItalicFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_AR" />

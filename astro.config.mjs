@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import { existsSync, readFileSync } from 'node:fs';
 import { parseEnv } from 'node:util';
 import { createSiteConfig, validateSiteConfig } from './src/config/site.ts';
+import { subsetFontsIntegration } from './scripts/subset-fonts.mjs';
 
 /**
  * Reads `.env` and `.env.<mode>` (later files win); variables already present in the
@@ -38,5 +39,6 @@ function siteConfigValidation() {
 export default defineConfig({
   output: 'static',
   site: 'https://pais-ramos-generales.example.com',
-  integrations: [siteConfigValidation()],
+  // subset-fonts runs after the build: fonts are cut down to the glyphs of the built pages.
+  integrations: [siteConfigValidation(), subsetFontsIntegration()],
 });
