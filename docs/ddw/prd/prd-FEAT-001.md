@@ -5,7 +5,7 @@
 | Ticket | FEAT-001 |
 | Tracker | none |
 | Date | 2026-09-14T01:10:00Z |
-| PRD loops | 0 |
+| PRD loops | 1 |
 | Loops since last human decision | 0 |
 
 ## Context and Problem
@@ -55,7 +55,12 @@ Misiones origin for Caballo Negro and Federal yerbas.
   cards must include the product name in the message.
 - FR-07: All images, product data, province data, fair data and unconfirmed copy must come from
   content files, and every unconfirmed value must render as a visible placeholder (bracketed text or
-  a labelled image placeholder).
+  a labelled image placeholder). This placeholder convention applies only to content that is
+  genuinely unconfirmed. The verified client facts listed under "Context and Problem" (WhatsApp
+  number, email, Instagram handle) are not placeholders and must be used as-is wherever the site
+  needs them, including in non-visible metadata (e.g. structured data/JSON-LD) — a bracketed marker
+  must never leak into a field a human does not see and cannot flag for replacement. (FIX-001,
+  addressing the gap where the email fact was implemented as a placeholder pending confirmation.)
 - FR-08: When the user prefers reduced motion, the site must disable pinning, scrubbing, snapping,
   stacking and looping animations and render all sections in normal document flow.
 - FR-09: On viewports narrower than 768 px, El recorrido must render as a vertical sequence with the
