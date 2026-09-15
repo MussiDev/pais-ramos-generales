@@ -1,0 +1,139 @@
+---
+import '../../styles/recorrido.css';
+import { recorrido } from '../../content/copy';
+import { productImageSlot } from '../../content/product-image';
+import { products } from '../../content/products';
+import { provinces } from '../../content/provinces';
+import { productMessage } from '../../lib/whatsapp';
+import ArgentinaMap from '../ArgentinaMap.astro';
+import ImageSlot from '../ImageSlot.astro';
+import Placeholder from '../Placeholder.astro';
+import Terrain from '../Terrain.astro';
+import WhatsAppLink from '../WhatsAppLink.astro';
+
+const ROUTE_ID = 'recorrido-route';
+const total = provinces.length;
+const pad = (value: number) => String(value).padStart(2, '0');
+const indicatorLabel = (current: number) =>
+  recorrido.indicatorLabel.replace('{current}', String(current)).replace('{total}', String(total));
+
+const stops = provinces.map((province, index) => {
+  const featured = products.find((product) => product.id === province.featuredProductId) ?? null;
+  const others = products
+    .filter((product) => product.provinceId === province.id && product.id !== featured?.id)
+    .map((product) => product.name);
+  return {
+    province,
+    index,
+    featured,
+    alsoFrom: others.length > 0 ? others.join(' · ') : recorrido.alsoFromPlaceholder,
+  };
+});
+---
+
+<section
+  id="recorrido"
+  class="recorrido"
+  aria-labelledby="recorrido-title"
+  data-stop="0"
+  style={`--stops: ${total}`}
+>
+  <div class="recorrido__map surface-green" data-map-pane>
+    <header class="recorrido__header">
+      <p class="eyebrow recorrido__eyebrow"><Placeholder text={recorrido.eyebrow} /></p>
+      <h2 id="recorrido-title" class="recorrido__title">
+        <Placeholder text={recorrido.titleLead} />
+        <em><Placeholder text={recorrido.titleEmphasis} /></em>
+      </h2>
+    </header>
+
+    <ArgentinaMap
+      provinces={provinces}
+      originLabel={recorrido.origin}
+      title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}`}
+      routeId={ROUTE_ID}
+      class="recorrido__svg"
+    />
+
+    <div class="recorrido__progress">
+      <p class="progress" data-indicator>
+        <span
+          class="visually-hidden"
+          data-indicator-text
+          data-indicator-template={recorrido.indicatorLabel}>{indicatorLabel(1)}</span
+        >
+        <span class="progress__current" data-indicator-current aria-hidden="true">{pad(1)}</span>
+        <span class="progress__bar" aria-hidden="true"
+          ><span class="progress__fill" data-progress-fill></span></span
+        >
+        <span class="progress__total" aria-hidden="true">{pad(total)}</span>
+      </p>
+      <a class="recorrido__skip" href="#despensa" data-skip-link>{recorrido.skipLink}</a>
+    </div>
+  </div>
+
+  <ol class="recorrido__stops">
+    {
+      stops.map(({ province, index, featured, alsoFrom }) => (
+        <li
+          class:list={['stop', `stop--${province.textTone}`]}
+          data-province={province.id}
+          data-stop-index={index}
+          data-terrain={province.terrain}
+          style={`--panel: var(${province.panelToken})`}
+        >
+          <Terrain type={province.terrain} class="stop__terrain" />
+
+          <div class="stop__intro">
+            <p class="stop__eyebrow">
+              {recorrido.stopLabel} {pad(index + 1)} · {province.region}
+            </p>
+            <h3 id={`stop-${province.id}-title`} class="stop__name">
+              <Placeholder text={province.name} />
+            </h3>
+            <p class="stop__description">
+              <Placeholder text={recorrido.stops[province.id]} />
+            </p>
+          </div>
+
+          {featured && (
+            <article
+              class="featured"
+              data-featured-product={featured.id}
+              aria-labelledby={`stop-${province.id}-product`}
+            >
+              <div class="featured__media" data-flip-target>
+                <ImageSlot
+                  slot={productImageSlot(featured, { width: 3, height: 4 })}
+                  class="featured__image"
+                />
+              </div>
+              <div class="featured__body">
+                <div class="featured__text">
+                  <p class="featured__eyebrow">{recorrido.featuredLabel}</p>
+                  <h4 id={`stop-${province.id}-product`} class="featured__name">
+                    <Placeholder text={featured.name} />
+                  </h4>
+                  <p class="featured__meta">
+                    <Placeholder text={featured.meta} />
+                  </p>
+                </div>
+                <div class="featured__actions">
+                  <WhatsAppLink message={productMessage(featured.name)} class="btn btn--primary">
+                    {recorrido.productCta}
+                    <span class="visually-hidden">
+                      : <Placeholder text={featured.name} />
+                    </span>
+                  </WhatsAppLink>
+                  <p class="featured__also">
+                    {recorrido.alsoFromLabel} {province.name}: <Placeholder text={alsoFrom} />
+                  </p>
+                </div>
+              </div>
+            </article>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</section>

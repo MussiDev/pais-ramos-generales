@@ -1,0 +1,49 @@
+---
+import { comoPedir } from '../../content/copy';
+import Placeholder from '../Placeholder.astro';
+import WhatsAppLink from '../WhatsAppLink.astro';
+---
+
+<section id="como-pedir" class="como-pedir" aria-labelledby="como-pedir-title">
+  <div class="como-pedir__inner">
+    <header class="como-pedir__header">
+      <h2 id="como-pedir-title" class="como-pedir__title">
+        <Placeholder text={comoPedir.titleLead} />
+        <em><Placeholder text={comoPedir.titleEmphasis} /></em>
+      </h2>
+      <p class="como-pedir__delivery"><Placeholder text={comoPedir.homeDelivery} /></p>
+    </header>
+
+    <ol class="steps">
+      {
+        comoPedir.steps.map((step) => (
+          <li class="step">
+            <span class="step__number" aria-hidden="true">
+              {step.number}
+            </span>
+            <h3 class="step__title">
+              <Placeholder text={step.title} />
+            </h3>
+            <p class="step__text">
+              <Placeholder text={step.text} />
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <ul class="store-facts surface-green">
+      {
+        comoPedir.storeFacts.map((fact) => (
+          <li class="store-facts__item">
+            <Placeholder text={fact} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="como-pedir__cta">
+      <WhatsAppLink class="btn btn--primary btn--large">{comoPedir.cta}</WhatsAppLink>
+    </div>
+  </div>
+</section>

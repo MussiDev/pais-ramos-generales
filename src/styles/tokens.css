@@ -1,0 +1,80 @@
+/*
+ * Design tokens. Source: PAIS-RAMOS-GENERALES-PROJECT.md §6 (color, typography)
+ * and §5.1 (province panels). Do not add palette colors or fonts.
+ *
+ * Contrast rules (spec "Contrast decisions"):
+ * - --terracotta on --cream only for large display text (>= 24px) and decoration.
+ * - Eyebrows and small text use --green on --cream, never terracotta.
+ * - Jujuy panel: small text sits on a --cream card inside the panel.
+ */
+:root {
+  /* Color */
+  --green: #1f4d2e;
+  --cream: #f3ebdd;
+  --terracotta: #c0673a;
+  --mustard: #e3b341;
+  --ink: #1b2a20;
+  --ink-muted: #3a4a3f;
+  --label-brown: #6b5b43;
+
+  /* Province panels (El recorrido only) */
+  --panel-salta: #9a3b2e;
+  --panel-jujuy: #c0673a;
+  --panel-litoral: #e3b341;
+  --panel-buenos-aires: #e6d5b0;
+  --panel-rio-negro: #2f5a7a;
+
+  /* Panel text tones */
+  --panel-text-light: var(--cream);
+  --panel-text-dark: var(--ink);
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --weight-display-regular: 500;
+  --weight-display-semibold: 600;
+  --weight-display-bold: 700;
+  --weight-body-regular: 400;
+  --weight-body-medium: 500;
+  --weight-body-semibold: 600;
+  --weight-body-bold: 700;
+
+  --eyebrow-size: 0.8125rem; /* 13px */
+  --eyebrow-tracking: 0.125rem; /* 2px */
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --text-2xl: clamp(2rem, 1.4rem + 2.4vw, 3.25rem);
+  --text-3xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
+  --text-display: clamp(3.5rem, 1.5rem + 8vw, 9rem);
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  --content-max: 80rem;
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+
+  /* Focus */
+  --focus-ring: var(--green); /* focus ring color; overridden on dark surfaces */
+  --focus-ring-width: 3px;
+  --focus-offset: 3px;
+
+  /* Placeholder marker outline; overridden per surface so it keeps >= 3:1 (FR-07) */
+  --placeholder-ink: var(--green);
+}

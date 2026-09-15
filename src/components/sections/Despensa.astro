@@ -1,0 +1,58 @@
+---
+import { despensa } from '../../content/copy';
+import { categories, products } from '../../content/products';
+import Placeholder from '../Placeholder.astro';
+import ProductCard from '../ProductCard.astro';
+
+const labelFor = (categoryId: string) =>
+  categories.find((category) => category.id === categoryId)?.label ?? '';
+---
+
+<section id="despensa" class="despensa" aria-labelledby="despensa-title" tabindex="-1">
+  <div class="despensa__inner">
+    <header class="despensa__header">
+      <div class="despensa__heading">
+        <p class="eyebrow"><Placeholder text={despensa.eyebrow} /></p>
+        <h2 id="despensa-title" class="despensa__title" tabindex="-1">
+          <Placeholder text={despensa.titleLead} />
+          <em><Placeholder text={despensa.titleEmphasis} /></em>
+        </h2>
+      </div>
+
+      <div class="chips" role="group" aria-label={despensa.filterLabel}>
+        <button type="button" class="chip" aria-pressed="true" data-category="todo">
+          {despensa.allLabel}
+        </button>
+        {
+          categories.map((category) => (
+            <button type="button" class="chip" aria-pressed="false" data-category={category.id}>
+              <Placeholder text={category.label} />
+            </button>
+          ))
+        }
+      </div>
+    </header>
+
+    <div class="product-grid" data-product-grid>
+      {
+        products.map((product, index) => (
+          <ProductCard
+            product={product}
+            number={index + 1}
+            categoryLabel={labelFor(product.category)}
+          />
+        ))
+      }
+    </div>
+
+    <p class="despensa__empty" data-empty hidden>{despensa.emptyState}</p>
+    <p
+      class="visually-hidden"
+      aria-live="polite"
+      data-filter-status
+      data-template-one={despensa.filterStatusOne}
+      data-template-other={despensa.filterStatusOther}
+      data-empty-text={despensa.emptyState}
+    ></p>
+  </div>
+</section>

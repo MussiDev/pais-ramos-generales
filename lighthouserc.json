@@ -1,0 +1,39 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "node scripts/preview-server.mjs --port 4323",
+      "startServerReadyPattern": "localhost:4323",
+      "startServerReadyTimeout": 60000,
+      "url": ["http://localhost:4323/"],
+      "numberOfRuns": 3,
+      "puppeteerScript": "./scripts/lighthouse-puppeteer.cjs",
+      "puppeteerLaunchOptions": { "headless": true },
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "simulate",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 412,
+          "height": 823,
+          "deviceScaleFactor": 1.75,
+          "disabled": false
+        }
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9, "aggregationMethod": "median-run" }],
+        "categories:accessibility": ["error", { "minScore": 0.95, "aggregationMethod": "median-run" }],
+        "categories:best-practices": ["error", { "minScore": 0.95, "aggregationMethod": "median-run" }],
+        "categories:seo": ["error", { "minScore": 0.95, "aggregationMethod": "median-run" }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2500, "aggregationMethod": "median-run" }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.05, "aggregationMethod": "median-run" }],
+        "total-blocking-time": ["error", { "maxNumericValue": 200, "aggregationMethod": "median-run" }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci/reports"
+    }
+  }
+}

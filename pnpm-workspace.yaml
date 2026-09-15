@@ -1,0 +1,12 @@
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+# Security overrides (FEAT-001 SAST gate): patched versions of vulnerable transitive dependencies
+# pulled in by @lhci/cli 0.15.1 (latest), which still pins the vulnerable ranges.
+overrides:
+  tmp: ^0.2.6
+  qs: ^6.16.0
+  uuid: ^11.1.1
+  # extract-zip has no patched release (<=2.0.1 affected); @puppeteer/browsers 3 drops it.
+  '@puppeteer/browsers': ^3.2.2

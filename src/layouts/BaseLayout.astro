@@ -1,0 +1,91 @@
+---
+// Only the faces the page renders, latin subset only (es-AR copy: á é í ó ú ü ñ ¿ ¡ are all in it).
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-500-italic.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/cormorant-garamond/latin-700.css';
+import '@fontsource/hanken-grotesk/latin-400.css';
+import '@fontsource/hanken-grotesk/latin-500.css';
+import '@fontsource/hanken-grotesk/latin-600.css';
+import '@fontsource/hanken-grotesk/latin-700.css';
+// Preloaded: the faces of the first viewport's hero text (title, its italic emphasis, subcopy).
+import displayFontUrl from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2?url';
+import displayItalicFontUrl from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2?url';
+import bodyFontUrl from '@fontsource/hanken-grotesk/files/hanken-grotesk-latin-400-normal.woff2?url';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import { siteConfig } from '../config/site';
+import { layout } from '../content/copy';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const SITE_NAME = layout.siteName;
+const { title = layout.defaultTitle, description = layout.defaultDescription } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const instagramUrl = `https://www.instagram.com/${siteConfig.instagramHandle}/`;
+
+// Fields whose value still contains a [placeholder] marker are omitted from structured data.
+const PLACEHOLDER_MARKER = /\[[^\]]+\]/;
+const confirmed = (value: string | undefined) =>
+  value && !PLACEHOLDER_MARKER.test(value) ? value : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'GroceryStore',
+  name: SITE_NAME,
+  description,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: siteConfig.location.locality,
+    addressRegion: siteConfig.location.region,
+    addressCountry: siteConfig.location.country,
+  },
+  // `telephone` is intentionally omitted: the 549 prefix of the WhatsApp number is pending
+  // client confirmation, so no assumed value is published in structured data.
+  email: confirmed(siteConfig.email),
+  sameAs: confirmed(instagramUrl) ? [instagramUrl] : undefined,
+};
+// JSON.stringify drops undefined fields; escaping "<" prevents closing the script tag early.
+const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang="es-AR" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>
+      document.documentElement.classList.replace('no-js', 'js');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta name="theme-color" content="#1F4D2E" />
+    <!-- Without an icon link the browser requests /favicon.ico, which 404s (console error). -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayItalicFontUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+
+    <script type="application/ld+json" set:html={jsonLdScript} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{layout.skipToContent}</a>
+    <slot />
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

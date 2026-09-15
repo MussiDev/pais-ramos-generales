@@ -1,0 +1,52 @@
+---
+import { siteConfig } from '../../config/site';
+import { comoPedir, footer } from '../../content/copy';
+import Placeholder from '../Placeholder.astro';
+import WhatsAppLink from '../WhatsAppLink.astro';
+
+const instagramUrl = `https://www.instagram.com/${siteConfig.instagramHandle}/`;
+---
+
+<footer class="site-footer surface-green">
+  <section id="contacto" class="footer" aria-labelledby="contacto-title">
+    <div class="footer__top">
+      <h2 id="contacto-title" class="footer__question">
+        <Placeholder text={comoPedir.question} />
+      </h2>
+      <WhatsAppLink class="btn btn--mustard btn--large">
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M3.5 20.5l1.3-4A8.5 8.5 0 1 1 8 19.3z"></path>
+        </svg>
+        {footer.cta}
+      </WhatsAppLink>
+    </div>
+
+    <p class="footer__wordmark" data-footer-wordmark>{footer.wordmark}</p>
+
+    <div class="footer__bottom">
+      <p class="footer__legal"><Placeholder text={footer.legal} /></p>
+      <ul class="footer__links">
+        <li>
+          <a href={instagramUrl} target="_blank" rel="noopener noreferrer">
+            {footer.instagramLabel} @{siteConfig.instagramHandle}
+          </a>
+        </li>
+        <li>
+          <WhatsAppLink>{footer.whatsappLabel}</WhatsAppLink>
+        </li>
+      </ul>
+    </div>
+  </section>
+</footer>

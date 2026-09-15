@@ -1,0 +1,43 @@
+---
+import { manifiesto } from '../../content/copy';
+import ImageSlot from '../ImageSlot.astro';
+import Placeholder from '../Placeholder.astro';
+---
+
+<section id="manifiesto" class="manifiesto" aria-labelledby="manifiesto-title">
+  <div class="manifiesto__inner">
+    <figure class="manifiesto__media">
+      <div class="arch manifiesto__arch">
+        <ImageSlot slot={manifiesto.photo} class="manifiesto__photo" />
+      </div>
+      <figcaption class="sticker manifiesto__sticker">
+        <Placeholder text={manifiesto.signature} />
+      </figcaption>
+    </figure>
+
+    <div class="manifiesto__content">
+      <p class="eyebrow eyebrow--rule"><Placeholder text={manifiesto.eyebrow} /></p>
+      <h2 id="manifiesto-title" class="manifiesto__title">
+        <Placeholder text={manifiesto.titleLead} />
+        <em><Placeholder text={manifiesto.titleEmphasis} /></em>
+      </h2>
+      <p class="manifiesto__body"><Placeholder text={manifiesto.body} /></p>
+      <p class="manifiesto__about"><Placeholder text={manifiesto.about} /></p>
+
+      <ul class="pillars">
+        {
+          manifiesto.pillars.map((pillar) => (
+            <li class="pillar">
+              <h3 class="pillar__title">
+                <Placeholder text={pillar.title} />
+              </h3>
+              <p class="pillar__text">
+                <Placeholder text={pillar.text} />
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

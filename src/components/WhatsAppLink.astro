@@ -1,0 +1,23 @@
+---
+/**
+ * Order call to action: opens WhatsApp with a prefilled message in a new tab.
+ * Defaults to the configured number and default message.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import { siteConfig } from '../config/site';
+import { buildWhatsAppUrl } from '../lib/whatsapp';
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'href' | 'target' | 'rel'> {
+  message?: string;
+  number?: string;
+}
+
+const {
+  message = siteConfig.defaultMessage,
+  number = siteConfig.whatsappNumber,
+  ...attrs
+} = Astro.props;
+const href = buildWhatsAppUrl(number, message);
+---
+
+<a {...attrs} href={href} target="_blank" rel="noopener noreferrer"><slot /></a>

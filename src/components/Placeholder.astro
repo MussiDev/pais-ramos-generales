@@ -1,0 +1,32 @@
+---
+/**
+ * Renders text, wrapping every bracketed placeholder segment in <mark class="placeholder">.
+ * Empty text renders as a visible [PENDIENTE] marker.
+ */
+import { splitPlaceholders } from '../lib/placeholder';
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const segments = splitPlaceholders(text);
+---
+
+{
+  segments.map((segment) =>
+    segment.placeholder ? <mark class="placeholder">{segment.text}</mark> : segment.text,
+  )
+}
+
+<style>
+  .placeholder {
+    background: transparent;
+    color: inherit;
+    /* Surface-aware color: --placeholder-ink is set per surface in tokens/global/sections CSS. */
+    outline: 1px dashed var(--placeholder-ink, var(--green));
+    outline-offset: 1px;
+    border-radius: 2px;
+    padding-inline: 0.125em;
+  }
+</style>
