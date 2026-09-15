@@ -1,3 +1,10 @@
+# Single-package repository. pnpm >=10 rejects a workspace file without this field
+# ("ERROR packages field missing or empty"), which is what broke the Railway build:
+# Railpack installs with pnpm 10 while local development runs pnpm 11, where the
+# field is optional. Keep it even if the local version stops needing it.
+packages:
+  - .
+
 allowBuilds:
   esbuild: true
   sharp: true

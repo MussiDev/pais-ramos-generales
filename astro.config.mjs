@@ -38,7 +38,7 @@ function siteConfigValidation() {
 
 export default defineConfig({
   output: 'static',
-  site: 'https://pais-ramos-generales.example.com',
+  site: 'https://paisramosgenerales.com.ar',
   // subset-fonts runs after the build: fonts are cut down to the glyphs of the built pages.
   integrations: [siteConfigValidation(), subsetFontsIntegration()],
 });
