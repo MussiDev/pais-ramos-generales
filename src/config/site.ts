@@ -49,7 +49,7 @@ export function createSiteConfig(env: SiteEnv): SiteConfig {
     whatsappNumber: (env.PUBLIC_WHATSAPP_NUMBER ?? '').trim(),
     defaultMessage: 'Hola! Quiero hacer un pedido',
     instagramHandle: 'paisramosgenerales',
-    email: '[EMAIL]',
+    email: 'paisramosgenerales@gmail.com',
     location: {
       locality: 'Funes',
       region: 'Santa Fe',

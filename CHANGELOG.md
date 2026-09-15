@@ -10,3 +10,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   (hero, manifiesto, recorrido, despensa, stack transitions, footer), pinned map route with stop
   indicator, category filter in despensa, WhatsApp deep links per product, reduced-motion fallback,
   mobile sticky recorrido strip, and image-placeholder fallback for missing assets.
+
+### Fixed
+- [FIX-001] Site contact email no longer ships as a `[EMAIL]` placeholder in the JSON-LD structured
+  data — replaced with the store's verified address (`paisramosgenerales@gmail.com`).

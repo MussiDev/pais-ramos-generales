@@ -37,6 +37,14 @@ describe('site config', () => {
     expect(config.defaultMessage.length).toBeGreaterThan(0);
   });
 
+  it('does not accept the pending-value placeholder for email', () => {
+    const config = createSiteConfig({ PUBLIC_WHATSAPP_NUMBER: VALID_NUMBER });
+
+    expect(config.email).toBe('paisramosgenerales@gmail.com');
+    expect(config.email).not.toBe('[EMAIL]');
+    expect(validateSiteConfig(config)).toBe(config);
+  });
+
   it('accepts a bracketed placeholder email without format validation', () => {
     for (const email of ['[EMAIL]', '[CORREO PENDIENTE]']) {
       const config = configWith({ email });
