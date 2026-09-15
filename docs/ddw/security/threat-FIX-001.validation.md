@@ -7,7 +7,7 @@
   ✅ F-TM-04: no accepted risks to approve
   ✅ F-TM-05: all 1 data item(s) are classified
   ✅ F-TM-07: no PII or credentials to encrypt
-  ✅ F-TM-06: the model cites 1 concrete element(s) of the spec
+  ✅ F-TM-06: the model cites 2 concrete element(s) of the spec
   👁  Whether each STRIDE entry is CORRECT, and whether a mitigation actually
       mitigates, are MANUAL: judge them and say so explicitly in your report.
 ────────────────────────────────────────────────────────────────

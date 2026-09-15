@@ -6,7 +6,7 @@
 | Tier | FIX |
 | RCA | docs/ddw/specs/rca-FIX-001.md |
 | Date | 2026-09-15 |
-| Spec loops | 0 |
+| Spec loops | 1 |
 | Loops since last human decision | 0 |
 
 ## Problem
@@ -31,7 +31,13 @@ sourced value). The pending-value escape hatch built for FR-07's genuinely-uncon
 never scoped away from `email`, so a placeholder for an already-verified fact silently passed
 validation. See `docs/ddw/specs/rca-FIX-001.md` for the full analysis.
 
-## Solution — steps
+## Block 1 — Replace the hardcoded email placeholder
+
+**Files**
+- `src/config/site.ts` (modified) — replace the hardcoded email placeholder with the verified value.
+- `src/config/site.test.ts` (modified) — regression test for the new value.
+
+Solution — steps:
 
 1. `src/config/site.ts:52` — replace `email: '[EMAIL]'` with
    `email: 'paisramosgenerales@gmail.com'`.
@@ -49,21 +55,22 @@ None — a single-line change.
 
 ## Tests
 
-- [ ] **Regression test** — `site.test.ts › does not accept the pending-value placeholder for
+- [x] **Regression test** — `site.test.ts › does not accept the pending-value placeholder for
       email`: asserts `createSiteConfig().email === 'paisramosgenerales@gmail.com'` (not `'[EMAIL]'`
-      or any `PENDING_VALUE_PATTERN` match). Fails BEFORE the fix (email is `'[EMAIL]'`), passes
-      AFTER.
-- [ ] `site.test.ts › still throws naming the field for an invalid email` — re-run of the existing
-      sad-path assertion, confirming the fix does not weaken validation.
+      or any `PENDING_VALUE_PATTERN` match). Failed BEFORE the fix (email was `'[EMAIL]'`), passes
+      AFTER. Implemented and green.
+- [x] `site.test.ts › still throws naming the field for an invalid email` — the existing sad-path
+      assertion, confirming the fix does not weaken validation. Re-run and still green.
 
 ## Regression risk
 
-Low — 1 file, 1 literal value, no schema/migration/endpoint touched. The existing
+Low — 1 file, 1 literal value, no database structure or HTTP route touched. The existing
 `instagramHandle`/`location` fields follow the same "hardcoded, verified" pattern already, so this
 change makes `email` consistent with its siblings rather than introducing a new pattern.
 
 ## Rollback plan
 
-- Steps: trivial — revert the commit (single-line literal change, no migration, no external state).
+- Steps: trivial — revert the commit (single-line literal change, no data structure changed, no
+  external state).
 - Indicators: if the client says this is not their current contact email, revert and re-confirm the
   correct address before reapplying.
