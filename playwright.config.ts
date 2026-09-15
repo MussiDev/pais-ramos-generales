@@ -55,7 +55,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm build && pnpm preview --port ${PORT} --strictPort`,
+    // Not `astro preview`: since Astro 7 it detaches into the background under AI-agent
+    // environments and exits, which the runner reports as an early exit (see the script).
+    command: `pnpm build && node scripts/preview-server.mjs --port ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !!process.env.PW_REUSE,
     timeout: 180_000,

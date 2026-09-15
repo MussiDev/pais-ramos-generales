@@ -326,7 +326,10 @@ test.describe('structure', () => {
       const envSource = existsSync(path.join(REPO_ROOT, '.env')) ? '.env' : '.env.example';
       cpSync(path.join(REPO_ROOT, envSource), path.join(fixtureRoot, '.env'));
 
-      const astroBin = path.join(REPO_ROOT, 'node_modules', 'astro', 'astro.js');
+      // Resolved from astro's package.json `bin`: the entry file moved in Astro 7 (bin/astro.mjs).
+      const astroDir = path.join(REPO_ROOT, 'node_modules', 'astro');
+      const astroPackage = JSON.parse(readFileSync(path.join(astroDir, 'package.json'), 'utf8'));
+      const astroBin = path.join(astroDir, astroPackage.bin.astro);
       const distIndex = path.join(fixtureRoot, 'dist', 'index.html');
       const build = () => {
         const result = spawnSync(process.execPath, [astroBin, 'build', '--root', fixtureRoot], {

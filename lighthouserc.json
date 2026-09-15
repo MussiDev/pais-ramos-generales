@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "pnpm preview --port 4323 --strictPort",
+      "startServerCommand": "node scripts/preview-server.mjs --port 4323",
       "startServerReadyPattern": "localhost:4323",
       "startServerReadyTimeout": 60000,
       "url": ["http://localhost:4323/"],
