@@ -39,7 +39,9 @@ export interface SmoothScroll {
 export function startSmoothScroll(): SmoothScroll {
   gsap.registerPlugin(ScrollTrigger);
 
-  const lenis = new Lenis({ autoRaf: false });
+  // wheelMultiplier > 1: less scrolling is needed to cross a pinned section (e.g. El recorrido,
+  // one full viewport per stop) than Lenis's smoothing default would otherwise take.
+  const lenis = new Lenis({ autoRaf: false, wheelMultiplier: 1.4, duration: 1.0 });
   const stopScrollSync = lenis.on('scroll', ScrollTrigger.update);
   const tickLenis = (time: number) => lenis.raf(time * 1000);
   gsap.ticker.add(tickLenis);

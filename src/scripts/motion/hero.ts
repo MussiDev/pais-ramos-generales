@@ -7,12 +7,10 @@ export const HERO_SELECTORS = {
   section: '#hero',
   jar: '[data-hero-jar]',
   stamp: '[data-stamp]',
-  ticker: '[data-ticker]',
 } as const;
 
 const MAX_JAR_ROTATION_DEG = 6;
 const STAMP_TURN_SECONDS = 24;
-const TICKER_PX_PER_SECOND = 45;
 
 /** Jar float + scroll-tied rotation (clamped to ±6°). Returns a cleanup for the rotation. */
 function animateJar(section: HTMLElement, jar: HTMLElement): () => void {
@@ -54,28 +52,6 @@ function animateStamp(stamp: HTMLElement) {
   });
 }
 
-/** Horizontal loop: the track holds the list twice, so -50% lands exactly on the copy. */
-function animateTicker(ticker: HTMLElement) {
-  const track = resolveTarget('.ticker__track', ticker);
-  if (!track) return;
-  const lists = track.querySelectorAll<HTMLElement>('.ticker__list');
-  if (lists.length < 2) {
-    console.warn('motion: ticker needs a duplicated .ticker__list, timeline skipped');
-    return;
-  }
-  const loopWidth = lists[0].offsetWidth;
-  gsap.fromTo(
-    track,
-    { xPercent: 0 },
-    {
-      xPercent: -50,
-      duration: Math.max(8, loopWidth / TICKER_PX_PER_SECOND),
-      ease: 'none',
-      repeat: -1,
-    },
-  );
-}
-
 function isolated<T>(name: string, run: () => T): T | undefined {
   try {
     return run();
@@ -95,11 +71,9 @@ export function initHero(root: ParentNode = document): () => void {
   const section = resolveTarget(HERO_SELECTORS.section, root);
   const jar = resolveTarget(HERO_SELECTORS.jar, root);
   const stamp = resolveTarget(HERO_SELECTORS.stamp, root);
-  const ticker = resolveTarget(HERO_SELECTORS.ticker, root);
 
   const cleanupJar = section && jar ? isolated('jar', () => animateJar(section, jar)) : undefined;
   if (stamp) isolated('stamp', () => animateStamp(stamp));
-  if (ticker) isolated('ticker', () => animateTicker(ticker));
 
   return () => cleanupJar?.();
 }
