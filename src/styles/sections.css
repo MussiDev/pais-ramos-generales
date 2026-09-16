@@ -373,6 +373,7 @@
 
 .ticker__track {
   display: flex;
+  flex-shrink: 0;
   inline-size: max-content;
   animation: ticker-scroll 18s linear infinite;
 }
@@ -540,7 +541,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: var(--space-5);
-  block-size: 100svh;
+  block-size: 88svh;
   padding: clamp(1.5rem, 6svh, 4.5rem) clamp(1.5rem, 4vw, 4rem);
   background: var(--green);
   color: var(--cream);
@@ -1686,7 +1687,9 @@
   border-radius: 50%;
   background: var(--green);
   color: var(--cream);
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--ink) 35%, transparent);
+  /* The cream ring keeps this visible over the hero ticker, "El recorrido" and the footer,
+     which are green too - a plain box-shadow drop alone disappeared against them. */
+  box-shadow: 0 0 0 3px var(--cream), 0 10px 24px color-mix(in srgb, var(--ink) 35%, transparent);
   animation: whatsapp-float-in 0.4s ease-out both;
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1695,7 +1698,7 @@
 .whatsapp-float:focus-visible {
   background: var(--ink);
   transform: scale(1.08);
-  box-shadow: 0 14px 28px color-mix(in srgb, var(--ink) 45%, transparent);
+  box-shadow: 0 0 0 3px var(--cream), 0 14px 28px color-mix(in srgb, var(--ink) 45%, transparent);
 }
 
 .whatsapp-float::before {

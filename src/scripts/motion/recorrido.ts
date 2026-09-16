@@ -114,6 +114,10 @@ function pinMap(
   }
 
   const total = stops.length;
+  // The sticky header sits above the pinned map pane; without this offset both pin at the
+  // same y and the header covers the top of the map/heading while this section scrolls.
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const headerOffset = header?.offsetHeight ?? 0;
   const route = measureRoute(section);
   const setDashOffset = route
     ? (gsap.quickSetter(route.path, 'strokeDashoffset') as (value: number) => void)
@@ -170,7 +174,7 @@ function pinMap(
 
   const trigger = ScrollTrigger.create({
     trigger: section,
-    start: 'top top',
+    start: `top ${headerOffset}`,
     end: 'bottom bottom',
     pin: mapPane,
     pinSpacing: false,
