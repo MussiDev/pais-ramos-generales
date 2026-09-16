@@ -14,6 +14,7 @@ export interface SiteConfig {
   defaultMessage: string;
   instagramHandle: string;
   email: string;
+  storeUrl: string;
   location: SiteLocation;
 }
 
@@ -50,6 +51,7 @@ export function createSiteConfig(env: SiteEnv): SiteConfig {
     defaultMessage: 'Hola! Quiero hacer un pedido',
     instagramHandle: 'paisramosgenerales',
     email: 'paisramosgenerales@gmail.com',
+    storeUrl: 'https://paisramosgenerales.empretienda.com.ar/',
     location: {
       locality: 'Funes',
       region: 'Santa Fe',

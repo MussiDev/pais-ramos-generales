@@ -13,12 +13,6 @@ export const categories: Category[] = [
   { id: 'conservas', label: 'Conservas' },
   // source: empretienda-2026-09-13 — store category Chipá
   { id: 'chipa', label: 'Chipá' },
-  // source: empretienda-2026-09-13 — store category Vinos de bodega de altura
-  { id: 'vinos', label: 'Vinos' },
-  // source: empretienda-2026-09-13 — store category Cerámica
-  { id: 'ceramica', label: 'Cerámica' },
-  // source: empretienda-2026-09-13 — store category Ahumados
-  { id: 'ahumados', label: 'Ahumados' },
   // source: pending — category of the placeholder featured products
   { id: 'por-confirmar', label: '[CATEGORÍA]' },
 ];
@@ -108,33 +102,6 @@ export const products: Product[] = [
     category: 'chipa',
     meta: '[PRESENTACIÓN] · [ORIGEN]',
     imageSlot: 'producto-chipa',
-    provinceId: null,
-  },
-  // source: pending — the category is a verified store category, the product is not confirmed
-  {
-    id: 'vino-bodega-altura',
-    name: '[Vino de bodega de altura]',
-    category: 'vinos',
-    meta: '[BODEGA] · [ORIGEN]',
-    imageSlot: 'producto-vino-bodega-altura',
-    provinceId: null,
-  },
-  // source: pending — the category is a verified store category, the product is not confirmed
-  {
-    id: 'pieza-ceramica',
-    name: '[Pieza de cerámica]',
-    category: 'ceramica',
-    meta: '[ARTESANO] · [ORIGEN]',
-    imageSlot: 'producto-pieza-ceramica',
-    provinceId: null,
-  },
-  // source: pending — the category is a verified store category, the product is not confirmed
-  {
-    id: 'producto-ahumado',
-    name: '[Producto ahumado]',
-    category: 'ahumados',
-    meta: '[MARCA] · [ORIGEN]',
-    imageSlot: 'producto-ahumado',
     provinceId: null,
   },
   // source: pending

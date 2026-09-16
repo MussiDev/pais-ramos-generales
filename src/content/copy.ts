@@ -29,7 +29,6 @@ export const nav = {
     { href: '#ferias', label: 'Ferias' },
     { href: '#como-pedir', label: 'Cómo pedir' },
   ],
-  cta: 'Pedir por WhatsApp',
   /** Accessible names (screen readers). */
   homeLabel: 'País Ramos Generales, inicio',
   navLabel: 'Principal',
@@ -43,7 +42,7 @@ export const hero = {
   // source: empretienda-2026-09-13 (dulces from Jujuy, yerba from Misiones, products of the country)
   //       + instagram (Diana y Patry, home delivery)
   subcopy:
-    'Dulces de Jujuy, yerba de la tierra colorada y sabores de nuestro país, elegidos por Diana y Patry y llevados hasta tu casa.',
+    'Dulces de Jujuy, yerba de la tierra colorada, sabores de nuestro país: elegidos por Diana y Patry, llevados hasta tu casa.',
   cta: 'Hacé tu pedido',
   jarLabel: {
     kind: 'Dulce',
@@ -101,6 +100,7 @@ export const recorrido = {
   /** Accessible progress text; {current} and {total} are filled in by the page and the scripts. */
   indicatorLabel: 'Parada {current} de {total}',
   featuredLabel: 'Producto destacado',
+  storeCta: 'Ver en la tienda',
   productCta: 'Consultar por WhatsApp',
   alsoFromLabel: 'También de',
   /** Shown in "También de …" when a province has no other confirmed products. */
@@ -124,7 +124,10 @@ export const despensa = {
   titleEmphasis: 'con historia.', // source: canvas
   allLabel: 'Todo',
   numberPrefix: 'N.º',
+  storeCta: 'Ver en la tienda',
   productCta: 'Consultar por WhatsApp',
+  artisanSpecialLabel: 'Artesano especial',
+  storeLinkText: 'Ver el catálogo completo en la tienda',
   emptyState: 'No hay productos en esta categoría todavía.',
   /** Screen-reader announcement after filtering; {count} is filled in by the filter script. */
   filterStatusOne: '{count} producto',
@@ -166,12 +169,13 @@ export const comoPedir = {
   ],
   question: '¿Qué te traemos?', // source: canvas
   cta: 'Escribinos por WhatsApp',
+  storeCta: 'Ver la tienda online',
 } as const;
 
 export const footer = {
   wordmark: 'PAÍS',
   legal: 'País Ramos Generales · Funes, Santa Fe', // source: instagram
   instagramLabel: 'Instagram',
-  whatsappLabel: 'WhatsApp',
+  storeLabel: 'Tienda online',
   cta: 'Escribinos por WhatsApp',
 } as const;
