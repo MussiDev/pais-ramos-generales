@@ -12,6 +12,8 @@
 import { initDespensaFilter } from './despensa-filter';
 import { shouldAnimate } from './motion/env';
 import type { MotionContext, MotionInit } from './motion/smooth-scroll';
+import { initNavScroll } from './nav-scroll';
+import { initStickyHeader } from './sticky-header';
 import { initStopFollower } from './recorrido-stops';
 import { initSkipLink } from './skip-link';
 
@@ -169,6 +171,12 @@ registerMotion(async () => {
 registerMotion(async () => (await import('./motion/recorrido')).init);
 
 registerEnhancement(() => initSkipLink({ getScroller: () => activeLenis }));
+
+// Nav links scroll smoothly (through Lenis when it is running) instead of jumping natively.
+registerEnhancement(() => initNavScroll({ getScroller: () => activeLenis }));
+
+// Solid header background once the page scrolls past the hero; transparent over it.
+registerEnhancement(() => initStickyHeader());
 
 // Keeps the Recorrido indicator on the stop in view whenever the desktop pin is not driving it.
 registerEnhancement(() => initStopFollower());

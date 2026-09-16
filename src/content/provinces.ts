@@ -1,10 +1,10 @@
 import type { Province } from './types';
 
-/** viewBox of the Argentina map SVG; pins below are expressed in these coordinates. */
-export const MAP_VIEWBOX = { x: -60, y: -10, width: 420, height: 690 } as const;
-
-/** Map position of the store (origin of the route). Source: design canvas Recorrido*.dc.html. */
-export const FUNES_PIN = { x: 183, y: 218 } as const;
+/**
+ * Pin coordinates below are centroids of the real province polygons in `map-provinces.ts`
+ * (geoBoundaries ADM1 data), not hand-placed guesses. `MAP_VIEWBOX` and `FUNES_PIN` live there
+ * too, next to the geometry they're expressed in.
+ */
 
 /** Stop ids in route order; `copy.recorrido.stops` must have an entry for each (type-checked). */
 export const PROVINCE_IDS = [
@@ -29,7 +29,9 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     panelToken: '--panel-salta',
     textTone: 'light',
     terrain: 'hills',
-    pin: { x: 113, y: 64 },
+    // Nudged ~6 units away from Jujuy's pin (real centroid 140.6,54.9) so the two labels and
+    // halos don't overlap on the small map; the province shape itself is untouched.
+    pin: { x: 144.2, y: 59.7 },
     featuredProductId: 'salta-destacado', // source: pending
   },
   {
@@ -41,7 +43,8 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     // on a cream card (spec "Contrast decisions").
     textTone: 'light',
     terrain: 'hills',
-    pin: { x: 115, y: 44 },
+    // Nudged ~6 units away from Salta's pin (real centroid 126.0,35.3); see the note there.
+    pin: { x: 122.4, y: 30.5 },
     featuredProductId: 'dulce-mango-durazno', // source: empretienda-2026-09-13
   },
   {
@@ -51,7 +54,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     panelToken: '--panel-litoral',
     textTone: 'dark',
     terrain: 'waves',
-    pin: { x: 240, y: 104 },
+    pin: { x: 273.1, y: 123.8 }, // midpoint of the Misiones and Corrientes centroids
     featuredProductId: 'yerba-federal-tradicional', // source: empretienda-2026-09-13
   },
   {
@@ -61,7 +64,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     panelToken: '--panel-buenos-aires',
     textTone: 'dark',
     terrain: 'flat',
-    pin: { x: 219, y: 252 },
+    pin: { x: 209.6, y: 280.0 },
     featuredProductId: 'buenos-aires-destacado', // source: pending
   },
   {
@@ -71,7 +74,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     panelToken: '--panel-rio-negro',
     textTone: 'light',
     terrain: 'peaks',
-    pin: { x: 90, y: 380 },
+    pin: { x: 103.1, y: 370.6 },
     featuredProductId: 'rio-negro-destacado', // source: pending
   },
 ];

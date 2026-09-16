@@ -1,5 +1,6 @@
 ---
 import '../../styles/recorrido.css';
+import { siteConfig } from '../../config/site';
 import { recorrido } from '../../content/copy';
 import { productImageSlot } from '../../content/product-image';
 import { products } from '../../content/products';
@@ -119,7 +120,13 @@ const stops = provinces.map((province, index) => {
                   </p>
                 </div>
                 <div class="featured__actions">
-                  <WhatsAppLink message={productMessage(featured.name)} class="btn btn--primary">
+                  <a class="btn btn--primary" href={siteConfig.storeUrl} target="_blank" rel="noopener noreferrer">
+                    {recorrido.storeCta}
+                    <span class="visually-hidden">
+                      : <Placeholder text={featured.name} />
+                    </span>
+                  </a>
+                  <WhatsAppLink message={productMessage(featured.name)} class="featured__whatsapp">
                     {recorrido.productCta}
                     <span class="visually-hidden">
                       : <Placeholder text={featured.name} />

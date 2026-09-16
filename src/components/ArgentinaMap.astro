@@ -1,9 +1,11 @@
 ---
 /**
- * Simplified Argentina outline with the store origin (Funes), one pin per stop and the route
- * path through them in order. Pin coordinates come from the content layer (`MAP_VIEWBOX` space).
+ * Real Argentina provinces (geoBoundaries ADM1 data, see `map-provinces.ts`), with the store
+ * origin (Funes), one pin per stop and the route path through them in order. Pin coordinates
+ * come from the content layer (`provinces.ts`), expressed in the same projected space as
+ * `PROVINCE_PATHS`.
  */
-import { FUNES_PIN, MAP_VIEWBOX } from '../content/provinces';
+import { FUNES_PIN, MAP_VIEWBOX, PROVINCE_PATHS } from '../content/map-provinces';
 import type { MapPin, Province } from '../content/types';
 
 interface Props {
@@ -36,10 +38,18 @@ const routePath = `M${FUNES_PIN.x} ${FUNES_PIN.y} ${legs.join(' ')}`;
 
 // Label placement keeps text inside the viewBox: left of west pins, above east pins.
 const label = (pin: MapPin) => {
-  if (pin.x < 150) return { x: pin.x - 14, y: pin.y + 4, anchor: 'end' };
-  if (pin.x >= 230) return { x: pin.x, y: pin.y - 16, anchor: 'middle' };
+  if (pin.x < 130) return { x: pin.x - 14, y: pin.y + 4, anchor: 'end' };
+  if (pin.x >= 200) return { x: pin.x, y: pin.y - 16, anchor: 'middle' };
   return { x: pin.x + 12, y: pin.y + 16, anchor: 'start' };
 };
+
+// A stop's name may cover more than one real province (e.g. "Misiones y Corrientes"); every
+// word of the stop name that matches a province name gets the featured treatment.
+const featuredProvinceIds = new Set(
+  PROVINCE_PATHS.filter((path) =>
+    provinces.some((province) => province.name.includes(path.name)),
+  ).map((path) => path.id),
+);
 
 const titleId = `${routeId}-title`;
 ---
@@ -52,11 +62,16 @@ const titleId = `${routeId}-title`;
   data-map
 >
   <title id={titleId}>{title}</title>
-  <path
-    class="map__outline"
-    d="M111 2 L156 4 L231 66 L256 108 L291 84 L280 110 L255 130 L231 164 L219 240 L219 252 L235 276 L245 286 L232 320 L160 336 L150 370 L120 380 L141 412 L118 430 L82 476 L110 504 L90 540 L60 592 L69 606 L16 600 L0 560 L15 500 L19 440 L18 360 L37 280 L45 220 L60 120 L70 50 L90 16 Z"
-  ></path>
-  <path class="map__outline" d="M66 616 L115 654 L66 660 Z"></path>
+
+  {
+    PROVINCE_PATHS.map((province) => (
+      <path
+        class:list={['map__province', { 'map__province--featured': featuredProvinceIds.has(province.id) }]}
+        d={province.d}
+        data-province={province.id}
+      />
+    ))
+  }
 
   <path class="map__route-guide" d={routePath} aria-hidden="true"></path>
   <path id={routeId} class="map__route" d={routePath} data-route></path>

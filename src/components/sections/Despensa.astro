@@ -1,8 +1,30 @@
 ---
+import { siteConfig } from '../../config/site';
 import { despensa } from '../../content/copy';
-import { categories, products } from '../../content/products';
+import { categories as allCategories, products as allProducts } from '../../content/products';
 import Placeholder from '../Placeholder.astro';
 import ProductCard from '../ProductCard.astro';
+
+/**
+ * The pantry shows a curated set of 6 confirmed products, not the full catalog (the store link
+ * below covers that) — one diverse pick per confirmed category, one flagged as the artisan
+ * special (the only product with a verified "100% artesanal" claim, per `products.ts`).
+ */
+const FEATURED_PRODUCT_IDS = [
+  'dulce-mango-durazno',
+  'mermelada-frutilla',
+  'chutney-chilto',
+  'yerba-federal-tradicional',
+  'yerba-caballo-negro-tradicional',
+  'chipa',
+] as const;
+const ARTISAN_SPECIAL_ID = 'dulce-mango-durazno';
+
+const products = FEATURED_PRODUCT_IDS.map(
+  (id) => allProducts.find((product) => product.id === id)!,
+);
+const featuredCategoryIds = new Set(products.map((product) => product.category));
+const categories = allCategories.filter((category) => featuredCategoryIds.has(category.id));
 
 const labelFor = (categoryId: string) =>
   categories.find((category) => category.id === categoryId)?.label ?? '';
@@ -40,12 +62,16 @@ const labelFor = (categoryId: string) =>
             product={product}
             number={index + 1}
             categoryLabel={labelFor(product.category)}
+            isArtisanSpecial={product.id === ARTISAN_SPECIAL_ID}
           />
         ))
       }
     </div>
 
     <p class="despensa__empty" data-empty hidden>{despensa.emptyState}</p>
+    <a class="despensa__store-link" href={siteConfig.storeUrl} target="_blank" rel="noopener noreferrer">
+      {despensa.storeLinkText}
+    </a>
     <p
       class="visually-hidden"
       aria-live="polite"
