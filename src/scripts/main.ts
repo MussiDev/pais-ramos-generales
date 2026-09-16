@@ -13,6 +13,7 @@ import { initDespensaFilter } from './despensa-filter';
 import { shouldAnimate } from './motion/env';
 import type { MotionContext, MotionInit } from './motion/smooth-scroll';
 import { initNavScroll } from './nav-scroll';
+import { initNavToggle } from './nav-toggle';
 import { initStickyHeader } from './sticky-header';
 import { initStopFollower } from './recorrido-stops';
 import { initSkipLink } from './skip-link';
@@ -174,6 +175,9 @@ registerEnhancement(() => initSkipLink({ getScroller: () => activeLenis }));
 
 // Nav links scroll smoothly (through Lenis when it is running) instead of jumping natively.
 registerEnhancement(() => initNavScroll({ getScroller: () => activeLenis }));
+
+// Mobile/tablet nav menu toggle.
+registerEnhancement(() => initNavToggle());
 
 // Solid header background once the page scrolls past the hero; transparent over it.
 registerEnhancement(() => initStickyHeader());
