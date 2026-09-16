@@ -48,7 +48,9 @@ const footerLogo = footerLogoRaw.replace('<svg', `<svg role="img" aria-label="${
           </a>
         </li>
         <li>
-          <WhatsAppLink>{footer.whatsappLabel}</WhatsAppLink>
+          <a href={siteConfig.storeUrl} target="_blank" rel="noopener noreferrer">
+            {footer.storeLabel}
+          </a>
         </li>
       </ul>
     </div>
