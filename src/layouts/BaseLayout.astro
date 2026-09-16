@@ -65,8 +65,10 @@ const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c');
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="theme-color" content="#1F4D2E" />
-    <!-- Without an icon link the browser requests /favicon.ico, which 404s (console error). -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- The SVG mark is fine-lined artwork - unreadable (near-invisible) at 16-32px tab size.
+         A flattened PNG on a solid brand-green background reads as a clear badge at that size. -->
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preload" href={displayFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={displayItalicFontUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFontUrl} as="font" type="font/woff2" crossorigin />
