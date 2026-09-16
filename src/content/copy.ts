@@ -32,6 +32,7 @@ export const nav = {
   /** Accessible names (screen readers). */
   homeLabel: 'País Ramos Generales, inicio',
   navLabel: 'Principal',
+  menuLabel: 'Abrir menú',
 } as const;
 
 export const hero = {
