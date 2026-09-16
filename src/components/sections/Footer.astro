@@ -1,10 +1,12 @@
 ---
 import { siteConfig } from '../../config/site';
-import { comoPedir, footer } from '../../content/copy';
+import { comoPedir, footer, layout } from '../../content/copy';
 import Placeholder from '../Placeholder.astro';
 import WhatsAppLink from '../WhatsAppLink.astro';
+import footerLogoRaw from '../../assets/logo/badge-green.svg?raw';
 
 const instagramUrl = `https://www.instagram.com/${siteConfig.instagramHandle}/`;
+const footerLogo = footerLogoRaw.replace('<svg', `<svg role="img" aria-label="${layout.siteName}"`);
 ---
 
 <footer class="site-footer surface-green">
@@ -33,7 +35,9 @@ const instagramUrl = `https://www.instagram.com/${siteConfig.instagramHandle}/`;
       </WhatsAppLink>
     </div>
 
-    <p class="footer__wordmark" data-footer-wordmark>{footer.wordmark}</p>
+    <div class="footer__wordmark" data-footer-wordmark>
+      <Fragment set:html={footerLogo} />
+    </div>
 
     <div class="footer__bottom">
       <p class="footer__legal"><Placeholder text={footer.legal} /></p>
