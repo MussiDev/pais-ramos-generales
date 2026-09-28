@@ -69,12 +69,15 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
   },
   {
     id: 'rio-negro',
-    name: 'Río Negro', // source: instagram (highlight)
+    // source: instagram (highlight "Río Negro") + client-2026-09-28 (seafood made in Chubut)
+    name: 'Río Negro y Chubut',
     region: 'PATAGONIA',
     panelToken: '--panel-rio-negro',
     textTone: 'light',
     terrain: 'peaks',
-    pin: { x: 103.1, y: 370.6 },
+    // Río Negro-Chubut border near the coast (-42.0, -65.3), so the stop covers both provinces
+    // and its label sits right of the pin, inside the viewBox.
+    pin: { x: 132.7, y: 402.1 },
     featuredProductId: 'pulpito-tehuelche-escabeche', // source: client-2026-09-28
   },
 ];

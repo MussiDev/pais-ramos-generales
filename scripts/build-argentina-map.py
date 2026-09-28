@@ -8,7 +8,7 @@ STOP_PROVINCES = {
     'jujuy': ['Jujuy'],
     'misiones-corrientes': ['Misiones', 'Corrientes'],
     'buenos-aires': ['Buenos Aires'],
-    'rio-negro': ['Río Negro'],
+    'rio-negro': ['Río Negro', 'Chubut'],
 }
 FUNES_LATLON = (-32.9188, -60.8103)  # Funes, Santa Fe
 
