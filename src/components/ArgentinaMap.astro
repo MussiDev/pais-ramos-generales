@@ -35,8 +35,19 @@ const curve = (from: MapPin, to: MapPin) => {
   const cy = (from.y + to.y) / 2 - dx * BEND;
   return `Q${round(cx)} ${round(cy)} ${to.x} ${to.y}`;
 };
-const legs = points.slice(1).map((to, index) => curve(points[index], to));
-const routePath = `M${FUNES_PIN.x} ${FUNES_PIN.y} ${legs.join(' ')}`;
+// The route is one smooth Catmull-Rom spline through the stops (as cubic Béziers): independent
+// bent legs met at sharp angles, and where the route doubles back (Salta → Jujuy → Litoral) two
+// legs overlapped into a spike. One cubic per leg keeps the leg count the scrub relies on.
+const spline = (pins: MapPin[]) =>
+  pins.slice(1).map((to, index) => {
+    const from = pins[index];
+    const before = pins[index - 1] ?? from;
+    const after = pins[index + 2] ?? to;
+    const c1 = { x: from.x + (to.x - before.x) / 6, y: from.y + (to.y - before.y) / 6 };
+    const c2 = { x: to.x - (after.x - from.x) / 6, y: to.y - (after.y - from.y) / 6 };
+    return `C${round(c1.x)} ${round(c1.y)} ${round(c2.x)} ${round(c2.y)} ${to.x} ${to.y}`;
+  });
+const routePath = `M${FUNES_PIN.x} ${FUNES_PIN.y} ${spline(points).join(' ')}`;
 const connectionPath = (pin: MapPin) => `M${FUNES_PIN.x} ${FUNES_PIN.y} ${curve(FUNES_PIN, pin)}`;
 
 // Label placement keeps text inside the viewBox: left of west pins, above east pins.

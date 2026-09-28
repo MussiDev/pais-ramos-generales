@@ -1,7 +1,6 @@
 ---
 import '../../styles/recorrido.css';
 import { siteConfig } from '../../config/site';
-import { connections } from '../../content/connections';
 import { recorrido } from '../../content/copy';
 import { productImageSlot } from '../../content/product-image';
 import { products } from '../../content/products';
@@ -53,9 +52,8 @@ const stops = provinces.map((province, index) => {
 
     <ArgentinaMap
       provinces={provinces}
-      connections={connections}
       originLabel={recorrido.origin}
-      title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}; ${recorrido.connectionsTitle}: ${connections.map((connection) => connection.name).join(', ')}`}
+      title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}`}
       routeId={ROUTE_ID}
       class="recorrido__svg"
     />

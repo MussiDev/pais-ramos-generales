@@ -270,7 +270,8 @@ function pinMap(
 
   const measure = (self: ScrollTrigger) => {
     const distance = Math.max(1, self.end - self.start);
-    const viewport = window.innerHeight;
+    // Stops settle below the sticky header, so only this much of each one is ever on screen.
+    const viewport = window.innerHeight - headerOffset;
     const clamp = (value: number) => Math.min(1, Math.max(0, value));
     let previous = 0;
     ranges = stops.map((stop) => {
