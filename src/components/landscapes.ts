@@ -9,14 +9,15 @@
 import type { Terrain } from '../content/types';
 
 export type Layer = 'back' | 'mid' | 'band' | 'front' | 'snow' | 'frost';
-export type Layers = Array<{ layer: Layer; d: string }>;
+/** `clipped` layers are clipped to the landmark's `clip` outline (e.g. strata inside a hill). */
+export type Layers = Array<{ layer: Layer; d: string; clipped?: boolean }>;
 export interface Scene {
   ground: Layers;
   /**
    * The province's figure. `perch` puts it on the featured card's top edge instead of the panel
    * corner: a small figure that would otherwise hide behind the card (the capybara).
    */
-  landmark: { viewBox: string; layers: Layers; perch?: boolean };
+  landmark: { viewBox: string; layers: Layers; perch?: boolean; clip?: string };
 }
 
 export const W = 1600;
@@ -36,6 +37,19 @@ function bushes(top: number, size: number, from = 0, to = W, base = H): string {
     index += 1;
   }
   return `${d} L${to} ${base} Z`;
+}
+
+/**
+ * Parallel strata dipping down to the right, as straight bands across `width`: each entry is
+ * [offset of the band's top edge at x = 0, thickness]. Meant to be clipped to a hill outline.
+ */
+function strata(bands: Array<[number, number]>, slope: number, width: number): string {
+  return bands
+    .map(([top, thickness]) => {
+      const rise = Math.round(slope * (width + 40));
+      return `M-20 ${top} L${width + 20} ${top + rise} L${width + 20} ${top + rise + thickness} L-20 ${top + thickness} Z`;
+    })
+    .join(' ');
 }
 
 /** A Lombardy poplar: tall, narrow, pointed. */
@@ -118,24 +132,35 @@ export const scenes: Record<Terrain, Scene> = {
     ],
     landmark: {
       viewBox: '0 0 760 320',
+      // The cerro's jagged ridge, from the reference photo: a broad summit left of center and a
+      // long serrated shoulder falling to the right.
+      clip:
+        'M0 320 L0 246 L48 214 L92 196 L128 164 L160 150 L196 118 L228 104 L262 76 L292 62 L318 44 L344 38 L372 50 ' +
+        'L398 46 L426 64 L452 60 L482 82 L512 78 L540 98 L574 96 L604 118 L640 116 L676 140 L716 150 L760 170 L760 320 Z',
       layers: [
         {
           layer: 'mid',
-          d: 'M0 320 L0 260 C100 210 180 110 320 72 C410 48 500 26 590 44 C670 60 710 106 760 110 L760 320 Z',
-        },
-        {
-          // The colored strata, running diagonally down the slope.
-          layer: 'band',
           d:
-            'M140 208 C240 136 360 92 480 78 C560 70 630 88 690 120 L760 132 L760 150 L690 144 C620 112 550 96 480 102 C370 114 260 156 170 222 Z ' +
-            'M90 260 C200 190 320 160 450 156 C550 154 640 174 760 196 L760 222 C640 200 550 182 450 184 C330 188 220 218 120 278 Z',
+            'M0 320 L0 246 L48 214 L92 196 L128 164 L160 150 L196 118 L228 104 L262 76 L292 62 L318 44 L344 38 L372 50 ' +
+            'L398 46 L426 64 L452 60 L482 82 L512 78 L540 98 L574 96 L604 118 L640 116 L676 140 L716 150 L760 170 L760 320 Z',
         },
         {
+          // The colored strata: straight parallel bands dipping to the right, inside the cerro.
+          layer: 'band',
+          clipped: true,
+          d: strata([[-40, 26], [34, 18], [96, 30], [170, 16], [226, 28]], 0.42, 760),
+        },
+        {
+          layer: 'back',
+          clipped: true,
+          d: strata([[-6, 14], [66, 22], [140, 14], [198, 20], [270, 24]], 0.42, 760),
+        },
+        {
+          // Adobe houses and poplars at the foot of the cerro.
           layer: 'front',
           d:
-            'M200 140 C300 110 400 90 500 102 C580 110 650 140 760 164 L760 174 C650 152 580 126 500 118 C400 110 300 130 210 156 Z ' +
-            'M60 320 V282 H160 V290 H260 V276 H370 V286 H490 V320 Z ' +
-            [poplar(520, 150, 30, 320), poplar(560, 185, 34, 320), poplar(605, 135, 28, 320), poplar(690, 170, 32, 320), poplar(735, 200, 36, 320)].join(' '),
+            'M40 320 V286 H130 V294 H230 V280 H340 V290 H470 V320 Z ' +
+            [poplar(500, 150, 30, 320), poplar(545, 190, 34, 320), poplar(590, 140, 28, 320), poplar(680, 175, 32, 320), poplar(728, 205, 36, 320)].join(' '),
         },
       ],
     },

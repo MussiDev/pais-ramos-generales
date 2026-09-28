@@ -15,8 +15,12 @@ interface Props {
 
 const { type, part, class: className } = Astro.props;
 const scene = scenes[type];
-const { viewBox, layers } =
-  part === 'ground' ? { viewBox: `0 0 ${W} ${H}`, layers: scene.ground } : scene.landmark;
+const { viewBox, layers, clip } =
+  part === 'ground'
+    ? { viewBox: `0 0 ${W} ${H}`, layers: scene.ground, clip: undefined }
+    : scene.landmark;
+// One landmark per province on the page, so the type makes the clip id unique.
+const clipId = `terrain-clip-${type}`;
 ---
 
 <svg
@@ -27,5 +31,18 @@ const { viewBox, layers } =
   focusable="false"
   data-terrain={part === 'ground' ? type : undefined}
 >
-  {layers.map(({ layer, d }) => <path class={`terrain__${layer}`} d={d} />)}
+  {
+    clip && (
+      <defs>
+        <clipPath id={clipId}>
+          <path d={clip} />
+        </clipPath>
+      </defs>
+    )
+  }
+  {
+    layers.map(({ layer, d, clipped }) => (
+      <path class={`terrain__${layer}`} d={d} clip-path={clip && clipped ? `url(#${clipId})` : undefined} />
+    ))
+  }
 </svg>

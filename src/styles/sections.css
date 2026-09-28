@@ -802,19 +802,31 @@
    under text: light shapes like snow would break the text contrast. Too narrow a box crops the
    figure's left side ("slice") rather than shrinking it. */
 .stop__landmark {
+  /* Where the free space beside the text starts, and the gap to the panel's right edge. */
+  --landmark-start: min(calc(clamp(1.5rem, 5vw, 4.5rem) + 29rem), 45%);
+  --landmark-end: clamp(0rem, 3vw, 3rem);
   position: absolute;
   inset-block-end: 0;
-  inset-inline: min(calc(clamp(1.5rem, 5vw, 4.5rem) + 29rem), 45%) clamp(0rem, 3vw, 3rem);
+  inset-inline-end: var(--landmark-end);
   z-index: -1;
+  /* Width follows the figure's own proportions (a slim obelisk stays slim at the edge); only a
+     figure wider than the free space is capped, and "slice" then crops its left side. */
+  inline-size: auto;
+  max-inline-size: calc(100% - var(--landmark-start) - var(--landmark-end));
   block-size: var(--landmark-height, 60%);
+  /* The crop's left edge fades instead of cutting the shapes off. */
+  mask-image: linear-gradient(to right, transparent, #000 18%);
 }
 
 .terrain-landmark--castillos {
   --landmark-height: 64%;
 }
 
-.terrain-landmark--siete-colores {
-  --landmark-height: 82%;
+/* Jujuy's small text already sits on cream cards (see `.stop[data-province='jujuy']`), so its wide
+   cerro may spread behind it; the name stays above the ridge. */
+.stop__landmark.terrain-landmark--siete-colores {
+  --landmark-height: 75%;
+  --landmark-start: clamp(1.5rem, 5vw, 4.5rem);
 }
 
 /* A perched landmark (the capybara) sits on the featured card's top edge, right side. */
@@ -831,8 +843,12 @@
   --landmark-height: 88%;
 }
 
-.terrain-landmark--nevados {
+/* Snow is cream, like the text on this panel: it must never sit under the name or description,
+   so the peaks start past the widest the intro can be (42rem), with no cap. */
+.stop__landmark.terrain-landmark--nevados {
   --landmark-height: 80%;
+  --landmark-start: calc(clamp(1.5rem, 5vw, 4.5rem) + 42rem);
+  --landmark-end: 0rem;
 }
 
 .terrain__back {
@@ -1880,6 +1896,58 @@
     min-block-size: auto;
     gap: var(--space-6);
     padding: var(--space-7) var(--space-5) var(--space-8);
+  }
+
+  /* The featured card spans the full width here, so a landmark behind it would never show: it
+     joins the flow between the text and the card instead, right-aligned, and the card rises over
+     its base so the landscape still reads as standing behind it. */
+  .stop__landmark {
+    position: relative;
+    inset: auto;
+    order: 1;
+    /* Width follows the figure's own proportions (a slim obelisk stays slim), bleeding into the
+       stop's right padding; the left edge fades instead of cutting the shapes off. */
+    align-self: flex-end;
+    inline-size: auto;
+    max-inline-size: calc(100% + var(--space-5));
+    block-size: var(--landmark-mobile, 10rem);
+    margin-block-end: calc(-1 * var(--space-6) - 2.5rem);
+    margin-inline-end: calc(-1 * var(--space-5));
+    mask-image: linear-gradient(to right, transparent, #000 22%);
+  }
+
+  .stop .featured {
+    order: 2;
+  }
+
+  /* A slim figure needs no edge fade (it would eat its own side). */
+  .terrain-landmark--obelisco {
+    mask-image: none;
+  }
+
+  /* A perched figure stands above the card: make room for it so it never covers the text. */
+  .featured__perch {
+    block-size: 5rem;
+  }
+
+  .featured:has(> .featured__perch) {
+    margin-block-start: 3.5rem;
+  }
+
+  .terrain-landmark--castillos {
+    --landmark-mobile: 9rem;
+  }
+
+  .terrain-landmark--siete-colores {
+    --landmark-mobile: 10rem;
+  }
+
+  .terrain-landmark--obelisco {
+    --landmark-mobile: 14rem;
+  }
+
+  .terrain-landmark--nevados {
+    --landmark-mobile: 11rem;
   }
 
   .stop__name {
