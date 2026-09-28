@@ -1,35 +1,32 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { footerReachedHeader, isDarkUnder } from './sticky-header';
+import { describe, expect, it } from 'vitest';
+import { footerReachedHeader, isDarkAt } from './sticky-header';
 
-function render() {
-  document.body.innerHTML = `
-    <header class="site-header"><a class="link" href="#">Link</a></header>
-    <section id="recorrido" data-header-tone="dark"><p class="panel">Salta</p></section>
-    <section id="despensa"><p class="card">Card</p></section>
-  `;
-  const $ = (selector: string) => document.querySelector(selector)!;
-  return { header: $('.site-header'), link: $('.link'), panel: $('.panel'), card: $('.card') };
+/** A top-level section at the given viewport rect, dark-toned or not. */
+function section(top: number, bottom: number, dark = false): Element {
+  const element = document.createElement('section');
+  if (dark) element.dataset.headerTone = 'dark';
+  element.getBoundingClientRect = () => ({ top, bottom }) as DOMRect;
+  return element;
 }
 
-describe('isDarkUnder', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
+describe('isDarkAt', () => {
+  it('is true over a dark section', () => {
+    expect(isDarkAt([section(-900, 20), section(20, 4000, true)], 52)).toBe(true);
   });
 
-  it('is true when the first element under the header is inside a dark section', () => {
-    const { header, link, panel } = render();
-    expect(isDarkUnder([link, header, panel, document.body], header)).toBe(true);
+  it('follows the section on top: a later section stacked over a dark one wins', () => {
+    // The pantry rises over the still-pinned recorrido: both cross the line.
+    expect(isDarkAt([section(-3000, 900, true), section(10, 2000)], 52)).toBe(false);
   });
 
-  it('follows what is on top: a light section stacked over a dark one wins', () => {
-    const { header, card, panel } = render();
-    expect(isDarkUnder([header, card, panel], header)).toBe(false);
+  it('is false over light sections or none', () => {
+    expect(isDarkAt([section(-100, 800)], 52)).toBe(false);
+    expect(isDarkAt([], 52)).toBe(false);
   });
 
-  it('is false for an empty hit list or one with only the header', () => {
-    const { header, link } = render();
-    expect(isDarkUnder([], header)).toBe(false);
-    expect(isDarkUnder([link, header], header)).toBe(false);
+  it('counts the top edge as inside and the bottom edge as outside', () => {
+    expect(isDarkAt([section(52, 400, true)], 52)).toBe(true);
+    expect(isDarkAt([section(-400, 52, true)], 52)).toBe(false);
   });
 });
 

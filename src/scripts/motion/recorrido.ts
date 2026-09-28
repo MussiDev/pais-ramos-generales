@@ -10,7 +10,7 @@
  */
 import { Flip } from 'gsap/Flip';
 import { SplitText } from 'gsap/SplitText';
-import { frameViewBox, viewBoxAttribute, type Box } from './camera';
+import { cameraTransform, frameViewBox, type Box } from './camera';
 import {
   PIN_DRIVER,
   PIN_RELEASED_EVENT,
@@ -31,6 +31,8 @@ export const RECORRIDO_SELECTORS = {
   section: '#recorrido',
   mapPane: '[data-map-pane]',
   map: '[data-map]',
+  mapViewport: '[data-map-viewport]',
+  mapStage: '[data-map-stage]',
   origin: '.map__origin',
   route: '[data-route]',
   stops: '.recorrido__stops > [data-stop-index]',
@@ -61,19 +63,20 @@ type Gsap = MotionContext['gsap'];
 type Reveals = Map<HTMLElement, gsap.core.Timeline>;
 
 /**
- * The map camera: on each stop the SVG viewBox glides to frame Funes, the previous stop and the
- * active one, at the aspect of the rendered box ("slice", so it fills the pane). The static markup
- * keeps the whole country, which is what mobile, reduced motion and no-JS show.
+ * The map camera: on each stop it glides to frame Funes, the previous stop and the active one (with
+ * its provinces), filling the viewport. It moves the stage with a CSS transform, which only
+ * composites; animating the SVG `viewBox` re-laid out and repainted the whole map every frame.
+ * The static markup shows the whole country, which is what reduced motion and no-JS keep.
  */
 function createCamera(gsap: Gsap, section: HTMLElement, total: number) {
   const svg = section.querySelector<SVGSVGElement>(RECORRIDO_SELECTORS.map);
+  const viewport = section.querySelector<HTMLElement>(RECORRIDO_SELECTORS.mapViewport);
+  const stage = section.querySelector<HTMLElement>(RECORRIDO_SELECTORS.mapStage);
   const origin = section.querySelector<SVGGraphicsElement>(RECORRIDO_SELECTORS.origin);
-  if (!svg || !origin || typeof origin.getBBox !== 'function') {
-    console.warn('motion: recorrido map camera skipped (map or origin missing)');
+  if (!svg || !viewport || !stage || !origin || typeof origin.getBBox !== 'function') {
+    console.warn('motion: recorrido map camera skipped (map, viewport or origin missing)');
     return null;
   }
-  const initialViewBox = svg.getAttribute('viewBox');
-  const initialAspect = svg.getAttribute('preserveAspectRatio');
   const base = svg.viewBox.baseVal;
   const bounds: Box = { x: base.x, y: base.y, width: base.width, height: base.height };
   const pins = Array.from({ length: total }, (_, index) =>
@@ -81,9 +84,9 @@ function createCamera(gsap: Gsap, section: HTMLElement, total: number) {
   );
   let tween: gsap.core.Tween | null = null;
 
-  const frame = (index: number): string | null => {
-    const rect = svg.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return null;
+  const target = (index: number) => {
+    const { width, height } = viewport.getBoundingClientRect();
+    if (width === 0 || height === 0) return null;
     // The leg (origin, previous and active pin with their labels) plus the whole active province.
     const framed = [
       origin,
@@ -91,35 +94,27 @@ function createCamera(gsap: Gsap, section: HTMLElement, total: number) {
       pins[index],
       ...svg.querySelectorAll(RECORRIDO_SELECTORS.stopProvinces(index)),
     ].filter((element): element is SVGGraphicsElement => element instanceof SVGGraphicsElement);
-    const boxes = framed.map((element) => element.getBBox());
-    return viewBoxAttribute(
-      frameViewBox(boxes, {
-        aspect: rect.width / rect.height,
-        padding: CAMERA_PADDING,
-        minHeight: CAMERA_MIN_HEIGHT,
-        bounds,
-      }),
+    const frame = frameViewBox(
+      framed.map((element) => element.getBBox()),
+      { aspect: width / height, padding: CAMERA_PADDING, minHeight: CAMERA_MIN_HEIGHT, bounds },
     );
+    return cameraTransform(frame, bounds, { width, height });
   };
-
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
 
   return {
     /** Frames stop `index`, gliding there when `animate`, jumping otherwise (refresh, first paint). */
     show(index: number, animate: boolean) {
-      const viewBox = frame(index);
-      if (!viewBox) return;
+      const transform = target(index);
+      if (!transform) return;
       tween?.kill();
       tween = animate
-        ? gsap.to(svg, { attr: { viewBox }, duration: CAMERA_DURATION_S, ease: 'power3.inOut' })
+        ? gsap.to(stage, { ...transform, duration: CAMERA_DURATION_S, ease: 'power3.inOut' })
         : null;
-      if (!animate) svg.setAttribute('viewBox', viewBox);
+      if (!animate) gsap.set(stage, transform);
     },
     reset() {
       tween?.kill();
-      if (initialViewBox) svg.setAttribute('viewBox', initialViewBox);
-      if (initialAspect) svg.setAttribute('preserveAspectRatio', initialAspect);
-      else svg.removeAttribute('preserveAspectRatio');
+      gsap.set(stage, { clearProps: 'transform' });
     },
   };
 }
@@ -384,11 +379,11 @@ function pinMap(
  */
 function followOnMobile(gsap: Gsap, section: HTMLElement): (() => void) | undefined {
   const pane = resolveTarget(RECORRIDO_SELECTORS.mapPane, section);
-  const svg = section.querySelector<SVGSVGElement>(RECORRIDO_SELECTORS.map);
-  if (!pane || !svg) return undefined;
+  const viewport = section.querySelector<HTMLElement>(RECORRIDO_SELECTORS.mapViewport);
+  if (!pane || !viewport) return undefined;
 
   const measureIntro = () => {
-    const intro = svg.getBoundingClientRect().top - pane.getBoundingClientRect().top;
+    const intro = viewport.getBoundingClientRect().top - pane.getBoundingClientRect().top;
     pane.style.setProperty('--strip-intro', `${Math.max(0, Math.round(intro))}px`);
   };
   measureIntro();

@@ -95,3 +95,37 @@ function roundBox(box: Box): Box {
 export function viewBoxAttribute(box: Box): string {
   return `${box.x} ${box.y} ${box.width} ${box.height}`;
 }
+
+export interface CameraTransform {
+  x: number;
+  y: number;
+  scale: number;
+}
+
+/**
+ * The CSS transform (origin at the top-left corner) that makes `frame` fill a `container` whose SVG
+ * shows the whole `viewBox` fitted inside it ("meet", centered). Moving the camera this way only
+ * composites: animating the SVG `viewBox` instead re-laid out and repainted every province, pin
+ * and label on every frame. `frame` must have the container's aspect (see `frameViewBox`).
+ */
+export function cameraTransform(
+  frame: Box,
+  viewBox: Box,
+  container: { width: number; height: number },
+): CameraTransform {
+  assertBox(frame, 'frame');
+  assertBox(viewBox, 'viewBox');
+  const { width, height } = container;
+  if (!(width > 0) || !(height > 0) || !(frame.width > 0) || !(viewBox.width > 0) || !(viewBox.height > 0)) {
+    throw new RangeError('container, frame and viewBox must have a positive size');
+  }
+  const fit = Math.min(width / viewBox.width, height / viewBox.height);
+  const offsetX = (width - viewBox.width * fit) / 2;
+  const offsetY = (height - viewBox.height * fit) / 2;
+  const scale = width / (frame.width * fit);
+  return {
+    x: -(offsetX + (frame.x - viewBox.x) * fit) * scale,
+    y: -(offsetY + (frame.y - viewBox.y) * fit) * scale,
+    scale,
+  };
+}

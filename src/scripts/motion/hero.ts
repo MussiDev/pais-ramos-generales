@@ -10,17 +10,44 @@ export const HERO_SELECTORS = {
 } as const;
 
 const MAX_JAR_ROTATION_DEG = 6;
+/** On `#hero` while it is off screen: CSS loops (the ticker) pause with it. */
+export const HERO_OFFSCREEN_CLASS = 'hero--offscreen';
+
+/** The endless loops (jar float, stamp turn), paused while the hero is off screen. */
+const loops: gsap.core.Tween[] = [];
+
+/**
+ * The hero's loops run forever; once the page scrolls past the hero they would keep rewriting
+ * styles (and re-laying out the stamp text) every frame for nothing anyone sees. Pause them, and
+ * the CSS ticker, while the hero is out of view.
+ */
+function pauseLoopsOffscreen(section: HTMLElement): () => void {
+  if (typeof IntersectionObserver !== 'function') return () => undefined;
+  const observer = new IntersectionObserver(([entry]) => {
+    const visible = entry.isIntersecting;
+    section.classList.toggle(HERO_OFFSCREEN_CLASS, !visible);
+    for (const loop of loops) {
+      if (visible) loop.resume();
+      else loop.pause();
+    }
+  });
+  observer.observe(section);
+  return () => {
+    observer.disconnect();
+    section.classList.remove(HERO_OFFSCREEN_CLASS);
+  };
+}
 const STAMP_TURN_SECONDS = 24;
 
 /** Jar float + scroll-tied rotation (clamped to ±6°). Returns a cleanup for the rotation. */
 function animateJar(section: HTMLElement, jar: HTMLElement): () => void {
-  gsap.to(jar, {
+  loops.push(gsap.to(jar, {
     yPercent: -4,
     duration: 2.6,
     ease: 'sine.inOut',
     yoyo: true,
     repeat: -1,
-  });
+  }));
 
   const setRotation = gsap.quickSetter(jar, 'rotation', 'deg') as (value: number) => void;
   const applyProgress = (progress: number) =>
@@ -43,13 +70,13 @@ function animateJar(section: HTMLElement, jar: HTMLElement): () => void {
 /** Slow endless turn of the stamp ring (the icon in the middle stays upright). */
 function animateStamp(stamp: HTMLElement) {
   const ring = stamp.querySelector<SVGSVGElement>('.stamp__ring') ?? stamp;
-  gsap.to(ring, {
+  loops.push(gsap.to(ring, {
     rotation: 360,
     duration: STAMP_TURN_SECONDS,
     ease: 'none',
     repeat: -1,
     transformOrigin: '50% 50%',
-  });
+  }));
 }
 
 function isolated<T>(name: string, run: () => T): T | undefined {
@@ -72,8 +99,13 @@ export function initHero(root: ParentNode = document): () => void {
   const jar = resolveTarget(HERO_SELECTORS.jar, root);
   const stamp = resolveTarget(HERO_SELECTORS.stamp, root);
 
+  loops.length = 0;
   const cleanupJar = section && jar ? isolated('jar', () => animateJar(section, jar)) : undefined;
   if (stamp) isolated('stamp', () => animateStamp(stamp));
+  const cleanupPause = section ? isolated('offscreen pause', () => pauseLoopsOffscreen(section)) : undefined;
 
-  return () => cleanupJar?.();
+  return () => {
+    cleanupJar?.();
+    cleanupPause?.();
+  };
 }

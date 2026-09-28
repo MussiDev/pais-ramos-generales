@@ -422,6 +422,11 @@
   will-change: transform;
 }
 
+/* Paused while the hero is off screen (hero.ts): no frames spent on a loop nobody sees. */
+.hero--offscreen .ticker__track {
+  animation-play-state: paused;
+}
+
 @keyframes ticker-scroll {
   from {
     transform: translateX(0);
@@ -638,10 +643,24 @@
   font-size: var(--text-lg);
 }
 
-.map {
+.recorrido__viewport {
+  position: relative;
   flex: 1 1 0;
-  inline-size: 100%;
   min-block-size: 0;
+  overflow: hidden;
+}
+
+/* The camera moves this layer with a transform; the map inside keeps its full-country viewBox. */
+.recorrido__stage {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.map {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .map__province {
@@ -1852,12 +1871,11 @@
     font-size: 0.8125rem;
   }
 
-  .recorrido__svg {
+  .recorrido__viewport {
     grid-column: 2;
     grid-row: 2;
     align-self: end;
     inline-size: 100%;
-    block-size: auto;
     aspect-ratio: 380 / 660;
   }
 
@@ -2053,7 +2071,7 @@
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   }
 
-  .is-animated .recorrido__svg {
+  .is-animated .recorrido__viewport {
     align-self: stretch;
     block-size: 8.5rem;
     aspect-ratio: auto;

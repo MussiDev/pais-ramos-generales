@@ -130,7 +130,7 @@
   }
 
   /* The camera crops the map to the pane: fade the crop edges instead of cutting them. */
-  .is-animated .recorrido__svg {
+  .is-animated .recorrido__viewport {
     mask-image:
       linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent),
       linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
@@ -167,7 +167,7 @@
 
 @media (max-width: 767px) {
   /* The mobile camera crops the map to the strip: fade the crop edges, as on desktop. */
-  .is-animated .recorrido__svg {
+  .is-animated .recorrido__viewport {
     mask-image:
       linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent),
       linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);

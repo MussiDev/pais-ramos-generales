@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fitAspect, frameViewBox, unionBoxes, viewBoxAttribute, type Box } from './camera';
+import { cameraTransform, fitAspect, frameViewBox, unionBoxes, viewBoxAttribute, type Box } from './camera';
 
 const MAP: Box = { x: 0, y: 0, width: 380, height: 660 };
 const point = (x: number, y: number): Box => ({ x, y, width: 0, height: 0 });
@@ -85,5 +85,40 @@ describe('frameViewBox', () => {
 describe('viewBoxAttribute', () => {
   it('serializes a box as an SVG viewBox', () => {
     expect(viewBoxAttribute({ x: 1, y: 2.5, width: 30, height: 40 })).toBe('1 2.5 30 40');
+  });
+});
+
+describe('cameraTransform', () => {
+  const container = { width: 400, height: 300 };
+
+  it('is the identity when the frame is the whole map fitted to the container', () => {
+    const frame = fitAspect(MAP, container.width / container.height);
+    const transform = cameraTransform(frame, MAP, container);
+    expect(transform.scale).toBeCloseTo(1);
+    expect(transform.x).toBeCloseTo(0);
+    expect(transform.y).toBeCloseTo(0);
+  });
+
+  it('maps the frame corners onto the container corners', () => {
+    const frame = { x: 100, y: 200, width: 120, height: 90 };
+    const { x, y, scale } = cameraTransform(frame, MAP, container);
+    // Where a map point lands before the transform: the whole map is fitted ("meet"), centered.
+    const fit = Math.min(container.width / MAP.width, container.height / MAP.height);
+    const offsetX = (container.width - MAP.width * fit) / 2;
+    const screen = (u: number, v: number) => ({
+      x: x + (offsetX + u * fit) * scale,
+      y: y + ((container.height - MAP.height * fit) / 2 + v * fit) * scale,
+    });
+    const topLeft = screen(frame.x, frame.y);
+    const bottomRight = screen(frame.x + frame.width, frame.y + frame.height);
+    expect(topLeft.x).toBeCloseTo(0);
+    expect(topLeft.y).toBeCloseTo(0);
+    expect(bottomRight.x).toBeCloseTo(container.width);
+    expect(bottomRight.y).toBeCloseTo(container.height);
+  });
+
+  it('throws RangeError for an empty container or frame', () => {
+    expect(() => cameraTransform(MAP, MAP, { width: 0, height: 300 })).toThrow(RangeError);
+    expect(() => cameraTransform({ ...MAP, width: 0 }, MAP, container)).toThrow(RangeError);
   });
 });

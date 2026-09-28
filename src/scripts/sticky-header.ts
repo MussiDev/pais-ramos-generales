@@ -20,14 +20,18 @@ export const SCROLL_THRESHOLD = 8;
 export const DARK_SECTION_SELECTOR = '[data-header-tone="dark"]';
 
 /**
- * Whether the topmost thing painted under the header (the first element of `stack`, the
- * `elementsFromPoint` hit list, that is not the header itself) belongs to a dark-tone section.
- * Hit testing, not rects: when the pantry is stacked over the pinned recorrido, both rects cross
- * the header but only the pantry is actually on top.
+ * Whether the section on top at viewport line `y` is a dark-tone one. On this page a later
+ * section always paints over an earlier one (the manifiesto covers the hero, the pantry covers the
+ * pinned recorrido), so the topmost is the last section crossing the line. Reading rects instead
+ * of hit testing (`elementsFromPoint`) matters: that forced a hit test and a layout on every
+ * scroll frame and doubled the script time while scrolling El recorrido.
  */
-export function isDarkUnder(stack: readonly Element[], header: Element): boolean {
-  const below = stack.find((element) => !header.contains(element));
-  return below?.closest(DARK_SECTION_SELECTOR) != null;
+export function isDarkAt(sections: readonly Element[], y: number): boolean {
+  for (let index = sections.length - 1; index >= 0; index -= 1) {
+    const { top, bottom } = sections[index].getBoundingClientRect();
+    if (top <= y && bottom > y) return sections[index].matches(DARK_SECTION_SELECTOR);
+  }
+  return false;
 }
 
 export interface StickyHeaderOptions {
@@ -47,7 +51,9 @@ export function initStickyHeader({
   main = root.querySelector('main'),
 }: StickyHeaderOptions = {}): void {
   if (!header) return;
-  const hasDarkSections = root.querySelector(DARK_SECTION_SELECTOR) !== null;
+  // The page's top-level sections, in paint order (see isDarkAt).
+  const sections = Array.from(root.querySelectorAll('main > section'));
+  const hasDarkSections = sections.some((section) => section.matches(DARK_SECTION_SELECTOR));
 
   let ticking = false;
   const applyScrolledState = () => {
@@ -58,8 +64,7 @@ export function initStickyHeader({
     }
     if (hasDarkSections) {
       // Probe the middle of the header's band: that is where its links and mark sit.
-      const stack = document.elementsFromPoint(window.innerWidth / 2, header.offsetHeight / 2);
-      header.classList.toggle(DARK_CLASS, isDarkUnder(stack, header));
+      header.classList.toggle(DARK_CLASS, isDarkAt(sections, header.offsetHeight / 2));
     }
     ticking = false;
   };

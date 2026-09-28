@@ -51,13 +51,18 @@ const stops = provinces.map((province, index) => {
       <p class="recorrido__lede"><Placeholder text={recorrido.lede} /></p>
     </header>
 
-    <ArgentinaMap
-      provinces={provinces}
-      originLabel={recorrido.origin}
-      title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}`}
-      routeId={ROUTE_ID}
-      class="recorrido__svg"
-    />
+    <!-- The viewport crops and fades the map; the camera moves the stage (recorrido.ts). -->
+    <div class="recorrido__viewport" data-map-viewport>
+      <div class="recorrido__stage" data-map-stage>
+        <ArgentinaMap
+          provinces={provinces}
+          originLabel={recorrido.origin}
+          title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}`}
+          routeId={ROUTE_ID}
+          class="recorrido__svg"
+        />
+      </div>
+    </div>
 
     <div class="recorrido__progress">
       <p class="progress" data-indicator>
