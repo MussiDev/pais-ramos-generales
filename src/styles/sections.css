@@ -1556,6 +1556,54 @@
     display: block;
   }
 
+  /* Open/close: the dropdown fades and slides from under the toggle. `display` is animated as a
+     discrete property so closing can play too; @starting-style gives the opening its first frame.
+     Browsers without these simply show and hide it, as before. */
+  @media (prefers-reduced-motion: no-preference) {
+    .site-nav {
+      opacity: 0;
+      transform: translateY(-0.5rem) scale(0.98);
+      transform-origin: top right;
+      transition:
+        opacity 0.2s ease,
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        display 0.25s allow-discrete;
+    }
+
+    .site-nav.site-nav--open {
+      opacity: 1;
+      transform: none;
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(-0.5rem) scale(0.98);
+      }
+    }
+
+    /* Hamburger to X while the menu is open. */
+    .nav-toggle__icon path {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition:
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.15s ease;
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-toggle__icon {
+      & path:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      & path:nth-child(2) {
+        opacity: 0;
+      }
+
+      & path:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+    }
+  }
+
   .site-nav__list {
     flex-direction: column;
     gap: var(--space-3);

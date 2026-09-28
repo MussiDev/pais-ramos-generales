@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { isDarkUnder } from './sticky-header';
+import { footerReachedHeader, isDarkUnder } from './sticky-header';
 
 function render() {
   document.body.innerHTML = `
@@ -30,5 +30,14 @@ describe('isDarkUnder', () => {
     const { header, link } = render();
     expect(isDarkUnder([], header)).toBe(false);
     expect(isDarkUnder([link, header], header)).toBe(false);
+  });
+});
+
+describe('footerReachedHeader', () => {
+  it('is true once the end of main reaches the header band', () => {
+    expect(footerReachedHeader(72, 72)).toBe(true);
+    expect(footerReachedHeader(-300, 72)).toBe(true);
+    expect(footerReachedHeader(73, 72)).toBe(false);
+    expect(footerReachedHeader(2400, 104)).toBe(false);
   });
 });
