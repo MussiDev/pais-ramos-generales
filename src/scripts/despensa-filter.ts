@@ -1,8 +1,8 @@
 /**
  * La despensa category filter. Chips are native `<button type="button" aria-pressed>`, so click,
  * Enter and Space all arrive as a `click` event. Cards are hidden with the `hidden` attribute (no
- * animation, no inline styles). Without JavaScript the chips are hidden by `.no-js` CSS and every
- * card stays visible.
+ * inline styles). Without JavaScript the chips are hidden by `.no-js` CSS and every
+ * card stays visible. Where supported, the change runs inside a view transition (CSS-animated).
  *
  * All copy is server-rendered: the empty message in `[data-empty]`, and the live-region templates
  * as data attributes on `[data-filter-status]`. This script only toggles and fills them.
@@ -53,6 +53,23 @@ export function filterProducts(
   return { category: applied, visible };
 }
 
+type ViewTransitionDocument = Document & { startViewTransition?: (update: () => void) => unknown };
+
+/**
+ * Runs `update` inside a view transition when the browser supports one and the user has not asked
+ * for reduced motion: the cards that stay glide to their new place and the others fade (the
+ * animation itself lives in CSS). Otherwise `update` runs synchronously, exactly as before.
+ */
+export function withViewTransition(update: () => void, doc: Document = document): void {
+  const start = (doc as ViewTransitionDocument).startViewTransition;
+  const reduced = doc.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? true;
+  if (typeof start !== 'function' || reduced) {
+    update();
+    return;
+  }
+  start.call(doc, update);
+}
+
 /** Live-region text for a result, from the templates rendered in the markup (or null). */
 function statusText(status: HTMLElement, visible: number): string | null {
   const { templateOne, templateOther, emptyText } = status.dataset;
@@ -78,7 +95,7 @@ export function initDespensaFilter(root: ParentNode = document): void {
     ),
   );
 
-  const select = (requested: string) => {
+  const apply = (requested: string) => {
     const { category, visible } = filterProducts(cards, requested, allowed);
     for (const chip of chips) {
       chip.setAttribute('aria-pressed', String(chipCategory.get(chip) === category));
@@ -90,6 +107,8 @@ export function initDespensaFilter(root: ParentNode = document): void {
     }
     section.dispatchEvent(new CustomEvent(DESPENSA_FILTERED_EVENT, { detail: { category, visible } }));
   };
+
+  const select = (requested: string) => withViewTransition(() => apply(requested));
 
   for (const chip of chips) {
     chip.addEventListener('click', () => select(chip.dataset.category ?? ''));

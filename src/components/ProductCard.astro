@@ -26,6 +26,7 @@ const titleId = `product-${product.id}-title`;
   data-product-id={product.id}
   data-category={product.category}
   aria-labelledby={titleId}
+  style={`view-transition-name: product-${product.id}`}
 >
   <div class="product-card__frame">
     <p class:list={['product-card__badge', { 'product-card__badge--hidden': !isArtisanSpecial }]}>

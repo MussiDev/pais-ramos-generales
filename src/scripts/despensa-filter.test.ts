@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { despensa } from '../content/copy';
-import { ALL_CATEGORY, DESPENSA_FILTERED_EVENT, filterProducts, initDespensaFilter } from './despensa-filter';
+import {
+  ALL_CATEGORY,
+  DESPENSA_FILTERED_EVENT,
+  filterProducts,
+  initDespensaFilter,
+  withViewTransition,
+} from './despensa-filter';
 
 interface FixtureOptions {
   extraChips?: string[];
@@ -203,5 +209,35 @@ describe('despensa filter', () => {
     });
     expect(visibleIds()).toEqual([]);
     expect(filterProducts(cards(), ALL_CATEGORY, [])).toEqual({ category: ALL_CATEGORY, visible: 3 });
+  });
+});
+
+describe('withViewTransition', () => {
+  const fakeDocument = (reduced: boolean, startViewTransition?: (update: () => void) => unknown) =>
+    ({
+      startViewTransition,
+      defaultView: { matchMedia: () => ({ matches: reduced }) },
+    }) as unknown as Document;
+
+  it('runs the update inside a view transition when supported', () => {
+    const start = vi.fn((update: () => void) => update());
+    const update = vi.fn();
+    withViewTransition(update, fakeDocument(false, start));
+    expect(start).toHaveBeenCalledOnce();
+    expect(update).toHaveBeenCalledOnce();
+  });
+
+  it('runs the update directly when view transitions are unsupported', () => {
+    const update = vi.fn();
+    withViewTransition(update, fakeDocument(false));
+    expect(update).toHaveBeenCalledOnce();
+  });
+
+  it('skips the transition when the user prefers reduced motion', () => {
+    const start = vi.fn();
+    const update = vi.fn();
+    withViewTransition(update, fakeDocument(true, start));
+    expect(start).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledOnce();
   });
 });

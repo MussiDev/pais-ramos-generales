@@ -131,6 +131,20 @@
   backdrop-filter: blur(10px);
 }
 
+/* Over El recorrido (sticky-header.ts): the header continues the green map pane instead of laying
+   a cream veil over the colored panels. Cream on green: 8.22:1. */
+.site-header--dark.site-header--scrolled {
+  --header-ink: var(--cream);
+  --focus-ring: var(--cream);
+  background: color-mix(in srgb, var(--green) 94%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--cream) 12%, transparent);
+}
+
+.wordmark {
+  color: var(--header-ink, var(--green));
+  transition: color 0.25s ease;
+}
+
 /* Sticky means the header would otherwise sit permanently over the footer's own heading and
    CTA for the whole last screenful of the page; slide it away once the footer appears instead. */
 .site-header--hidden {
@@ -165,16 +179,21 @@
   list-style: none;
 }
 
+/* The underline draws in from the left on hover and keyboard focus. */
 .site-nav__link {
-  color: var(--green);
+  padding-block-end: 4px;
+  background: linear-gradient(currentColor, currentColor) no-repeat left bottom / 0% 1.5px;
+  color: var(--header-ink, var(--green));
   font-size: 0.9375rem;
   font-weight: var(--weight-body-medium);
   text-decoration: none;
-  text-underline-offset: 6px;
+  transition:
+    background-size 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.25s ease;
 }
 
-.site-nav__link:hover {
-  text-decoration: underline;
+.site-nav__link:is(:hover, :focus-visible) {
+  background-size: 100% 1.5px;
 }
 
 .nav-toggle {
@@ -183,11 +202,12 @@
   justify-content: center;
   inline-size: 2.75rem;
   block-size: 2.75rem;
-  border: 1.5px solid var(--green);
+  border: 1.5px solid currentColor;
   border-radius: 999px;
   background: transparent;
-  color: var(--green);
+  color: var(--header-ink, var(--green));
   cursor: pointer;
+  transition: color 0.25s ease;
 }
 
 /* ---------------------------------------------------------------- Hero */
@@ -402,6 +422,11 @@
   will-change: transform;
 }
 
+/* Paused while the hero is off screen (hero.ts): no frames spent on a loop nobody sees. */
+.hero--offscreen .ticker__track {
+  animation-play-state: paused;
+}
+
 @keyframes ticker-scroll {
   from {
     transform: translateX(0);
@@ -513,16 +538,33 @@
   text-wrap: pretty;
 }
 
+/* Three groups instead of five evenly spaced blocks: title, the statement (body closed by the
+   regions as its coda) and the details (about + pillars). */
+.manifiesto__lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .manifiesto__regions {
-  color: var(--green);
+  color: var(--terracotta);
   font-family: var(--font-display);
+  font-style: italic;
   font-weight: var(--weight-display-regular);
-  font-size: var(--text-lg);
+  /* Terracotta on cream is 3.38:1: large text only, so never below 24px (tokens.css). */
+  font-size: clamp(1.5rem, 1.1rem + 0.8vw, 1.75rem);
+  line-height: 1.25;
+}
+
+.manifiesto__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .manifiesto__about {
   color: var(--ink-muted);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
 }
 
 .pillars {
@@ -601,10 +643,24 @@
   font-size: var(--text-lg);
 }
 
-.map {
+.recorrido__viewport {
+  position: relative;
   flex: 1 1 0;
-  inline-size: 100%;
   min-block-size: 0;
+  overflow: hidden;
+}
+
+/* The camera moves this layer with a transform; the map inside keeps its full-country viewBox. */
+.recorrido__stage {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.map {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .map__province {
@@ -666,6 +722,11 @@
   fill: var(--cream);
   font-family: var(--font-body);
   font-size: 12px;
+  /* A green halo keeps labels legible over the filled (active) provinces. */
+  paint-order: stroke;
+  stroke: var(--green);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 .map__label--origin {
@@ -729,9 +790,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-7);
-  min-block-size: 100svh;
-  padding: clamp(2rem, 7svh, 4.5rem) clamp(1.5rem, 5vw, 4.5rem);
+  gap: clamp(1.5rem, 5svh, 3rem);
+  /* A stop settles right below the sticky header (6.5rem), so it fills what is left of the
+     screen; a full 100svh would always leave its last 6.5rem, the featured card, off-screen. */
+  min-block-size: calc(100svh - 6.5rem);
+  padding: clamp(1.5rem, 5svh, 4.5rem) clamp(1.5rem, 5vw, 4.5rem);
   overflow: hidden;
   background: var(--panel);
   color: var(--panel-text-light);
@@ -753,15 +816,79 @@
   block-size: 40%;
 }
 
+/* The province landmark (Terrain.astro): bottom-right, behind the featured card, peeking above
+   it. It starts right of the description column (29rem past the stop padding), so it never sits
+   under text: light shapes like snow would break the text contrast. Too narrow a box crops the
+   figure's left side ("slice") rather than shrinking it. */
+.stop__landmark {
+  /* Where the free space beside the text starts, and the gap to the panel's right edge. */
+  --landmark-start: min(calc(clamp(1.5rem, 5vw, 4.5rem) + 29rem), 45%);
+  --landmark-end: clamp(0rem, 3vw, 3rem);
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: var(--landmark-end);
+  z-index: -1;
+  /* Width follows the figure's own proportions (a slim obelisk stays slim at the edge); only a
+     figure wider than the free space is capped, and "slice" then crops its left side. */
+  inline-size: auto;
+  max-inline-size: calc(100% - var(--landmark-start) - var(--landmark-end));
+  block-size: var(--landmark-height, 60%);
+  /* The crop's left edge fades instead of cutting the shapes off. */
+  mask-image: linear-gradient(to right, transparent, #000 18%);
+}
+
+.terrain-landmark--castillos {
+  --landmark-height: 64%;
+}
+
+/* Jujuy's small text already sits on cream cards (see `.stop[data-province='jujuy']`), so its wide
+   cerro may spread behind it; the name stays above the ridge. */
+.stop__landmark.terrain-landmark--siete-colores {
+  --landmark-height: 75%;
+  --landmark-start: clamp(1.5rem, 5vw, 4.5rem);
+}
+
+/* A perched landmark (the capybara) sits on the featured card's top edge, right side. */
+.featured__perch {
+  position: absolute;
+  inset-block-end: calc(100% - 0.5rem);
+  inset-inline-end: clamp(1rem, 6%, 3rem);
+  block-size: clamp(5.5rem, 13svh, 8.5rem);
+  aspect-ratio: 260 / 200;
+  pointer-events: none;
+}
+
+.terrain-landmark--obelisco {
+  --landmark-height: 75%;
+}
+
+/* Snow is cream, like the text on this panel: it must never sit under the name or description,
+   so the peaks start past the widest the intro can be (42rem), with no cap. */
+.stop__landmark.terrain-landmark--nevados {
+  --landmark-height: 80%;
+  --landmark-start: calc(clamp(1.5rem, 5vw, 4.5rem) + 42rem);
+  --landmark-end: 0rem;
+}
+
 .terrain__back {
   fill: color-mix(in srgb, var(--panel) 86%, var(--ink));
+}
+
+.terrain__mid {
+  fill: color-mix(in srgb, var(--panel) 79%, var(--ink));
+}
+
+/* Light accents: Jujuy's strata, the Litoral water line. */
+.terrain__band {
+  fill: color-mix(in srgb, var(--panel) 62%, var(--cream));
 }
 
 .terrain__front {
   fill: color-mix(in srgb, var(--panel) 72%, var(--ink));
 }
 
-.terrain__snow {
+.terrain__snow,
+.terrain__frost {
   fill: var(--cream);
 }
 
@@ -782,7 +909,9 @@
 
 .stop__name {
   color: inherit;
-  font-size: clamp(4rem, 0.5rem + 9vw, 12.5rem);
+  /* Capped by the screen height too: on a wide but short screen the name alone took a third of
+     the stop and pushed the featured card out of view. */
+  font-size: clamp(3.5rem, min(0.5rem + 9vw, 16svh), 12.5rem);
   line-height: 0.82;
   letter-spacing: -0.025em;
   text-wrap: balance;
@@ -824,7 +953,26 @@
   display: grid;
   place-items: center;
   padding: var(--space-5);
-  background: color-mix(in srgb, var(--label-brown) 12%, var(--cream));
+  /* Tinted with the stop's own panel color, so each card belongs to its province. */
+  background: color-mix(in srgb, var(--panel, var(--label-brown)) 22%, var(--cream));
+}
+
+/* The product sits on the card, not in it: a drop shadow that follows its outline (a cut-out
+   photo gets a real silhouette) and, next to the text, it overhangs the card's top edge. */
+.featured__media .image-slot {
+  /* 3:4 product shot: its width sets its height, so cap it by the screen height as well. */
+  max-inline-size: min(100%, 26svh);
+  filter: drop-shadow(0 18px 18px color-mix(in srgb, var(--ink) 28%, transparent));
+}
+
+@container (width >= 40rem) {
+  .featured__media {
+    align-items: start;
+  }
+
+  .featured__media .image-slot {
+    margin-block-start: calc(-1 * var(--space-8));
+  }
 }
 
 .featured__body {
@@ -989,6 +1137,58 @@
 
 .product-card[hidden] {
   display: none;
+}
+
+/* Hover / keyboard focus: the label lifts off the shelf and its hard shadow grows. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .product-card {
+    transition:
+      transform 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .product-card:is(:hover, :focus-within) {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--green);
+  }
+}
+
+/* Filter view transition (despensa-filter.ts): each card has its own view-transition-name. Only
+   the cards animate; the rest of the page swaps instantly. */
+.product-card {
+  view-transition-class: product-card;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(*.product-card) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-new(*.product-card):only-child {
+  animation: product-card-in 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+::view-transition-old(*.product-card):only-child {
+  animation: product-card-out 200ms ease-in both;
+}
+
+@keyframes product-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+@keyframes product-card-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
 }
 
 .product-card__frame {
@@ -1394,6 +1594,12 @@
   font-size: var(--text-sm);
 }
 
+/* Without JavaScript the floating WhatsApp button never steps aside: keep the links clear of it
+   (button 3.75rem + its 1.5rem inset + a little air). */
+.no-js .footer__bottom {
+  padding-inline-end: 6rem;
+}
+
 .footer__links {
   display: flex;
   flex-wrap: wrap;
@@ -1425,10 +1631,60 @@
     border-radius: 1rem;
     background: var(--cream);
     box-shadow: 0 16px 32px color-mix(in srgb, var(--ink) 20%, transparent);
+    /* The dropdown is cream whatever the header tone: its links stay green. */
+    --header-ink: var(--green);
   }
 
   .site-nav.site-nav--open {
     display: block;
+  }
+
+  /* Open/close: the dropdown fades and slides from under the toggle. `display` is animated as a
+     discrete property so closing can play too; @starting-style gives the opening its first frame.
+     Browsers without these simply show and hide it, as before. */
+  @media (prefers-reduced-motion: no-preference) {
+    .site-nav {
+      opacity: 0;
+      transform: translateY(-0.5rem) scale(0.98);
+      transform-origin: top right;
+      transition:
+        opacity 0.2s ease,
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        display 0.25s allow-discrete;
+    }
+
+    .site-nav.site-nav--open {
+      opacity: 1;
+      transform: none;
+
+      @starting-style {
+        opacity: 0;
+        transform: translateY(-0.5rem) scale(0.98);
+      }
+    }
+
+    /* Hamburger to X while the menu is open. */
+    .nav-toggle__icon path {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition:
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 0.15s ease;
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-toggle__icon {
+      & path:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      & path:nth-child(2) {
+        opacity: 0;
+      }
+
+      & path:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+    }
   }
 
   .site-nav__list {
@@ -1615,29 +1871,29 @@
     font-size: 0.8125rem;
   }
 
-  .recorrido__svg {
+  .recorrido__viewport {
     grid-column: 2;
     grid-row: 2;
     align-self: end;
     inline-size: 100%;
-    block-size: auto;
     aspect-ratio: 380 / 660;
   }
 
-  /* The thumbnail is too small for labels to read; the stop name already shows in full below. */
-  .recorrido__svg .map__label {
+  /* Without the map camera (no JS, reduced motion) the whole country is a thumbnail: too small
+     for labels to read (the stop name already shows in full below), so pins grow instead. */
+  html:not(.is-animated) .recorrido__svg .map__label {
     display: none;
   }
 
-  .recorrido__svg .map__pin-dot {
+  html:not(.is-animated) .recorrido__svg .map__pin-dot {
     r: 8;
   }
 
-  .recorrido__svg .map__pin-halo {
+  html:not(.is-animated) .recorrido__svg .map__pin-halo {
     r: 18;
   }
 
-  .recorrido__svg .map__origin-dot {
+  html:not(.is-animated) .recorrido__svg .map__origin-dot {
     r: 10;
   }
 
@@ -1658,6 +1914,57 @@
     min-block-size: auto;
     gap: var(--space-6);
     padding: var(--space-7) var(--space-5) var(--space-8);
+  }
+
+  /* The featured card spans the full width here, so a landmark behind it would never show: it
+     joins the flow between the text and the card instead, right-aligned, and the card rises over
+     its base so the landscape still reads as standing behind it. */
+  .stop__landmark {
+    position: relative;
+    inset: auto;
+    order: 1;
+    /* Width follows the figure's own proportions (a slim obelisk stays slim), bleeding into the
+       stop's right padding; the left edge fades instead of cutting the shapes off. */
+    align-self: flex-end;
+    inline-size: auto;
+    max-inline-size: calc(100% + var(--space-5));
+    block-size: var(--landmark-mobile, 10rem);
+    margin-block-end: calc(-1 * var(--space-6) - 2.5rem);
+    margin-inline-end: calc(-1 * var(--space-5));
+    mask-image: linear-gradient(to right, transparent, #000 22%);
+  }
+
+  .stop .featured {
+    order: 2;
+  }
+
+  /* A perched figure stands above the card: make room for it so it never covers the text. */
+  .featured__perch {
+    block-size: 5rem;
+  }
+
+  .featured:has(> .featured__perch) {
+    margin-block-start: 3.5rem;
+  }
+
+  .terrain-landmark--castillos {
+    --landmark-mobile: 9rem;
+  }
+
+  .terrain-landmark--siete-colores {
+    --landmark-mobile: 10rem;
+  }
+
+  .terrain-landmark--obelisco {
+    --landmark-mobile: 15rem;
+  }
+
+  /* The snowy peaks read best centered, whole, with no faded edge. */
+  .stop__landmark.terrain-landmark--nevados {
+    --landmark-mobile: 12rem;
+    align-self: center;
+    margin-inline-end: 0;
+    mask-image: none;
   }
 
   .stop__name {
@@ -1754,6 +2061,20 @@
     position: sticky;
     inset-block-start: 0;
   }
+
+  /* With the map camera (recorrido.ts, mobile branch): the intro scrolls away like any text and
+     only the map row stays, right below the site header (4.5rem). --strip-intro is the height
+     above that row, measured by the script. The map becomes a wide strip the camera fills. */
+  .is-animated .recorrido__map {
+    inset-block-start: calc(4.5rem - var(--strip-intro, 0px));
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .is-animated .recorrido__viewport {
+    align-self: stretch;
+    block-size: 8.5rem;
+    aspect-ratio: auto;
+  }
 }
 
 /* ---------------------------------------------------------------- Floating WhatsApp CTA */
@@ -1776,6 +2097,23 @@
   box-shadow: 0 0 0 3px var(--cream), 0 10px 24px color-mix(in srgb, var(--ink) 35%, transparent);
   animation: whatsapp-float-in 0.4s ease-out both;
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* While an inline WhatsApp CTA is on screen (whatsapp-float.ts). An exit animation, since the
+   entrance animation's fill would override plain opacity/transform; showing again replays the
+   entrance. `visibility` waits for the exit, then takes the button out of the tab order. */
+.whatsapp-float.whatsapp-float--hidden {
+  visibility: hidden;
+  pointer-events: none;
+  animation: whatsapp-float-out 0.25s ease-in both;
+  transition: visibility 0s linear 0.25s;
+}
+
+@keyframes whatsapp-float-out {
+  to {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.85);
+  }
 }
 
 .whatsapp-float:hover,
@@ -1824,8 +2162,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .whatsapp-float {
+  .whatsapp-float,
+  .whatsapp-float.whatsapp-float--hidden {
     animation: none;
+    transition: none;
   }
 
   .whatsapp-float::before {

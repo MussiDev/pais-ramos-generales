@@ -60,6 +60,11 @@ async function stopTops(page: Page): Promise<number[]> {
     );
 }
 
+/** Height of the sticky header: the pinned map pane starts right below it. */
+async function headerHeight(page: Page): Promise<number> {
+  return page.evaluate(() => document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 0);
+}
+
 async function viewportTop(page: Page, selector: string): Promise<number> {
   return page.locator(selector).evaluate((element) => element.getBoundingClientRect().top);
 }
@@ -119,7 +124,8 @@ test.describe('recorrido', () => {
         .toBe(String(index));
 
       // The map pane stays at the top of the viewport while the stops scroll by.
-      expect(Math.abs(await viewportTop(page, '[data-map-pane]')), 'map pane pinned').toBeLessThanOrEqual(2);
+      const pinnedTop = (await viewportTop(page, '[data-map-pane]')) - (await headerHeight(page));
+      expect(Math.abs(pinnedTop), 'map pane pinned below the header').toBeLessThanOrEqual(2);
 
       // Panel color: the section exposes the active token and the visible panel paints it.
       const expected = await tokenAsRgb(page, province.panelToken);
@@ -135,7 +141,7 @@ test.describe('recorrido', () => {
         });
       expect(active, `--active-panel for ${province.id}`).toBe(expected);
       const panelBackground = await page
-        .locator(`#recorrido [data-province="${province.id}"]`)
+        .locator(`#recorrido .recorrido__stops > [data-province="${province.id}"]`)
         .evaluate((stop) => getComputedStyle(stop).backgroundColor);
       expect(panelBackground).toBe(expected);
 
@@ -197,7 +203,9 @@ test.describe('recorrido', () => {
 
     for (const [index, top] of tops.entries()) {
       await scrollToY(page, top + 120);
-      expect(Math.abs(await viewportTop(page, '[data-map-pane]')), `strip sticks at stop ${index}`).toBeLessThanOrEqual(2);
+      // The intro scrolls away; the map row sticks right below the site header.
+      const mapTop = (await viewportTop(page, '#recorrido [data-map-viewport]')) - (await headerHeight(page));
+      expect(Math.abs(mapTop), `strip sticks at stop ${index}`).toBeLessThanOrEqual(2);
       await noHorizontalScroll(page);
       // Without a pin context the indicator still follows the stop in view.
       await expect.poll(() => indicatorText(page), { message: `indicator at stop ${index}` }).toBe(stopLabel(index));
@@ -245,7 +253,8 @@ test.describe('recorrido', () => {
       .poll(() => page.locator('#recorrido').getAttribute('data-stop'))
       .toBe('2');
     await expect.poll(() => indicatorText(page)).toBe(stopLabel(2));
-    expect(Math.abs(await viewportTop(page, '[data-map-pane]'))).toBeLessThanOrEqual(2);
+    const pinnedTop = (await viewportTop(page, '[data-map-pane]')) - (await headerHeight(page));
+    expect(Math.abs(pinnedTop), 'map pane pinned below the header').toBeLessThanOrEqual(2);
   });
 
   test('skip link falls back to anchor jump when the script is disabled', async ({
@@ -334,15 +343,17 @@ test.describe('recorrido', () => {
     // A real wheel gesture (through Lenis) that stops 60 px short of stop 3.
     await page.mouse.wheel(0, tops[2] - tops[1] - 60);
 
+    // The stop "starts" when its top meets the bottom of the sticky header (the pin offset).
+    const target = tops[2] - (await headerHeight(page));
     await expect
-      .poll(() => page.evaluate(() => Math.round(window.scrollY)), {
+      .poll(() => page.evaluate((y) => Math.abs(Math.round(window.scrollY) - y), target), {
         message: 'scroll settles on the start of stop 3',
         timeout: 6_000,
       })
-      .toBeGreaterThanOrEqual(tops[2] - 3);
+      .toBeLessThanOrEqual(3);
     await page.waitForTimeout(500);
     const settled = await page.evaluate(() => window.scrollY);
-    expect(Math.abs(settled - tops[2]), 'stays on the stop start').toBeLessThanOrEqual(3);
+    expect(Math.abs(settled - target), 'stays on the stop start').toBeLessThanOrEqual(3);
     await expect(page.locator('#recorrido')).toHaveAttribute('data-stop', '2');
   });
 

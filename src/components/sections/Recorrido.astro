@@ -1,7 +1,6 @@
 ---
 import '../../styles/recorrido.css';
 import { siteConfig } from '../../config/site';
-import { connections } from '../../content/connections';
 import { recorrido } from '../../content/copy';
 import { productImageSlot } from '../../content/product-image';
 import { products } from '../../content/products';
@@ -10,6 +9,7 @@ import { productMessage } from '../../lib/whatsapp';
 import ArgentinaMap from '../ArgentinaMap.astro';
 import ImageSlot from '../ImageSlot.astro';
 import Placeholder from '../Placeholder.astro';
+import { scenes } from '../landscapes';
 import Terrain from '../Terrain.astro';
 import WhatsAppLink from '../WhatsAppLink.astro';
 
@@ -37,6 +37,7 @@ const stops = provinces.map((province, index) => {
   id="recorrido"
   class="recorrido"
   aria-labelledby="recorrido-title"
+  data-header-tone="dark"
   data-stop="0"
   style={`--stops: ${total}`}
 >
@@ -50,14 +51,18 @@ const stops = provinces.map((province, index) => {
       <p class="recorrido__lede"><Placeholder text={recorrido.lede} /></p>
     </header>
 
-    <ArgentinaMap
-      provinces={provinces}
-      connections={connections}
-      originLabel={recorrido.origin}
-      title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}; ${recorrido.connectionsTitle}: ${connections.map((connection) => connection.name).join(', ')}`}
-      routeId={ROUTE_ID}
-      class="recorrido__svg"
-    />
+    <!-- The viewport crops and fades the map; the camera moves the stage (recorrido.ts). -->
+    <div class="recorrido__viewport" data-map-viewport>
+      <div class="recorrido__stage" data-map-stage>
+        <ArgentinaMap
+          provinces={provinces}
+          originLabel={recorrido.origin}
+          title={`${recorrido.mapTitle} ${recorrido.origin}: ${provinces.map((province) => province.name).join(', ')}`}
+          routeId={ROUTE_ID}
+          class="recorrido__svg"
+        />
+      </div>
+    </div>
 
     <div class="recorrido__progress">
       <p class="progress" data-indicator>
@@ -86,7 +91,10 @@ const stops = provinces.map((province, index) => {
           data-terrain={province.terrain}
           style={`--panel: var(${province.panelToken})`}
         >
-          <Terrain type={province.terrain} class="stop__terrain" />
+          <Terrain type={province.terrain} part="ground" class="stop__terrain" />
+          {!scenes[province.terrain].landmark.perch && (
+            <Terrain type={province.terrain} part="landmark" class="stop__landmark" />
+          )}
 
           <div class="stop__intro">
             <p class="stop__eyebrow">
@@ -106,6 +114,9 @@ const stops = provinces.map((province, index) => {
               data-featured-product={featured.id}
               aria-labelledby={`stop-${province.id}-product`}
             >
+              {scenes[province.terrain].landmark.perch && (
+                <Terrain type={province.terrain} part="landmark" class="featured__perch" />
+              )}
               <div class="featured__media" data-flip-target>
                 <ImageSlot
                   slot={productImageSlot(featured, { width: 3, height: 4 })}

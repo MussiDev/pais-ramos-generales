@@ -15,6 +15,7 @@ import type { MotionContext, MotionInit } from './motion/smooth-scroll';
 import { initNavScroll } from './nav-scroll';
 import { initNavToggle } from './nav-toggle';
 import { initStickyHeader } from './sticky-header';
+import { initWhatsAppFloat } from './whatsapp-float';
 import { initStopFollower } from './recorrido-stops';
 import { initSkipLink } from './skip-link';
 
@@ -181,6 +182,9 @@ registerEnhancement(() => initNavToggle());
 
 // Solid header background once the page scrolls past the hero; transparent over it.
 registerEnhancement(() => initStickyHeader());
+
+// The floating WhatsApp button steps aside while an inline WhatsApp CTA is on screen.
+registerEnhancement(() => initWhatsAppFloat());
 
 // Keeps the Recorrido indicator on the stop in view whenever the desktop pin is not driving it.
 registerEnhancement(() => initStopFollower());
