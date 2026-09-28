@@ -52,6 +52,22 @@ Yerbas.
 | Yerba Federal Tradicional | Yerbas | "Cultivada en Santo Pipó, Misiones." |
 | Chipá | Chipá | no origin stated |
 
+## `client-2026-09-28`
+
+Change request written by the client and relayed on 2026-09-28. Used close to verbatim (light
+grammar fixes only):
+
+- Hero subcopy: the two paragraphs ("Frutos de nuestra tierra…", "En País Ramos Generales vas a
+  encontrar…"). The client offered "nuestra tierra" or "nuestro país"; "nuestra tierra" is used.
+- Manifiesto: "Buscamos y elegimos los mejores productos y los traemos hasta la puerta de tu casa."
+  and "Colores, sabores, aromas del Norte, del centro y de Patagonia".
+- Pillar "Productores reales": artisanal brands known by name, by their process and by the quality
+  of each product.
+- Recorrido: "Conectamos con productores locales y llegamos a Funes."; connection points
+  Corrientes, Misiones, Córdoba and the south of Buenos Aires province; the Patagonia stop adds
+  the coast and seafood ("costa / frutos de mar"). Specific seafood products are still pending.
+- Cuyo (Mendoza, San Juan) is not added yet: the client has not confirmed products from there.
+
 ## `instagram`
 
 Instagram `@paisramosgenerales`, reviewed 2026-09-12 (see `PAIS-RAMOS-GENERALES-PROJECT.md` §2):

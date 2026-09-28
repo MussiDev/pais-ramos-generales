@@ -238,11 +238,18 @@
 }
 
 .hero__subcopy {
-  max-inline-size: 21.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-inline-size: 34rem;
   color: var(--ink-muted);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   line-height: 1.55;
   text-wrap: pretty;
+}
+
+.hero__subcopy p {
+  margin: 0;
 }
 
 .hero__visual {
@@ -506,6 +513,13 @@
   text-wrap: pretty;
 }
 
+.manifiesto__regions {
+  color: var(--green);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-regular);
+  font-size: var(--text-lg);
+}
+
 .manifiesto__about {
   color: var(--ink-muted);
   font-size: var(--text-lg);
@@ -581,6 +595,12 @@
   line-height: 0.95;
 }
 
+.recorrido__lede {
+  margin: 0;
+  color: color-mix(in srgb, var(--cream) 85%, transparent);
+  font-size: var(--text-lg);
+}
+
 .map {
   flex: 1 1 0;
   inline-size: 100%;
@@ -597,6 +617,19 @@
 .map__province--featured {
   fill: color-mix(in srgb, var(--cream) 16%, transparent);
   stroke: color-mix(in srgb, var(--cream) 55%, transparent);
+}
+
+.map__connection-line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--cream) 50%, transparent);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 4;
+}
+
+.map__connection-dot {
+  fill: var(--cream);
+  stroke: var(--green);
+  stroke-width: 1.5;
 }
 
 .map__route-guide {
@@ -1576,6 +1609,10 @@
 
   .recorrido__title {
     font-size: 1.375rem;
+  }
+
+  .recorrido__lede {
+    font-size: 0.8125rem;
   }
 
   .recorrido__svg {

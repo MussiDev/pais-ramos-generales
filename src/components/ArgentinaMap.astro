@@ -3,13 +3,15 @@
  * Real Argentina provinces (geoBoundaries ADM1 data, see `map-provinces.ts`), with the store
  * origin (Funes), one pin per stop and the route path through them in order. Pin coordinates
  * come from the content layer (`provinces.ts`), expressed in the same projected space as
- * `PROVINCE_PATHS`.
+ * `PROVINCE_PATHS`. Secondary connection points get a small dot and a faint link to Funes.
  */
+import type { Connection } from '../content/connections';
 import { FUNES_PIN, MAP_VIEWBOX, PROVINCE_PATHS } from '../content/map-provinces';
 import type { MapPin, Province } from '../content/types';
 
 interface Props {
   provinces: Province[];
+  connections?: Connection[];
   originLabel: string;
   /** Accessible title of the map (from the content layer). */
   title: string;
@@ -18,7 +20,7 @@ interface Props {
   class?: string;
 }
 
-const { provinces, originLabel, title, routeId, class: className } = Astro.props;
+const { provinces, connections = [], originLabel, title, routeId, class: className } = Astro.props;
 
 const viewBox = `${MAP_VIEWBOX.x} ${MAP_VIEWBOX.y} ${MAP_VIEWBOX.width} ${MAP_VIEWBOX.height}`;
 
@@ -26,15 +28,16 @@ const viewBox = `${MAP_VIEWBOX.x} ${MAP_VIEWBOX.y} ${MAP_VIEWBOX.width} ${MAP_VI
 const BEND = 0.18;
 const round = (value: number) => Math.round(value * 10) / 10;
 const points: MapPin[] = [FUNES_PIN, ...provinces.map((province) => province.pin)];
-const legs = points.slice(1).map((to, index) => {
-  const from = points[index];
+const curve = (from: MapPin, to: MapPin) => {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const cx = (from.x + to.x) / 2 + dy * BEND;
   const cy = (from.y + to.y) / 2 - dx * BEND;
   return `Q${round(cx)} ${round(cy)} ${to.x} ${to.y}`;
-});
+};
+const legs = points.slice(1).map((to, index) => curve(points[index], to));
 const routePath = `M${FUNES_PIN.x} ${FUNES_PIN.y} ${legs.join(' ')}`;
+const connectionPath = (pin: MapPin) => `M${FUNES_PIN.x} ${FUNES_PIN.y} ${curve(FUNES_PIN, pin)}`;
 
 // Label placement keeps text inside the viewBox: left of west pins, above east pins.
 const label = (pin: MapPin) => {
@@ -72,6 +75,17 @@ const titleId = `${routeId}-title`;
       />
     ))
   }
+
+  <g class="map__connections" aria-hidden="true">
+    {
+      connections.map((connection) => (
+        <g class="map__connection" data-connection={connection.id}>
+          <path class="map__connection-line" d={connectionPath(connection.pin)} />
+          <circle class="map__connection-dot" cx={connection.pin.x} cy={connection.pin.y} r="4.5" />
+        </g>
+      ))
+    }
+  </g>
 
   <path class="map__route-guide" d={routePath} aria-hidden="true"></path>
   <path id={routeId} class="map__route" d={routePath} data-route></path>
