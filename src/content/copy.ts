@@ -124,8 +124,8 @@ export const recorrido = {
     jujuy: 'Cerros de siete colores y [dulces cocinados despacio, directo de quienes los hacen].',
     'misiones-corrientes': 'Tierra colorada, yerbales y sabores del Litoral.',
     'buenos-aires': 'La llanura de la pampa y [los productores de campo que la trabajan].',
-    // coast and seafood: client-2026-09-28
-    'rio-negro': 'Lagos, cordillera y costa atlántica: [frutos rojos del sur] y frutos de mar.',
+    // coast and seafood in escabeche: client-2026-09-28
+    'rio-negro': 'Lagos, cordillera y costa atlántica: [frutos rojos del sur] y frutos de mar en escabeche.',
   } satisfies Record<ProvinceId, string>,
 } as const;
 

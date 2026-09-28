@@ -65,7 +65,12 @@ grammar fixes only):
   of each product.
 - Recorrido: "Conectamos con productores locales y llegamos a Funes."; connection points
   Corrientes, Misiones, Córdoba and the south of Buenos Aires province; the Patagonia stop adds
-  the coast and seafood ("costa / frutos de mar"). Specific seafood products are still pending.
+  the coast and seafood ("costa / frutos de mar").
+- Patagonia seafood, all "conservas en escabeche": cholgas, vieiras, langostino, calamares, pulpo
+  colorado, pulpito tehuelche, mejillones. The client introduced them as "Conservas de Mar"
+  (brand or description: unconfirmed, not shown). Brand and exact origin are still pending.
+  Pulpito tehuelche is the featured product of the stop (chosen as the most Patagonian item,
+  pending client confirmation).
 - Cuyo (Mendoza, San Juan) is not added yet: the client has not confirmed products from there.
 
 ## `instagram`

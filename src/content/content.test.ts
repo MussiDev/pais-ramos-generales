@@ -143,7 +143,7 @@ describe('shipped content', () => {
     expect(provinces.every((province) => province.featuredProductId !== null)).toBe(true);
   });
 
-  it('features the verified Jujuy and Misiones products', () => {
+  it('features the verified Jujuy, Misiones and Patagonia products', () => {
     const featured = (id: string) =>
       products.find(
         (product) =>
@@ -153,6 +153,7 @@ describe('shipped content', () => {
     expect(featured('jujuy')?.name).toBe('Dulce de mango y durazno');
     expect(featured('misiones-corrientes')?.name).toBe('Yerba Federal Tradicional');
     expect(featured('salta')?.name).toBe('[Producto destacado de Salta]');
+    expect(featured('rio-negro')?.name).toBe('Pulpito tehuelche en escabeche');
   });
 
   it('never shows prices', () => {

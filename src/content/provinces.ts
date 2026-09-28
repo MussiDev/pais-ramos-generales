@@ -75,6 +75,6 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     textTone: 'light',
     terrain: 'peaks',
     pin: { x: 103.1, y: 370.6 },
-    featuredProductId: 'rio-negro-destacado', // source: pending
+    featuredProductId: 'pulpito-tehuelche-escabeche', // source: client-2026-09-28
   },
 ];
