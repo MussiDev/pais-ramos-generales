@@ -11,6 +11,8 @@ export const categories: Category[] = [
   { id: 'yerbas', label: 'Yerbas' },
   // source: empretienda-2026-09-13 — grouping of store categories Chutney + Conservas en escabeche
   { id: 'conservas', label: 'Conservas' },
+  // source: client-2026-09-28 — product type of the Patagonia seafood
+  { id: 'conservas-de-mar', label: 'Conservas de mar' },
   // source: empretienda-2026-09-13 — store category Chipá
   { id: 'chipa', label: 'Chipá' },
   // source: pending — category of the placeholder featured products
@@ -122,13 +124,62 @@ export const products: Product[] = [
     imageSlot: 'producto-buenos-aires-destacado',
     provinceId: 'buenos-aires',
   },
-  // source: pending
+  // Patagonia stop seafood — source: client-2026-09-28 (names; all in escabeche);
+  // brand and exact origin — source: pending
   {
-    id: 'rio-negro-destacado',
-    name: '[Producto destacado de Río Negro]',
-    category: 'por-confirmar',
-    meta: '[MARCA] · [ORIGEN]',
-    imageSlot: 'producto-rio-negro-destacado',
+    id: 'pulpito-tehuelche-escabeche',
+    name: 'Pulpito tehuelche en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-pulpito-tehuelche-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'pulpo-colorado-escabeche',
+    name: 'Pulpo colorado en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-pulpo-colorado-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'langostinos-escabeche',
+    name: 'Langostinos en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-langostinos-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'calamares-escabeche',
+    name: 'Calamares en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-calamares-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'vieiras-escabeche',
+    name: 'Vieiras en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-vieiras-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'cholgas-escabeche',
+    name: 'Cholgas en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-cholgas-escabeche',
+    provinceId: 'rio-negro',
+  },
+  {
+    id: 'mejillones-escabeche',
+    name: 'Mejillones en escabeche',
+    category: 'conservas-de-mar',
+    meta: 'Mar argentino · [ORIGEN]',
+    imageSlot: 'producto-mejillones-escabeche',
     provinceId: 'rio-negro',
   },
 ];

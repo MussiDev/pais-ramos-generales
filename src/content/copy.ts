@@ -6,6 +6,7 @@ import type { ImageSlot } from './types';
  *
  * Source labels (evidence in docs/content-sources.md):
  * - `empretienda-2026-09-13` / `instagram`: verified client fact.
+ * - `client-2026-09-28`: copy written by the client in their change request.
  * - `canvas`: design heading or connective copy with no factual claim.
  * - `pending`: unconfirmed client claim; the claim itself is wrapped in [brackets] so it renders
  *   as a visible placeholder (FR-07).
@@ -40,10 +41,13 @@ export const hero = {
   eyebrow: 'Almacén de productos regionales · Funes, Santa Fe',
   titleLead: 'Lo mejor de nuestro país,', // source: instagram (bio "Llevamos a tu hogar lo mejor de nuestro país")
   titleEmphasis: 'en tu mesa.', // source: canvas
-  // source: empretienda-2026-09-13 (dulces from Jujuy, yerba from Misiones, products of the country)
-  //       + instagram (Diana y Patry, home delivery)
-  subcopy:
-    'Dulces de Jujuy, yerba de la tierra colorada, sabores de nuestro país: elegidos por Diana y Patry, llevados hasta tu casa.',
+  /** One paragraph per entry. */
+  subcopy: [
+    // source: client-2026-09-28
+    'Frutos de nuestra tierra y de nuestro mar argentino, que se siembran, se cuidan, se cosechan y se obtienen con mucho esmero para elaborar productos exquisitos y referentes de cada región.',
+    // source: client-2026-09-28
+    'En País Ramos Generales vas a encontrar productos elaborados artesanalmente por familias emprendedoras y productoras a pequeña escala, por cooperativas y por amigos a quienes une la misma pasión: ofrecer sabores y sensaciones que llevan el cariño y la dedicación que ponen cada día, conservando la mejor calidad.',
+  ],
   cta: 'Hacé tu pedido',
   jarLabel: {
     kind: 'Dulce',
@@ -66,17 +70,19 @@ export const manifiesto = {
   eyebrow: 'Quiénes somos', // source: canvas
   titleLead: 'Somos', // source: canvas
   titleEmphasis: 'Diana y Patry.', // source: instagram
-  // source: pending (sourcing claim) + instagram (home delivery)
-  body: 'Buscamos [lo que se hace con tiempo en cada rincón del país] y lo traemos hasta la puerta de tu casa.',
+  body: 'Buscamos y elegimos los mejores productos y los traemos hasta la puerta de tu casa.', // source: client-2026-09-28
+  regions: 'Colores, sabores y aromas del Norte, del Centro y de la Patagonia.', // source: client-2026-09-28
   about: 'Somos emprendedoras apoyando a emprendedores.', // source: empretienda-2026-09-13
   signature: 'desde Funes, con cariño', // source: canvas (location: instagram)
   pillars: [
-    // titles: canvas; texts: pending
+    // titles: canvas
     {
       title: 'Productores reales',
-      text: '[Marcas chicas y artesanales que conocemos por su nombre.]',
+      // source: client-2026-09-28
+      text: 'Marcas artesanales que conocemos por su nombre, por su proceso de elaboración y por la calidad de cada producto.',
     },
     {
+      // source: pending
       title: 'Trato de almacén',
       text: '[Nos escribís, te asesoramos y te lo llevamos.] Sin vueltas.',
     },
@@ -93,10 +99,13 @@ export const recorrido = {
   eyebrow: 'El recorrido', // source: canvas
   titleLead: 'Un viaje por el país,', // source: canvas
   titleEmphasis: 'desde Funes.', // source: canvas (location: instagram)
+  lede: 'Conectamos con productores locales y llegamos a Funes.', // source: client-2026-09-28
   origin: 'Funes', // source: instagram
   skipLink: 'Saltar a la despensa',
   /** Accessible map title, followed by the origin and the stop names. */
   mapTitle: 'Mapa de Argentina con el recorrido desde',
+  /** Accessible map title suffix, followed by the connection point names. */
+  connectionsTitle: 'y otros puntos de conexión',
   stopLabel: 'Parada',
   /** Accessible progress text; {current} and {total} are filled in by the page and the scripts. */
   indicatorLabel: 'Parada {current} de {total}',
@@ -115,7 +124,8 @@ export const recorrido = {
     jujuy: 'Cerros de siete colores y [dulces cocinados despacio, directo de quienes los hacen].',
     'misiones-corrientes': 'Tierra colorada, yerbales y sabores del Litoral.',
     'buenos-aires': 'La llanura de la pampa y [los productores de campo que la trabajan].',
-    'rio-negro': 'Lagos, cordillera y [frutos rojos del sur].',
+    // coast and seafood in escabeche: client-2026-09-28
+    'rio-negro': 'Lagos, cordillera y costa atlántica: [frutos rojos del sur] y frutos de mar en escabeche.',
   } satisfies Record<ProvinceId, string>,
 } as const;
 

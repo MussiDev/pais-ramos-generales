@@ -52,6 +52,27 @@ Yerbas.
 | Yerba Federal Tradicional | Yerbas | "Cultivada en Santo Pipó, Misiones." |
 | Chipá | Chipá | no origin stated |
 
+## `client-2026-09-28`
+
+Change request written by the client and relayed on 2026-09-28. Used close to verbatim (light
+grammar fixes only):
+
+- Hero subcopy: the two paragraphs ("Frutos de nuestra tierra…", "En País Ramos Generales vas a
+  encontrar…"). The client offered "nuestra tierra" or "nuestro país"; "nuestra tierra" is used.
+- Manifiesto: "Buscamos y elegimos los mejores productos y los traemos hasta la puerta de tu casa."
+  and "Colores, sabores, aromas del Norte, del centro y de Patagonia".
+- Pillar "Productores reales": artisanal brands known by name, by their process and by the quality
+  of each product.
+- Recorrido: "Conectamos con productores locales y llegamos a Funes."; connection points
+  Corrientes, Misiones, Córdoba and the south of Buenos Aires province; the Patagonia stop adds
+  the coast and seafood ("costa / frutos de mar").
+- Patagonia seafood, all "conservas en escabeche": cholgas, vieiras, langostino, calamares, pulpo
+  colorado, pulpito tehuelche, mejillones. "Conservas de mar" is their product type (confirmed by
+  the client) and has its own pantry chip. Brand and exact origin are still pending.
+  Pulpito tehuelche is the featured product of the stop (chosen as the most Patagonian item,
+  pending client confirmation).
+- Cuyo (Mendoza, San Juan) is not added yet: the client has not confirmed products from there.
+
 ## `instagram`
 
 Instagram `@paisramosgenerales`, reviewed 2026-09-12 (see `PAIS-RAMOS-GENERALES-PROJECT.md` §2):

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { connections } from './connections';
 import * as copy from './copy';
 import { nextFair } from './fairs';
 import { categories, products } from './products';
@@ -142,7 +143,7 @@ describe('shipped content', () => {
     expect(provinces.every((province) => province.featuredProductId !== null)).toBe(true);
   });
 
-  it('features the verified Jujuy and Misiones products', () => {
+  it('features the verified Jujuy, Misiones and Patagonia products', () => {
     const featured = (id: string) =>
       products.find(
         (product) =>
@@ -152,6 +153,7 @@ describe('shipped content', () => {
     expect(featured('jujuy')?.name).toBe('Dulce de mango y durazno');
     expect(featured('misiones-corrientes')?.name).toBe('Yerba Federal Tradicional');
     expect(featured('salta')?.name).toBe('[Producto destacado de Salta]');
+    expect(featured('rio-negro')?.name).toBe('Pulpito tehuelche en escabeche');
   });
 
   it('never shows prices', () => {
@@ -178,8 +180,7 @@ describe('shipped content', () => {
 
   it('renders unconfirmed operational and marketing claims as placeholders', () => {
     const unconfirmedClaims = [
-      ...copy.manifiesto.pillars.map((pillar) => pillar.text),
-      copy.manifiesto.body,
+      copy.manifiesto.pillars[1].text,
       copy.recorrido.stops.salta,
       copy.recorrido.stops.jujuy,
       copy.recorrido.stops['buenos-aires'],
@@ -191,8 +192,31 @@ describe('shipped content', () => {
     ];
 
     expect(unconfirmedClaims.filter((text) => !isPlaceholder(text))).toEqual([]);
-    expect(copy.hero.subcopy).toContain('Dulces de Jujuy');
-    expect(copy.hero.subcopy).not.toContain('Quebrada');
+  });
+
+  it('shows the copy the client wrote without placeholders', () => {
+    const clientCopy = [
+      ...copy.hero.subcopy,
+      copy.manifiesto.body,
+      copy.manifiesto.regions,
+      copy.manifiesto.pillars[0].text,
+      copy.recorrido.lede,
+    ];
+
+    expect(clientCopy.filter((text) => isPlaceholder(text))).toEqual([]);
+    expect(copy.hero.subcopy).toHaveLength(2);
+  });
+
+  it('has unique connection points that are not scroll stops', () => {
+    const ids = connections.map((connection) => connection.id);
+    const stopIds: string[] = provinces.map((province) => province.id);
+
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids.every((id) => /^[a-z-]{2,32}$/.test(id))).toBe(true);
+    expect(ids.filter((id) => stopIds.includes(id))).toEqual([]);
+    expect(connections.map((connection) => connection.name)).toEqual(
+      expect.arrayContaining(['Córdoba', 'Corrientes', 'Misiones']),
+    );
   });
 
   it('keeps unconfirmed fair data as placeholders', () => {

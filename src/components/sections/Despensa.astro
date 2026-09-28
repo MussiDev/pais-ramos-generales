@@ -15,7 +15,7 @@ const FEATURED_PRODUCT_IDS = [
   'mermelada-frutilla',
   'chutney-chilto',
   'yerba-federal-tradicional',
-  'yerba-caballo-negro-tradicional',
+  'pulpito-tehuelche-escabeche',
   'chipa',
 ] as const;
 const ARTISAN_SPECIAL_ID = 'dulce-mango-durazno';
@@ -36,7 +36,7 @@ const labelFor = (categoryId: string) =>
       <div class="despensa__heading">
         <p class="eyebrow"><Placeholder text={despensa.eyebrow} /></p>
         <h2 id="despensa-title" class="despensa__title" tabindex="-1">
-          <Placeholder text={despensa.titleLead} />
+          <Placeholder text={despensa.titleLead} />{' '}
           <em><Placeholder text={despensa.titleEmphasis} /></em>
         </h2>
       </div>

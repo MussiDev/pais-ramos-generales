@@ -12,11 +12,19 @@ const stampText = `${hero.stamp} · `;
     <div class="hero__copy">
       <p class="eyebrow eyebrow--rule"><Placeholder text={hero.eyebrow} /></p>
       <h1 id="hero-title" class="hero__title">
-        <Placeholder text={hero.titleLead} />
+        <Placeholder text={hero.titleLead} /><br />
         <em><Placeholder text={hero.titleEmphasis} /></em>
       </h1>
       <div class="hero__actions">
-        <p class="hero__subcopy"><Placeholder text={hero.subcopy} /></p>
+        <div class="hero__subcopy">
+          {
+            hero.subcopy.map((paragraph) => (
+              <p>
+                <Placeholder text={paragraph} />
+              </p>
+            ))
+          }
+        </div>
         <WhatsAppLink class="btn btn--primary btn--large hero__cta">
           {hero.cta}
           <svg
