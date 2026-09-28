@@ -21,11 +21,15 @@ import Placeholder from '../Placeholder.astro';
         <Placeholder text={manifiesto.titleLead} />{' '}
         <em><Placeholder text={manifiesto.titleEmphasis} /></em>
       </h2>
-      <p class="manifiesto__body"><Placeholder text={manifiesto.body} /></p>
-      <p class="manifiesto__regions"><Placeholder text={manifiesto.regions} /></p>
-      <p class="manifiesto__about"><Placeholder text={manifiesto.about} /></p>
+      <div class="manifiesto__lead">
+        <p class="manifiesto__body"><Placeholder text={manifiesto.body} /></p>
+        <p class="manifiesto__regions"><Placeholder text={manifiesto.regions} /></p>
+      </div>
 
-      <ul class="pillars">
+      <div class="manifiesto__details">
+        <p class="manifiesto__about"><Placeholder text={manifiesto.about} /></p>
+
+        <ul class="pillars">
         {
           manifiesto.pillars.map((pillar) => (
             <li class="pillar">
@@ -38,7 +42,8 @@ import Placeholder from '../Placeholder.astro';
             </li>
           ))
         }
-      </ul>
+        </ul>
+      </div>
     </div>
   </div>
 </section>

@@ -513,16 +513,33 @@
   text-wrap: pretty;
 }
 
+/* Three groups instead of five evenly spaced blocks: title, the statement (body closed by the
+   regions as its coda) and the details (about + pillars). */
+.manifiesto__lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
 .manifiesto__regions {
-  color: var(--green);
+  color: var(--terracotta);
   font-family: var(--font-display);
+  font-style: italic;
   font-weight: var(--weight-display-regular);
-  font-size: var(--text-lg);
+  /* Terracotta on cream is 3.38:1: large text only, so never below 24px (tokens.css). */
+  font-size: clamp(1.5rem, 1.1rem + 0.8vw, 1.75rem);
+  line-height: 1.25;
+}
+
+.manifiesto__details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .manifiesto__about {
   color: var(--ink-muted);
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
 }
 
 .pillars {
