@@ -859,7 +859,7 @@
 }
 
 .terrain-landmark--obelisco {
-  --landmark-height: 88%;
+  --landmark-height: 75%;
 }
 
 /* Snow is cream, like the text on this panel: it must never sit under the name or description,
@@ -1938,11 +1938,6 @@
     order: 2;
   }
 
-  /* A slim figure needs no edge fade (it would eat its own side). */
-  .terrain-landmark--obelisco {
-    mask-image: none;
-  }
-
   /* A perched figure stands above the card: make room for it so it never covers the text. */
   .featured__perch {
     block-size: 5rem;
@@ -1961,11 +1956,15 @@
   }
 
   .terrain-landmark--obelisco {
-    --landmark-mobile: 14rem;
+    --landmark-mobile: 15rem;
   }
 
-  .terrain-landmark--nevados {
-    --landmark-mobile: 11rem;
+  /* The snowy peaks read best centered, whole, with no faded edge. */
+  .stop__landmark.terrain-landmark--nevados {
+    --landmark-mobile: 12rem;
+    align-self: center;
+    margin-inline-end: 0;
+    mask-image: none;
   }
 
   .stop__name {

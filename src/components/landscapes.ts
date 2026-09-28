@@ -52,6 +52,22 @@ function strata(bands: Array<[number, number]>, slope: number, width: number): s
     .join(' ');
 }
 
+/**
+ * Lit windows on a building: for each [x, y, columns, rows] a grid of small panes starting at
+ * (x, y), 10 units apart horizontally and 16 vertically.
+ */
+function windows(blocks: Array<[number, number, number, number]>): string {
+  let d = '';
+  for (const [x, y, columns, rows] of blocks) {
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        d += `M${x + column * 10} ${y + row * 16} h4 v7 h-4 Z `;
+      }
+    }
+  }
+  return d.trim();
+}
+
 /** A Lombardy poplar: tall, narrow, pointed. */
 function poplar(x: number, height: number, width: number, base: number): string {
   const top = base - height;
@@ -209,8 +225,21 @@ export const scenes: Record<Terrain, Scene> = {
       { layer: 'front', d: bushes(334, 40) },
     ],
     landmark: {
-      viewBox: '0 0 64 320',
-      layers: [{ layer: 'front', d: 'M12 320 L20 42 L32 14 L44 42 L52 320 Z' }],
+      // The Obelisco between city blocks, a few windows lit (the reference is a night shot).
+      viewBox: '0 0 300 320',
+      layers: [
+        {
+          layer: 'back',
+          d: 'M0 320 V120 H38 V96 H70 V140 H96 V70 H132 V110 H150 V150 H232 V88 H262 V60 H300 V320 Z',
+        },
+        { layer: 'band', d: windows([[102, 84, 3, 7], [268, 74, 3, 9], [8, 132, 2, 6], [238, 102, 2, 7]]) },
+        {
+          layer: 'mid',
+          d: 'M0 320 V210 H44 V186 H90 V222 H130 V196 H160 V236 H222 V204 H256 V226 H300 V320 Z',
+        },
+        { layer: 'front', d: 'M170 320 L178 42 L190 14 L202 42 L210 320 Z' },
+        { layer: 'front', d: bushes(304, 20, 0, 300, 320) },
+      ],
     },
   },
 
