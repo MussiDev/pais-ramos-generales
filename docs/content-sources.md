@@ -67,8 +67,8 @@ grammar fixes only):
   Corrientes, Misiones, Córdoba and the south of Buenos Aires province; the Patagonia stop adds
   the coast and seafood ("costa / frutos de mar").
 - Patagonia seafood, all "conservas en escabeche": cholgas, vieiras, langostino, calamares, pulpo
-  colorado, pulpito tehuelche, mejillones. The client introduced them as "Conservas de Mar"
-  (brand or description: unconfirmed, not shown). Brand and exact origin are still pending.
+  colorado, pulpito tehuelche, mejillones. "Conservas de mar" is their product type (confirmed by
+  the client) and has its own pantry chip. Brand and exact origin are still pending.
   Pulpito tehuelche is the featured product of the stop (chosen as the most Patagonian item,
   pending client confirmation).
 - Cuyo (Mendoza, San Juan) is not added yet: the client has not confirmed products from there.

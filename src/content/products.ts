@@ -11,6 +11,8 @@ export const categories: Category[] = [
   { id: 'yerbas', label: 'Yerbas' },
   // source: empretienda-2026-09-13 — grouping of store categories Chutney + Conservas en escabeche
   { id: 'conservas', label: 'Conservas' },
+  // source: client-2026-09-28 — product type of the Patagonia seafood
+  { id: 'conservas-de-mar', label: 'Conservas de mar' },
   // source: empretienda-2026-09-13 — store category Chipá
   { id: 'chipa', label: 'Chipá' },
   // source: pending — category of the placeholder featured products
@@ -127,7 +129,7 @@ export const products: Product[] = [
   {
     id: 'pulpito-tehuelche-escabeche',
     name: 'Pulpito tehuelche en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-pulpito-tehuelche-escabeche',
     provinceId: 'rio-negro',
@@ -135,7 +137,7 @@ export const products: Product[] = [
   {
     id: 'pulpo-colorado-escabeche',
     name: 'Pulpo colorado en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-pulpo-colorado-escabeche',
     provinceId: 'rio-negro',
@@ -143,7 +145,7 @@ export const products: Product[] = [
   {
     id: 'langostinos-escabeche',
     name: 'Langostinos en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-langostinos-escabeche',
     provinceId: 'rio-negro',
@@ -151,7 +153,7 @@ export const products: Product[] = [
   {
     id: 'calamares-escabeche',
     name: 'Calamares en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-calamares-escabeche',
     provinceId: 'rio-negro',
@@ -159,7 +161,7 @@ export const products: Product[] = [
   {
     id: 'vieiras-escabeche',
     name: 'Vieiras en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-vieiras-escabeche',
     provinceId: 'rio-negro',
@@ -167,7 +169,7 @@ export const products: Product[] = [
   {
     id: 'cholgas-escabeche',
     name: 'Cholgas en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-cholgas-escabeche',
     provinceId: 'rio-negro',
@@ -175,7 +177,7 @@ export const products: Product[] = [
   {
     id: 'mejillones-escabeche',
     name: 'Mejillones en escabeche',
-    category: 'conservas',
+    category: 'conservas-de-mar',
     meta: 'Mar argentino · [ORIGEN]',
     imageSlot: 'producto-mejillones-escabeche',
     provinceId: 'rio-negro',
