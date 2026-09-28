@@ -47,11 +47,13 @@ const label = (pin: MapPin) => {
 };
 
 // A stop's name may cover more than one real province (e.g. "Misiones y Corrientes"); every
-// word of the stop name that matches a province name gets the featured treatment.
-const featuredProvinceIds = new Set(
-  PROVINCE_PATHS.filter((path) =>
-    provinces.some((province) => province.name.includes(path.name)),
-  ).map((path) => path.id),
+// province named in a stop gets the featured treatment and the index of that stop, which
+// recorrido.css uses to fill it with the stop's panel color while the stop is active.
+const stopIndexByProvince = new Map(
+  PROVINCE_PATHS.flatMap((path) => {
+    const index = provinces.findIndex((province) => province.name.includes(path.name));
+    return index === -1 ? [] : [[path.id, index] as const];
+  }),
 );
 
 const titleId = `${routeId}-title`;
@@ -69,9 +71,10 @@ const titleId = `${routeId}-title`;
   {
     PROVINCE_PATHS.map((province) => (
       <path
-        class:list={['map__province', { 'map__province--featured': featuredProvinceIds.has(province.id) }]}
+        class:list={['map__province', { 'map__province--featured': stopIndexByProvince.has(province.id) }]}
         d={province.d}
         data-province={province.id}
+        data-stop-province={stopIndexByProvince.get(province.id)}
       />
     ))
   }

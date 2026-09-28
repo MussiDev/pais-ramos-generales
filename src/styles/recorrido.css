@@ -84,6 +84,25 @@
   }
 }
 
+/* ---------------------------------------------------------------- Active province */
+
+/* The province (or provinces) of the active stop takes that stop's panel color. Decorative fill;
+   the labels on top keep contrast through their green halo (sections.css, .map__label). */
+.recorrido .map__province {
+  transition:
+    fill 500ms ease,
+    stroke 500ms ease;
+}
+
+.recorrido[data-stop='0'] .map__province[data-stop-province='0'],
+.recorrido[data-stop='1'] .map__province[data-stop-province='1'],
+.recorrido[data-stop='2'] .map__province[data-stop-province='2'],
+.recorrido[data-stop='3'] .map__province[data-stop-province='3'],
+.recorrido[data-stop='4'] .map__province[data-stop-province='4'] {
+  fill: color-mix(in srgb, var(--active-panel) 80%, transparent);
+  stroke: var(--cream);
+}
+
 /* ---------------------------------------------------------------- Desktop */
 
 @media (min-width: 768px) {
@@ -94,6 +113,30 @@
 
   .is-animated .recorrido__map.is-pinned {
     will-change: transform;
+  }
+
+  /* The camera crops the map to the pane: fade the crop edges instead of cutting them. */
+  .is-animated .recorrido__svg {
+    mask-image:
+      linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* After the first stop the lede has been read: it folds away and the map camera gets the room. */
+  .is-animated .recorrido__lede {
+    overflow: hidden;
+    max-block-size: 6em;
+    transition:
+      opacity 300ms ease,
+      max-block-size 500ms ease,
+      margin 500ms ease;
+  }
+
+  .is-animated .recorrido:not([data-stop='0']) .recorrido__lede {
+    max-block-size: 0;
+    margin-block-start: calc(-1 * var(--space-3));
+    opacity: 0;
   }
 
   /* The product flies in from the map pin: let it cross the panel edge while it does. */

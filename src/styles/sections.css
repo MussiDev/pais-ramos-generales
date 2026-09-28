@@ -666,6 +666,11 @@
   fill: var(--cream);
   font-family: var(--font-body);
   font-size: 12px;
+  /* A green halo keeps labels legible over the filled (active) provinces. */
+  paint-order: stroke;
+  stroke: var(--green);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 .map__label--origin {

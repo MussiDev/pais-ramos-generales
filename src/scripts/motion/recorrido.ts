@@ -9,6 +9,7 @@
  * `recorrido-stops.ts` keeps the indicator in sync.
  */
 import { Flip } from 'gsap/Flip';
+import { frameViewBox, viewBoxAttribute, type Box } from './camera';
 import {
   PIN_DRIVER,
   PIN_RELEASED_EVENT,
@@ -28,9 +29,12 @@ import { resolveTarget } from './targets';
 export const RECORRIDO_SELECTORS = {
   section: '#recorrido',
   mapPane: '[data-map-pane]',
+  map: '[data-map]',
+  origin: '.map__origin',
   route: '[data-route]',
   stops: '.recorrido__stops > [data-stop-index]',
   pin: (index: number) => `[data-pin][data-stop-index="${index}"]`,
+  stopProvinces: (index: number) => `[data-stop-province="${index}"]`,
   flipTarget: '[data-flip-target]',
   despensa: '#despensa',
 } as const;
@@ -42,9 +46,77 @@ const SETTLED_ROTATION_DEG = -6;
 /** Quiet time after the last scroll update before snapping. */
 const SNAP_DELAY_MS = 180;
 const SNAP_DURATION_S = 0.6;
+/** Camera framing, in map viewBox units: room for labels, and the closest it ever zooms. */
+const CAMERA_PADDING = 28;
+const CAMERA_MIN_HEIGHT = 230;
+const CAMERA_DURATION_S = 1.1;
 
 type Gsap = MotionContext['gsap'];
 type Reveals = Map<HTMLElement, gsap.core.Timeline>;
+
+/**
+ * The map camera: on each stop the SVG viewBox glides to frame Funes, the previous stop and the
+ * active one, at the aspect of the rendered box ("slice", so it fills the pane). The static markup
+ * keeps the whole country, which is what mobile, reduced motion and no-JS show.
+ */
+function createCamera(gsap: Gsap, section: HTMLElement, total: number) {
+  const svg = section.querySelector<SVGSVGElement>(RECORRIDO_SELECTORS.map);
+  const origin = section.querySelector<SVGGraphicsElement>(RECORRIDO_SELECTORS.origin);
+  if (!svg || !origin || typeof origin.getBBox !== 'function') {
+    console.warn('motion: recorrido map camera skipped (map or origin missing)');
+    return null;
+  }
+  const initialViewBox = svg.getAttribute('viewBox');
+  const initialAspect = svg.getAttribute('preserveAspectRatio');
+  const base = svg.viewBox.baseVal;
+  const bounds: Box = { x: base.x, y: base.y, width: base.width, height: base.height };
+  const pins = Array.from({ length: total }, (_, index) =>
+    section.querySelector<SVGGraphicsElement>(RECORRIDO_SELECTORS.pin(index)),
+  );
+  let tween: gsap.core.Tween | null = null;
+
+  const frame = (index: number): string | null => {
+    const rect = svg.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return null;
+    // The leg (origin, previous and active pin with their labels) plus the whole active province.
+    const framed = [
+      origin,
+      pins[index - 1],
+      pins[index],
+      ...svg.querySelectorAll(RECORRIDO_SELECTORS.stopProvinces(index)),
+    ].filter((element): element is SVGGraphicsElement => element instanceof SVGGraphicsElement);
+    const boxes = framed.map((element) => element.getBBox());
+    return viewBoxAttribute(
+      frameViewBox(boxes, {
+        aspect: rect.width / rect.height,
+        padding: CAMERA_PADDING,
+        minHeight: CAMERA_MIN_HEIGHT,
+        bounds,
+      }),
+    );
+  };
+
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+
+  return {
+    /** Frames stop `index`, gliding there when `animate`, jumping otherwise (refresh, first paint). */
+    show(index: number, animate: boolean) {
+      const viewBox = frame(index);
+      if (!viewBox) return;
+      tween?.kill();
+      tween = animate
+        ? gsap.to(svg, { attr: { viewBox }, duration: CAMERA_DURATION_S, ease: 'power3.inOut' })
+        : null;
+      if (!animate) svg.setAttribute('viewBox', viewBox);
+    },
+    reset() {
+      tween?.kill();
+      if (initialViewBox) svg.setAttribute('viewBox', initialViewBox);
+      if (initialAspect) svg.setAttribute('preserveAspectRatio', initialAspect);
+      else svg.removeAttribute('preserveAspectRatio');
+    },
+  };
+}
 
 /** The route path and its length, or null (with a warning) when the scrub cannot run. */
 function measureRoute(section: HTMLElement): { path: SVGPathElement; length: number } | null {
@@ -126,6 +198,7 @@ function pinMap(
     gsap.set(route.path, { strokeDasharray: route.length });
     setDashOffset(routeDashOffset(0, route.length, 0, total));
   }
+  const camera = createCamera(gsap, section, total);
 
   // The pin drives the stop from here on; the IntersectionObserver follower stands by.
   section.dataset.stopDriver = PIN_DRIVER;
@@ -164,7 +237,9 @@ function pinMap(
     // A refresh (fonts, images, resize) re-measures and may move the index back and forth: that is
     // not the user entering a stop. `isRefreshing` exists at runtime but is missing from the types.
     const refreshing = (ScrollTrigger as unknown as { isRefreshing?: boolean }).isRefreshing === true;
-    if (!reveal || !entered || refreshing) return;
+    const moving = reveal && entered && !refreshing;
+    camera?.show(index, moving);
+    if (!moving) return;
     try {
       revealProduct(gsap, stops[index], section.querySelector(RECORRIDO_SELECTORS.pin(index)), reveals);
     } catch (error) {
@@ -186,6 +261,8 @@ function pinMap(
     onRefresh: (self) => {
       measure(self);
       apply(self.progress, false);
+      // The map box may have been resized: re-frame the active stop at the new aspect.
+      camera?.show(active, false);
     },
     onUpdate: (self) => {
       apply(self.progress, true);
@@ -225,6 +302,7 @@ function pinMap(
     }
     reveals.clear();
     if (route) gsap.set(route.path, { clearProps: 'strokeDasharray,strokeDashoffset' });
+    camera?.reset();
     mapPane.classList.remove('is-pinned');
     for (const stop of stops) stop.classList.remove('is-revealing');
     delete section.dataset.stopDriver;
