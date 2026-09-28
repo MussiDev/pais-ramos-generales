@@ -115,7 +115,9 @@ async function expectStaticSections(page: Page) {
         return (
           (style.opacity === '0' || style.visibility === 'hidden') &&
           (element.textContent ?? '').trim() !== '' &&
-          !element.closest('[data-empty], .chips')
+          // Intentionally hidden: the empty-state message, the no-JS chips, and the badge slot
+          // that keeps every pantry card the same height (visibility, not display).
+          !element.closest('[data-empty], .chips, .product-card__badge--hidden')
         );
       })
       .map((element) => element.outerHTML.slice(0, 80)),
@@ -177,11 +179,11 @@ test.describe('motion', () => {
     await scrollToY(page, Math.round(heroHeight * 0.1));
 
     await expectKeepsAnimating(page, '#hero [data-stamp]');
-    await expectKeepsAnimating(page, '#hero [data-ticker]');
+    await expectKeepsAnimating(page, '#hero .ticker');
 
-    // The ticker loops horizontally only.
+    // The ticker (a CSS loop, independent of GSAP) moves horizontally only.
     const trackTransform = await page
-      .locator('#hero [data-ticker] .ticker__track')
+      .locator('#hero .ticker .ticker__track')
       .evaluate((element) => new DOMMatrixReadOnly(getComputedStyle(element).transform));
     expect(trackTransform.f).toBe(0);
   });
@@ -227,7 +229,7 @@ test.describe('motion', () => {
     for (const selector of [
       '[data-hero-jar]',
       '[data-stamp] .stamp__ring',
-      '[data-ticker] .ticker__track',
+      '.ticker .ticker__track',
       '[data-footer-wordmark]',
     ]) {
       expect((await transformOf(page, selector)).transform, selector).toBe('none');
@@ -272,18 +274,19 @@ test.describe('motion', () => {
   }, testInfo) => {
     skipUnlessAnimated(testInfo);
     const warnings = collectWarnings(page);
-    await serveWithout(page, 'data-ticker');
+    // The stamp is a GSAP timeline target (the ticker is a CSS loop and needs no JS target).
+    await serveWithout(page, 'data-stamp');
 
     await page.goto('/');
     await waitForMotion(page);
 
     await expect
-      .poll(() => warnings.some((text) => text.includes('[data-ticker]')), {
+      .poll(() => warnings.some((text) => text.includes('[data-stamp]')), {
         message: 'a warning names the missing selector',
       })
       .toBe(true);
 
-    await expectKeepsAnimating(page, '#hero [data-stamp]');
+    await expectKeepsAnimating(page, '#hero [data-hero-jar]');
     expect((await transformOf(page, '[data-hero-jar]')).transform).not.toBe('none');
     await expectHeroScaledUnderManifiesto(page);
   });
@@ -305,7 +308,7 @@ test.describe('motion', () => {
       .toBe(true);
 
     await expectKeepsAnimating(page, '#hero [data-stamp]');
-    await expectKeepsAnimating(page, '#hero [data-ticker]');
+    await expectKeepsAnimating(page, '#hero .ticker');
     await expectHeroScaledUnderManifiesto(page);
   });
 });

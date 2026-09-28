@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { products } from '../../src/content/products';
+import { pantryProducts as products } from '../../src/content/pantry';
 
 const cardsOf = (category: string) => products.filter((product) => product.category === category);
 
@@ -58,7 +58,7 @@ test.describe('la despensa filter', () => {
     await chip(page, 'dulces').click();
     await expectOnly(page, 'dulces');
 
-    const tampered = chip(page, 'vinos');
+    const tampered = chip(page, 'yerbas');
     await tampered.evaluate((element) => element.setAttribute('data-category', 'no-existe'));
     await page.locator('#despensa .chip[data-category="no-existe"]').click();
 

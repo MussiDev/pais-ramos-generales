@@ -13,7 +13,8 @@ import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import * as copy from '../../src/content/copy';
 import { nextFair } from '../../src/content/fairs';
-import { categories, products } from '../../src/content/products';
+import { pantryCategories, pantryProducts } from '../../src/content/pantry';
+import { products } from '../../src/content/products';
 import { provinces } from '../../src/content/provinces';
 import { productMessage } from '../../src/lib/whatsapp';
 
@@ -134,25 +135,29 @@ test.describe('structure', () => {
           })),
       );
 
-    // nav + hero + 5 featured products + every pantry card + cómo pedir + footer CTA and link
-    expect(ctas.length).toBeGreaterThanOrEqual(1 + 1 + provinces.length + products.length + 1 + 2);
+    // hero + one per featured product + every pantry card + cómo pedir + footer CTA (the floating
+    // button is icon-only, so its text does not match)
+    expect(ctas.length).toBeGreaterThanOrEqual(1 + provinces.length + pantryProducts.length + 1 + 1);
     for (const cta of ctas) {
       expect(decodedWhatsAppText(cta.href).length).toBeGreaterThan(0);
       expect(cta.target).toBe('_blank');
       expect(cta.rel).toContain('noopener');
     }
 
-    const waLinks = await page.locator('a[href*="wa.me"]').count();
+    // Every wa.me link is one of those CTAs, except the icon-only floating button.
+    const waLinks = await page.locator('a[href*="wa.me"]:not(.whatsapp-float)').count();
     expect(waLinks).toBe(ctas.length);
+    const floatHref = await page.locator('a.whatsapp-float').getAttribute('href');
+    expect(decodedWhatsAppText(floatHref ?? '').length).toBeGreaterThan(0);
   });
 
   test('product card links include the product name', async ({ page }) => {
     await page.goto('/');
 
     const cards = page.locator('#despensa [data-product-id]');
-    await expect(cards).toHaveCount(products.length);
+    await expect(cards).toHaveCount(pantryProducts.length);
 
-    for (const product of products) {
+    for (const product of pantryProducts) {
       const card = page.locator(`#despensa [data-product-id="${product.id}"]`);
       await expect(card).toHaveAttribute('data-category', product.category);
       const href = await card.locator('a[href*="wa.me"]').getAttribute('href');
@@ -168,7 +173,7 @@ test.describe('structure', () => {
 
     // Chips: one "Todo" plus one per category, as toggle buttons.
     const chips = page.locator('#despensa button[type="button"][aria-pressed][data-category]');
-    await expect(chips).toHaveCount(categories.length + 1);
+    await expect(chips).toHaveCount(pantryCategories.length + 1);
     await expect(page.locator('#despensa [data-empty]')).toBeHidden();
   });
 
@@ -176,7 +181,7 @@ test.describe('structure', () => {
     await page.goto('/');
 
     const slots = page.locator('[data-image-slot]');
-    expect(await slots.count()).toBeGreaterThanOrEqual(2 + products.length);
+    expect(await slots.count()).toBeGreaterThanOrEqual(2 + pantryProducts.length);
     await expect(page.locator(`[data-image-slot="${copy.hero.jarImage.id}"]`)).toHaveCount(1);
     await expect(page.locator(`[data-image-slot="${copy.manifiesto.photo.id}"]`)).toHaveCount(1);
 
@@ -255,33 +260,26 @@ test.describe('structure', () => {
       await expect(page.locator(`#recorrido [data-province="${province.id}"] h3`)).toBeVisible();
     }
 
-    for (const product of products.filter((item) => !/\[/.test(item.name))) {
+    for (const product of pantryProducts.filter((item) => !/\[/.test(item.name))) {
       await expect(
         page.locator(`#despensa [data-product-id="${product.id}"]`).getByText(product.name).first(),
       ).toBeVisible();
     }
-    await expect(page.locator('#despensa [data-product-id]:visible')).toHaveCount(products.length);
+    await expect(page.locator('#despensa [data-product-id]:visible')).toHaveCount(pantryProducts.length);
 
     for (const link of copy.nav.links) {
       await expect(page.locator(`a[href="${link.href}"]`).first()).toBeAttached();
     }
     await expect(page.locator('#recorrido a[href="#despensa"]')).toBeVisible();
     expect(await page.locator('a[href*="wa.me"]').count()).toBeGreaterThanOrEqual(
-      products.length + provinces.length + 4,
+      pantryProducts.length + provinces.length + 4,
     );
 
-    // Without the JS loop, ticker names wrap instead of being clipped off-screen.
-    const viewportWidth = page.viewportSize()!.width;
-    const clippedTicker = await page
-      .locator('#hero .ticker__list:not([aria-hidden]) .ticker__item')
-      .evaluateAll(
-        (items, width) =>
-          items
-            .filter((item) => item.getBoundingClientRect().right > width)
-            .map((item) => item.textContent),
-        viewportWidth,
-      );
-    expect(clippedTicker).toEqual([]);
+    // The ticker is a CSS loop (it runs without JavaScript too), so names scroll off-screen by
+    // design; what matters is that every name is in the list assistive tech reads.
+    await expect(page.locator('#hero .ticker__list:not([aria-hidden]) .ticker__item')).toHaveText(
+      copy.hero.ticker,
+    );
 
     // Chips need JS to filter, so they are hidden without it.
     await expect(page.locator('#despensa .chips')).toBeHidden();
@@ -294,7 +292,8 @@ test.describe('structure', () => {
           return (
             (style.opacity === '0' || style.visibility === 'hidden') &&
             (element.textContent ?? '').trim() !== '' &&
-            !element.closest('[data-empty], .chips')
+            // Intentionally hidden: the badge slot that keeps pantry cards the same height.
+            !element.closest('[data-empty], .chips, .product-card__badge--hidden')
           );
         })
         .map((element) => element.outerHTML.slice(0, 80)),
