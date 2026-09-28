@@ -48,7 +48,7 @@ describe('routeDashOffset', () => {
   });
 
   it('draws the route from Funes up to the active stop', () => {
-    // Five legs (Funes → Salta → … → Río Negro); stop i is reached at progress i / 4.
+    // Five legs (Funes → Salta → … → Río Negro y Chubut); stop i is reached at progress i / 4.
     expect(routeDashOffset(0, 500, 0)).toBeCloseTo(400);
     expect(routeDashOffset(0.25, 500, 1)).toBeCloseTo(300);
     expect(routeDashOffset(0.5, 500, 2)).toBeCloseTo(200);

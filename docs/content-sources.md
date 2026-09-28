@@ -68,7 +68,9 @@ grammar fixes only):
   the coast and seafood ("costa / frutos de mar").
 - Patagonia seafood, all "conservas en escabeche": cholgas, vieiras, langostino, calamares, pulpo
   colorado, pulpito tehuelche, mejillones. "Conservas de mar" is their product type (confirmed by
-  the client) and has its own pantry chip. Brand and exact origin are still pending.
+  the client) and has its own pantry chip. Brand: Conservas Puerto Madryn; made in Puerto Madryn,
+  Chubut. The Patagonia stop is renamed "Río Negro y Chubut" so it doesn't list Chubut products
+  as "También de Río Negro".
   Pulpito tehuelche is the featured product of the stop (chosen as the most Patagonian item,
   pending client confirmation).
 - Cuyo (Mendoza, San Juan) is not added yet: the client has not confirmed products from there.

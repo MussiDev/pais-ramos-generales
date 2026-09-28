@@ -18,5 +18,4 @@ export const connections: Connection[] = [
   { id: 'corrientes', name: 'Corrientes', pin: { x: 248.7, y: 142.4 } }, // province centroid
   { id: 'misiones', name: 'Misiones', pin: { x: 297.5, y: 105.1 } }, // province centroid
   { id: 'sur-bonaerense', name: 'Sur de Buenos Aires', pin: { x: 179.3, y: 337.8 } }, // Bahía Blanca
-  { id: 'costa-patagonica', name: 'Costa patagónica', pin: { x: 136.7, y: 417.2 } }, // Puerto Madryn
 ];
