@@ -5,7 +5,8 @@
 
 export type Region = 'NOROESTE' | 'LITORAL' | 'PAMPA' | 'PATAGONIA';
 export type TextTone = 'light' | 'dark';
-export type Terrain = 'hills' | 'waves' | 'flat' | 'peaks';
+/** One landscape per stop (see Terrain.astro). */
+export type Terrain = 'castillos' | 'siete-colores' | 'esteros' | 'obelisco' | 'nevados';
 
 export interface MapPin {
   /** Coordinates inside the Argentina map SVG viewBox (`MAP_VIEWBOX`). */

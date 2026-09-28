@@ -9,6 +9,7 @@ import { productMessage } from '../../lib/whatsapp';
 import ArgentinaMap from '../ArgentinaMap.astro';
 import ImageSlot from '../ImageSlot.astro';
 import Placeholder from '../Placeholder.astro';
+import { scenes } from '../landscapes';
 import Terrain from '../Terrain.astro';
 import WhatsAppLink from '../WhatsAppLink.astro';
 
@@ -85,7 +86,10 @@ const stops = provinces.map((province, index) => {
           data-terrain={province.terrain}
           style={`--panel: var(${province.panelToken})`}
         >
-          <Terrain type={province.terrain} class="stop__terrain" />
+          <Terrain type={province.terrain} part="ground" class="stop__terrain" />
+          {!scenes[province.terrain].landmark.perch && (
+            <Terrain type={province.terrain} part="landmark" class="stop__landmark" />
+          )}
 
           <div class="stop__intro">
             <p class="stop__eyebrow">
@@ -105,6 +109,9 @@ const stops = provinces.map((province, index) => {
               data-featured-product={featured.id}
               aria-labelledby={`stop-${province.id}-product`}
             >
+              {scenes[province.terrain].landmark.perch && (
+                <Terrain type={province.terrain} part="landmark" class="featured__perch" />
+              )}
               <div class="featured__media" data-flip-target>
                 <ImageSlot
                   slot={productImageSlot(featured, { width: 3, height: 4 })}

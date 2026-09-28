@@ -26,7 +26,7 @@ const fixtureProvinces: Province[] = [
     region: 'NOROESTE',
     panelToken: '--panel-jujuy',
     textTone: 'light',
-    terrain: 'hills',
+    terrain: 'siete-colores',
     pin: { x: 115, y: 44 },
     featuredProductId: 'dulce-mango-durazno',
   },

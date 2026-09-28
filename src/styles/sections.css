@@ -797,15 +797,63 @@
   block-size: 40%;
 }
 
+/* The province landmark (Terrain.astro): bottom-right, behind the featured card, peeking above
+   it. It starts right of the description column (29rem past the stop padding), so it never sits
+   under text: light shapes like snow would break the text contrast. Too narrow a box crops the
+   figure's left side ("slice") rather than shrinking it. */
+.stop__landmark {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: min(calc(clamp(1.5rem, 5vw, 4.5rem) + 29rem), 45%) clamp(0rem, 3vw, 3rem);
+  z-index: -1;
+  block-size: var(--landmark-height, 60%);
+}
+
+.terrain-landmark--castillos {
+  --landmark-height: 64%;
+}
+
+.terrain-landmark--siete-colores {
+  --landmark-height: 82%;
+}
+
+/* A perched landmark (the capybara) sits on the featured card's top edge, right side. */
+.featured__perch {
+  position: absolute;
+  inset-block-end: calc(100% - 0.5rem);
+  inset-inline-end: clamp(1rem, 6%, 3rem);
+  block-size: clamp(5.5rem, 13svh, 8.5rem);
+  aspect-ratio: 260 / 200;
+  pointer-events: none;
+}
+
+.terrain-landmark--obelisco {
+  --landmark-height: 88%;
+}
+
+.terrain-landmark--nevados {
+  --landmark-height: 80%;
+}
+
 .terrain__back {
   fill: color-mix(in srgb, var(--panel) 86%, var(--ink));
+}
+
+.terrain__mid {
+  fill: color-mix(in srgb, var(--panel) 79%, var(--ink));
+}
+
+/* Light accents: Jujuy's strata, the Litoral water line. */
+.terrain__band {
+  fill: color-mix(in srgb, var(--panel) 62%, var(--cream));
 }
 
 .terrain__front {
   fill: color-mix(in srgb, var(--panel) 72%, var(--ink));
 }
 
-.terrain__snow {
+.terrain__snow,
+.terrain__frost {
   fill: var(--cream);
 }
 

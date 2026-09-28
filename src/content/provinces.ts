@@ -28,7 +28,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     region: 'NOROESTE',
     panelToken: '--panel-salta',
     textTone: 'light',
-    terrain: 'hills',
+    terrain: 'castillos',
     // Nudged ~6 units away from Jujuy's pin (real centroid 140.6,54.9) so the two labels and
     // halos don't overlap on the small map; the province shape itself is untouched.
     pin: { x: 144.2, y: 59.7 },
@@ -42,7 +42,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     // Terracotta panel: only the large province name and decoration sit on it; small text goes
     // on a cream card (spec "Contrast decisions").
     textTone: 'light',
-    terrain: 'hills',
+    terrain: 'siete-colores',
     // Nudged ~6 units away from Salta's pin (real centroid 126.0,35.3); see the note there.
     pin: { x: 122.4, y: 30.5 },
     featuredProductId: 'dulce-mango-durazno', // source: empretienda-2026-09-13
@@ -53,7 +53,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     region: 'LITORAL',
     panelToken: '--panel-litoral',
     textTone: 'dark',
-    terrain: 'waves',
+    terrain: 'esteros',
     pin: { x: 273.1, y: 123.8 }, // midpoint of the Misiones and Corrientes centroids
     featuredProductId: 'yerba-federal-tradicional', // source: empretienda-2026-09-13
   },
@@ -63,7 +63,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     region: 'PAMPA',
     panelToken: '--panel-buenos-aires',
     textTone: 'dark',
-    terrain: 'flat',
+    terrain: 'obelisco',
     pin: { x: 209.6, y: 280.0 },
     featuredProductId: 'buenos-aires-destacado', // source: pending
   },
@@ -74,7 +74,7 @@ export const provinces: Array<Province & { id: ProvinceId }> = [
     region: 'PATAGONIA',
     panelToken: '--panel-rio-negro',
     textTone: 'light',
-    terrain: 'peaks',
+    terrain: 'nevados',
     // Río Negro-Chubut border near the coast (-42.0, -65.3), so the stop covers both provinces
     // and its label sits right of the pin, inside the viewBox.
     pin: { x: 132.7, y: 402.1 },
