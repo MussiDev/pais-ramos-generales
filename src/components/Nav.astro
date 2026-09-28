@@ -2,7 +2,10 @@
 import { nav } from '../content/copy';
 import logoMarkRaw from '../assets/logo/leaf-ornament.svg?raw';
 
-const logoMark = logoMarkRaw.replace('<svg', '<svg class="wordmark__mark" aria-hidden="true"');
+// currentColor (instead of the artwork's green) lets the mark follow the header tone.
+const logoMark = logoMarkRaw
+  .replaceAll('fill="#1f4f2e"', 'fill="currentColor"')
+  .replace('<svg', '<svg class="wordmark__mark" aria-hidden="true"');
 ---
 
 <header class="site-header">

@@ -131,6 +131,20 @@
   backdrop-filter: blur(10px);
 }
 
+/* Over El recorrido (sticky-header.ts): the header continues the green map pane instead of laying
+   a cream veil over the colored panels. Cream on green: 8.22:1. */
+.site-header--dark.site-header--scrolled {
+  --header-ink: var(--cream);
+  --focus-ring: var(--cream);
+  background: color-mix(in srgb, var(--green) 94%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--cream) 12%, transparent);
+}
+
+.wordmark {
+  color: var(--header-ink, var(--green));
+  transition: color 0.25s ease;
+}
+
 /* Sticky means the header would otherwise sit permanently over the footer's own heading and
    CTA for the whole last screenful of the page; slide it away once the footer appears instead. */
 .site-header--hidden {
@@ -165,16 +179,21 @@
   list-style: none;
 }
 
+/* The underline draws in from the left on hover and keyboard focus. */
 .site-nav__link {
-  color: var(--green);
+  padding-block-end: 4px;
+  background: linear-gradient(currentColor, currentColor) no-repeat left bottom / 0% 1.5px;
+  color: var(--header-ink, var(--green));
   font-size: 0.9375rem;
   font-weight: var(--weight-body-medium);
   text-decoration: none;
-  text-underline-offset: 6px;
+  transition:
+    background-size 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.25s ease;
 }
 
-.site-nav__link:hover {
-  text-decoration: underline;
+.site-nav__link:is(:hover, :focus-visible) {
+  background-size: 100% 1.5px;
 }
 
 .nav-toggle {
@@ -183,11 +202,12 @@
   justify-content: center;
   inline-size: 2.75rem;
   block-size: 2.75rem;
-  border: 1.5px solid var(--green);
+  border: 1.5px solid currentColor;
   border-radius: 999px;
   background: transparent;
-  color: var(--green);
+  color: var(--header-ink, var(--green));
   cursor: pointer;
+  transition: color 0.25s ease;
 }
 
 /* ---------------------------------------------------------------- Hero */
@@ -1522,6 +1542,8 @@
     border-radius: 1rem;
     background: var(--cream);
     box-shadow: 0 16px 32px color-mix(in srgb, var(--ink) 20%, transparent);
+    /* The dropdown is cream whatever the header tone: its links stay green. */
+    --header-ink: var(--green);
   }
 
   .site-nav.site-nav--open {
