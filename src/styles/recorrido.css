@@ -115,6 +115,20 @@
     will-change: transform;
   }
 
+  /* SplitText word masks for the province names: the display line-height (0.82) is shorter than
+     the glyphs, so each mask gets room for accents ("Río") and descenders ("Jujuy") and gives it
+     back with negative margins; top alignment keeps the inline-blocks from growing the lines. */
+  .stop__name-word-mask {
+    padding-block: 0.16em 0.22em;
+    margin-block: -0.16em -0.22em;
+    vertical-align: top;
+  }
+
+  /* Split characters are inline-blocks, which the browser may break between: keep words whole. */
+  .stop__name-word {
+    white-space: nowrap;
+  }
+
   /* The camera crops the map to the pane: fade the crop edges instead of cutting them. */
   .is-animated .recorrido__svg {
     mask-image:

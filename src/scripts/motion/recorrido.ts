@@ -9,6 +9,7 @@
  * `recorrido-stops.ts` keeps the indicator in sync.
  */
 import { Flip } from 'gsap/Flip';
+import { SplitText } from 'gsap/SplitText';
 import { frameViewBox, viewBoxAttribute, type Box } from './camera';
 import {
   PIN_DRIVER,
@@ -35,6 +36,8 @@ export const RECORRIDO_SELECTORS = {
   stops: '.recorrido__stops > [data-stop-index]',
   pin: (index: number) => `[data-pin][data-stop-index="${index}"]`,
   stopProvinces: (index: number) => `[data-stop-province="${index}"]`,
+  stopName: '.stop__name',
+  terrainBack: '.terrain__back, .terrain__snow',
   flipTarget: '[data-flip-target]',
   despensa: '#despensa',
 } as const;
@@ -50,6 +53,8 @@ const SNAP_DURATION_S = 0.6;
 const CAMERA_PADDING = 28;
 const CAMERA_MIN_HEIGHT = 230;
 const CAMERA_DURATION_S = 1.1;
+/** Back terrain layer drift across one stop, in terrain viewBox units (the SVG is 360 tall). */
+const TERRAIN_DRIFT = { from: 40, to: -20 } as const;
 
 type Gsap = MotionContext['gsap'];
 type Reveals = Map<HTMLElement, gsap.core.Timeline>;
@@ -173,6 +178,59 @@ function revealProduct(gsap: Gsap, stop: HTMLElement, pin: Element | null, revea
   reveals.set(product, reveal);
 }
 
+/**
+ * Giant province names: split into characters behind a line mask, which rise into place when the
+ * stop is entered (or drop in, scrolling back up). Only the entrance animates; at rest the name is
+ * plain visible text, and SplitText keeps it readable as one label for assistive tech.
+ */
+function createNameReveals(gsap: Gsap, stops: HTMLElement[]) {
+  const splits = stops.map((stop) => {
+    const name = stop.querySelector<HTMLElement>(RECORRIDO_SELECTORS.stopName);
+    return name ? SplitText.create(name, {
+          // Word masks, not line masks: they keep the natural (balanced) wrapping of the name.
+          type: 'words,chars',
+          mask: 'words',
+          wordsClass: 'stop__name-word',
+        }) : null;
+  });
+  let tween: gsap.core.Tween | null = null;
+
+  return {
+    play(index: number, direction: 1 | -1) {
+      const chars = splits[index]?.chars;
+      if (!chars?.length) return;
+      tween?.progress(1).kill();
+      tween = gsap.from(chars, {
+        yPercent: 110 * direction,
+        duration: 0.9,
+        ease: 'expo.out',
+        stagger: 0.025 * direction,
+      });
+    },
+    revert() {
+      tween?.kill();
+      for (const split of splits) split?.revert();
+    },
+  };
+}
+
+/** The back terrain layer drifts slower than its panel scrolls: a little depth per province. */
+function driftTerrain(gsap: Gsap, stops: HTMLElement[]) {
+  for (const stop of stops) {
+    const layers = stop.querySelectorAll(RECORRIDO_SELECTORS.terrainBack);
+    if (layers.length === 0) continue;
+    gsap.fromTo(
+      layers,
+      { y: TERRAIN_DRIFT.from },
+      {
+        y: TERRAIN_DRIFT.to,
+        ease: 'none',
+        scrollTrigger: { trigger: stop, start: 'top bottom', end: 'bottom top', scrub: true },
+      },
+    );
+  }
+}
+
 function pinMap(
   { gsap, ScrollTrigger, lenis }: MotionContext,
   section: HTMLElement,
@@ -199,6 +257,8 @@ function pinMap(
     setDashOffset(routeDashOffset(0, route.length, 0, total));
   }
   const camera = createCamera(gsap, section, total);
+  const names = createNameReveals(gsap, stops);
+  driftTerrain(gsap, stops);
 
   // The pin drives the stop from here on; the IntersectionObserver follower stands by.
   section.dataset.stopDriver = PIN_DRIVER;
@@ -232,6 +292,7 @@ function pinMap(
     if (index === active) return;
 
     const entered = active !== -1;
+    const direction = index > active ? 1 : -1;
     active = index;
     writeStopIndicator(section, index, total);
     // A refresh (fonts, images, resize) re-measures and may move the index back and forth: that is
@@ -240,6 +301,7 @@ function pinMap(
     const moving = reveal && entered && !refreshing;
     camera?.show(index, moving);
     if (!moving) return;
+    names.play(index, direction);
     try {
       revealProduct(gsap, stops[index], section.querySelector(RECORRIDO_SELECTORS.pin(index)), reveals);
     } catch (error) {
@@ -303,6 +365,7 @@ function pinMap(
     reveals.clear();
     if (route) gsap.set(route.path, { clearProps: 'strokeDasharray,strokeDashoffset' });
     camera?.reset();
+    names.revert();
     mapPane.classList.remove('is-pinned');
     for (const stop of stops) stop.classList.remove('is-revealing');
     delete section.dataset.stopDriver;
@@ -313,7 +376,7 @@ function pinMap(
 
 export function init(motion: MotionContext): () => void {
   const { gsap } = motion;
-  gsap.registerPlugin(motion.ScrollTrigger, Flip);
+  gsap.registerPlugin(motion.ScrollTrigger, Flip, SplitText);
 
   const section = resolveTarget(RECORRIDO_SELECTORS.section);
   if (!section) return () => undefined;
