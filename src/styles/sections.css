@@ -1030,6 +1030,58 @@
   display: none;
 }
 
+/* Hover / keyboard focus: the label lifts off the shelf and its hard shadow grows. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .product-card {
+    transition:
+      transform 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .product-card:is(:hover, :focus-within) {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--green);
+  }
+}
+
+/* Filter view transition (despensa-filter.ts): each card has its own view-transition-name. Only
+   the cards animate; the rest of the page swaps instantly. */
+.product-card {
+  view-transition-class: product-card;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-group(*.product-card) {
+  animation-duration: 450ms;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-new(*.product-card):only-child {
+  animation: product-card-in 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+::view-transition-old(*.product-card):only-child {
+  animation: product-card-out 200ms ease-in both;
+}
+
+@keyframes product-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+}
+
+@keyframes product-card-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
 .product-card__frame {
   display: flex;
   flex-direction: column;
