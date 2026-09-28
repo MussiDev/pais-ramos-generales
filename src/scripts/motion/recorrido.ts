@@ -43,6 +43,7 @@ export const RECORRIDO_SELECTORS = {
 } as const;
 
 export const DESKTOP_QUERY = '(min-width: 768px)';
+export const MOBILE_QUERY = '(max-width: 767px)';
 
 /** Resting angle of the revealed product (the "3/4" pose from the design). */
 const SETTLED_ROTATION_DEG = -6;
@@ -375,6 +376,39 @@ function pinMap(
   };
 }
 
+/**
+ * Mobile: nothing is pinned (the CSS sticky strip applies and `recorrido-stops.ts` keeps
+ * `data-stop` current), but the map camera follows the active stop so the strip shows the leg
+ * up close instead of a country-sized thumbnail. It also measures how much of the pane sits above
+ * the map row (`--strip-intro`), so only that row sticks below the site header.
+ */
+function followOnMobile(gsap: Gsap, section: HTMLElement): (() => void) | undefined {
+  const pane = resolveTarget(RECORRIDO_SELECTORS.mapPane, section);
+  const svg = section.querySelector<SVGSVGElement>(RECORRIDO_SELECTORS.map);
+  if (!pane || !svg) return undefined;
+
+  const measureIntro = () => {
+    const intro = svg.getBoundingClientRect().top - pane.getBoundingClientRect().top;
+    pane.style.setProperty('--strip-intro', `${Math.max(0, Math.round(intro))}px`);
+  };
+  measureIntro();
+  const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(measureIntro) : null;
+  resize?.observe(pane);
+
+  const camera = createCamera(gsap, section, section.querySelectorAll('[data-pin]').length);
+  const activeStop = () => Number(section.dataset.stop ?? 0) || 0;
+  camera?.show(activeStop(), false);
+  const follower = new MutationObserver(() => camera?.show(activeStop(), true));
+  follower.observe(section, { attributes: true, attributeFilter: ['data-stop'] });
+
+  return () => {
+    follower.disconnect();
+    resize?.disconnect();
+    camera?.reset();
+    pane.style.removeProperty('--strip-intro');
+  };
+}
+
 export function init(motion: MotionContext): () => void {
   const { gsap } = motion;
   gsap.registerPlugin(motion.ScrollTrigger, Flip, SplitText);
@@ -389,8 +423,8 @@ export function init(motion: MotionContext): () => void {
     console.warn('motion: recorrido stacking failed', error);
   }
 
-  const desktop = gsap.matchMedia();
-  desktop.add(DESKTOP_QUERY, () => {
+  const media = gsap.matchMedia();
+  media.add(DESKTOP_QUERY, () => {
     try {
       return pinMap(motion, section);
     } catch (error) {
@@ -399,5 +433,14 @@ export function init(motion: MotionContext): () => void {
     }
   });
 
-  return () => desktop.kill();
+  media.add(MOBILE_QUERY, () => {
+    try {
+      return followOnMobile(gsap, section);
+    } catch (error) {
+      console.warn('motion: recorrido mobile map camera failed', error);
+      return undefined;
+    }
+  });
+
+  return () => media.kill();
 }

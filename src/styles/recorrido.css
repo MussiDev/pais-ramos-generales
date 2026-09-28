@@ -163,6 +163,28 @@
   }
 }
 
+/* ---------------------------------------------------------------- Mobile */
+
+@media (max-width: 767px) {
+  /* The mobile camera crops the map to the strip: fade the crop edges, as on desktop. */
+  .is-animated .recorrido__svg {
+    mask-image:
+      linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent),
+      linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* The strip renders map units at about half size: larger labels keep them readable. The camera
+     frames the labels' boxes, so it makes room for them. */
+  .is-animated .recorrido__svg .map__label {
+    font-size: 20px;
+  }
+
+  .is-animated .recorrido__svg .map__label--origin {
+    font-size: 21px;
+  }
+}
+
 /* ---------------------------------------------------------------- Reduced motion */
 
 @media (prefers-reduced-motion: reduce) {

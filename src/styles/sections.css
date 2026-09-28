@@ -1797,20 +1797,21 @@
     aspect-ratio: 380 / 660;
   }
 
-  /* The thumbnail is too small for labels to read; the stop name already shows in full below. */
-  .recorrido__svg .map__label {
+  /* Without the map camera (no JS, reduced motion) the whole country is a thumbnail: too small
+     for labels to read (the stop name already shows in full below), so pins grow instead. */
+  html:not(.is-animated) .recorrido__svg .map__label {
     display: none;
   }
 
-  .recorrido__svg .map__pin-dot {
+  html:not(.is-animated) .recorrido__svg .map__pin-dot {
     r: 8;
   }
 
-  .recorrido__svg .map__pin-halo {
+  html:not(.is-animated) .recorrido__svg .map__pin-halo {
     r: 18;
   }
 
-  .recorrido__svg .map__origin-dot {
+  html:not(.is-animated) .recorrido__svg .map__origin-dot {
     r: 10;
   }
 
@@ -1926,6 +1927,20 @@
   .recorrido__map {
     position: sticky;
     inset-block-start: 0;
+  }
+
+  /* With the map camera (recorrido.ts, mobile branch): the intro scrolls away like any text and
+     only the map row stays, right below the site header (4.5rem). --strip-intro is the height
+     above that row, measured by the script. The map becomes a wide strip the camera fills. */
+  .is-animated .recorrido__map {
+    inset-block-start: calc(4.5rem - var(--strip-intro, 0px));
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .is-animated .recorrido__svg {
+    align-self: stretch;
+    block-size: 8.5rem;
+    aspect-ratio: auto;
   }
 }
 

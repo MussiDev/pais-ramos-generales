@@ -203,7 +203,9 @@ test.describe('recorrido', () => {
 
     for (const [index, top] of tops.entries()) {
       await scrollToY(page, top + 120);
-      expect(Math.abs(await viewportTop(page, '[data-map-pane]')), `strip sticks at stop ${index}`).toBeLessThanOrEqual(2);
+      // The intro scrolls away; the map row sticks right below the site header.
+      const mapTop = (await viewportTop(page, '#recorrido [data-map]')) - (await headerHeight(page));
+      expect(Math.abs(mapTop), `strip sticks at stop ${index}`).toBeLessThanOrEqual(2);
       await noHorizontalScroll(page);
       // Without a pin context the indicator still follows the stop in view.
       await expect.poll(() => indicatorText(page), { message: `indicator at stop ${index}` }).toBe(stopLabel(index));
