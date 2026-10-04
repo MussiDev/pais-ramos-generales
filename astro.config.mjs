@@ -41,4 +41,12 @@ export default defineConfig({
   site: 'https://paisramosgenerales.com.ar',
   // subset-fonts runs after the build: fonts are cut down to the glyphs of the built pages.
   integrations: [siteConfigValidation(), subsetFontsIntegration()],
+  vite: {
+    // Dev only: the motion modules load GSAP and Lenis through dynamic imports, which Vite found
+    // late and re-optimized mid-load ("504 Outdated Optimize Dep"), so `astro dev` came up with
+    // motion disabled. Pre-bundling them at startup avoids that; builds are unaffected.
+    optimizeDeps: {
+      include: ['gsap', 'gsap/ScrollTrigger', 'gsap/Flip', 'gsap/SplitText', 'lenis'],
+    },
+  },
 });

@@ -181,9 +181,12 @@ test.describe('structure', () => {
     await page.goto('/');
 
     const slots = page.locator('[data-image-slot]');
-    expect(await slots.count()).toBeGreaterThanOrEqual(2 + pantryProducts.length);
+    expect(await slots.count()).toBeGreaterThanOrEqual(1 + pantryProducts.length);
     await expect(page.locator(`[data-image-slot="${copy.hero.jarImage.id}"]`)).toHaveCount(1);
-    await expect(page.locator(`[data-image-slot="${copy.manifiesto.photo.id}"]`)).toHaveCount(1);
+
+    // A slot whose photo has arrived renders the real image instead: the founders' photo.
+    await expect(page.locator(`[data-image-slot="${copy.manifiesto.photo.id}"]`)).toHaveCount(0);
+    await expect(page.locator('#manifiesto img')).toHaveAttribute('alt', copy.manifiesto.photo.alt);
 
     const boxes = await slots.evaluateAll((elements) =>
       elements.map((element) => {

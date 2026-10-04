@@ -43,9 +43,7 @@ export const hero = {
   titleEmphasis: 'en tu mesa.', // source: canvas
   /** One paragraph per entry. */
   subcopy: [
-    // source: client-2026-09-28
-    'Frutos de nuestra tierra y de nuestro mar argentino, que se siembran, se cuidan, se cosechan y se obtienen con mucho esmero para elaborar productos exquisitos y referentes de cada región.',
-    // source: client-2026-09-28
+    // source: client-2026-09-28 (the paragraph before it moved to despensa.lede, client-2026-10-04)
     'En País Ramos Generales vas a encontrar productos elaborados artesanalmente por familias emprendedoras y productoras a pequeña escala, por cooperativas y por amigos a quienes une la misma pasión: ofrecer sabores y sensaciones que llevan el cariño y la dedicación que ponen cada día, conservando la mejor calidad.',
   ],
   cta: 'Hacé tu pedido',
@@ -133,6 +131,8 @@ export const despensa = {
   eyebrow: 'La despensa', // source: canvas
   titleLead: 'Etiquetas', // source: canvas
   titleEmphasis: 'con historia.', // source: canvas
+  // source: client-2026-09-28; moved here from the hero subcopy (client-2026-10-04)
+  lede: 'Frutos de nuestra tierra y de nuestro mar argentino, que se siembran, se cuidan, se cosechan y se obtienen con mucho esmero para elaborar productos exquisitos y referentes de cada región.',
   allLabel: 'Todo',
   numberPrefix: 'N.º',
   storeCta: 'Ver en la tienda',

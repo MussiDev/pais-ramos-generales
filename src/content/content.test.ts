@@ -197,6 +197,7 @@ describe('shipped content', () => {
   it('shows the copy the client wrote without placeholders', () => {
     const clientCopy = [
       ...copy.hero.subcopy,
+      copy.despensa.lede,
       copy.manifiesto.body,
       copy.manifiesto.regions,
       copy.manifiesto.pillars[0].text,
@@ -204,7 +205,7 @@ describe('shipped content', () => {
     ];
 
     expect(clientCopy.filter((text) => isPlaceholder(text))).toEqual([]);
-    expect(copy.hero.subcopy).toHaveLength(2);
+    expect(copy.hero.subcopy).toHaveLength(1);
   });
 
   it('has unique connection points that are not scroll stops', () => {
