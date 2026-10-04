@@ -1089,6 +1089,15 @@
   font-weight: var(--weight-display-regular);
 }
 
+.despensa__lede {
+  max-inline-size: 40rem;
+  margin-block-start: var(--space-2);
+  color: var(--ink-muted); /* ink-muted on cream: same pairing as the hero subcopy */
+  font-size: var(--text-lg);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
