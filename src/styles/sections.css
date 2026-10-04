@@ -790,11 +790,14 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(1.5rem, 5svh, 3rem);
+  /* Shared with the in-flow landmark, which bleeds into the padding and tucks under the card. */
+  --stop-gap: clamp(1.5rem, 5svh, 3rem);
+  --stop-pad-inline: clamp(1.5rem, 5vw, 4.5rem);
+  gap: var(--stop-gap);
   /* A stop settles right below the sticky header (6.5rem), so it fills what is left of the
      screen; a full 100svh would always leave its last 6.5rem, the featured card, off-screen. */
   min-block-size: calc(100svh - 6.5rem);
-  padding: clamp(1.5rem, 5svh, 4.5rem) clamp(1.5rem, 5vw, 4.5rem);
+  padding: clamp(1.5rem, 5svh, 4.5rem) var(--stop-pad-inline);
   overflow: hidden;
   background: var(--panel);
   color: var(--panel-text-light);
@@ -868,6 +871,51 @@
   --landmark-height: 80%;
   --landmark-start: calc(clamp(1.5rem, 5vw, 4.5rem) + 42rem);
   --landmark-end: 0rem;
+}
+
+/* A narrow panel (phones, and laptops around 1280-1440 px) has no room beside the featured card,
+   which then hides a landmark behind it almost entirely. The landmark joins the flow between the
+   text and the card instead, right-aligned, and the card rises over its base so the landscape
+   still reads as standing behind it. Sized by the panel (cqi), not the screen. */
+@container (width < 64rem) {
+  .stop__landmark {
+    position: relative;
+    inset: auto;
+    order: 1;
+    /* Width follows the figure's own proportions (a slim obelisk stays slim), bleeding into the
+       stop's right padding; the left edge fades instead of cutting the shapes off. */
+    align-self: flex-end;
+    inline-size: auto;
+    max-inline-size: calc(100% + var(--stop-pad-inline));
+    block-size: var(--landmark-flow, 10rem);
+    margin-block-end: calc(-1 * var(--stop-gap) - 2.5rem);
+    margin-inline-end: calc(-1 * var(--stop-pad-inline));
+    mask-image: linear-gradient(to right, transparent, #000 22%);
+  }
+
+  .stop > .featured {
+    order: 2;
+  }
+
+  .terrain-landmark--castillos {
+    --landmark-flow: clamp(9rem, 20cqi, 12rem);
+  }
+
+  .terrain-landmark--siete-colores {
+    --landmark-flow: clamp(10rem, 24cqi, 14rem);
+  }
+
+  .terrain-landmark--obelisco {
+    --landmark-flow: clamp(15rem, 32cqi, 18rem);
+  }
+
+  /* The snowy peaks read best centered, whole, with no faded edge. */
+  .stop__landmark.terrain-landmark--nevados {
+    --landmark-flow: clamp(12rem, 26cqi, 15rem);
+    align-self: center;
+    margin-inline-end: 0;
+    mask-image: none;
+  }
 }
 
 .terrain__back {
@@ -1920,31 +1968,10 @@
   }
 
   .stop {
+    --stop-gap: var(--space-6);
+    --stop-pad-inline: var(--space-5);
     min-block-size: auto;
-    gap: var(--space-6);
-    padding: var(--space-7) var(--space-5) var(--space-8);
-  }
-
-  /* The featured card spans the full width here, so a landmark behind it would never show: it
-     joins the flow between the text and the card instead, right-aligned, and the card rises over
-     its base so the landscape still reads as standing behind it. */
-  .stop__landmark {
-    position: relative;
-    inset: auto;
-    order: 1;
-    /* Width follows the figure's own proportions (a slim obelisk stays slim), bleeding into the
-       stop's right padding; the left edge fades instead of cutting the shapes off. */
-    align-self: flex-end;
-    inline-size: auto;
-    max-inline-size: calc(100% + var(--space-5));
-    block-size: var(--landmark-mobile, 10rem);
-    margin-block-end: calc(-1 * var(--space-6) - 2.5rem);
-    margin-inline-end: calc(-1 * var(--space-5));
-    mask-image: linear-gradient(to right, transparent, #000 22%);
-  }
-
-  .stop .featured {
-    order: 2;
+    padding-block: var(--space-7) var(--space-8);
   }
 
   /* A perched figure stands above the card: make room for it so it never covers the text. */
@@ -1954,26 +1981,6 @@
 
   .featured:has(> .featured__perch) {
     margin-block-start: 3.5rem;
-  }
-
-  .terrain-landmark--castillos {
-    --landmark-mobile: 9rem;
-  }
-
-  .terrain-landmark--siete-colores {
-    --landmark-mobile: 10rem;
-  }
-
-  .terrain-landmark--obelisco {
-    --landmark-mobile: 15rem;
-  }
-
-  /* The snowy peaks read best centered, whole, with no faded edge. */
-  .stop__landmark.terrain-landmark--nevados {
-    --landmark-mobile: 12rem;
-    align-self: center;
-    margin-inline-end: 0;
-    mask-image: none;
   }
 
   .stop__name {
